@@ -10,6 +10,16 @@
             height: 100%;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Load OrbitControls (for camera manipulation) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Load DragControls (optional for dragging objects) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/DragControls.js"></script>
+
+    <!-- Include TextureLoader (for loading textures) -->
+    <script src="https://cdn.jsdelivr.net/npm/@masatomakino/threejs-texture-switching-loader@0.4.0/+esm"></script>
     <script
         id="sap-ui-bootstrap"
         src="https://sapui5.hana.ondemand.com/1.130.2/resources/sap-ui-core.js"
@@ -32,5 +42,31 @@
         data-settings='{"id" : "com.app.artihcus"}'
         data-handle-validation="true"
     ></div>
+    <script>
+        window.onload = function () {
+            // Check if THREE.js is loaded correctly
+            if (typeof THREE === "undefined") {
+                console.error("THREE.js is not loaded. Please check the script source.");
+                return;
+            }
+
+            // Dynamically load the ColladaLoader
+            const loadColladaLoader = function () {
+                const script = document.createElement("script");
+                script.src = "loaders/ColladaLoader.js"; // Ensure the path is correct
+                script.onload = function () {
+                    console.log("ColladaLoader script loaded successfully.");
+                    // Now you can use the ColladaLoader functionality here
+                };
+                script.onerror = function () {
+                    console.error("Failed to load ColladaLoader. Please check the file path.");
+                };
+                document.head.appendChild(script);
+            };
+
+            // Load ColladaLoader only when necessary
+            loadColladaLoader();
+        };
+    </script>
 </body>
 </html>
