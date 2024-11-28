@@ -1,0 +1,38 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <SelectDialog
+        id="valueHelpDssialog"
+        title="Products"
+        search="_handleValueHelpSearch"
+        confirm="_handleValueHelpClose"
+        cancel="_handleValueHelpClose"
+        multiSelect="true"
+    >
+        <StandardListItem
+            id="_IDGenStandssardListItem3"
+            icon="Image/SampleProduct2.png"
+            iconDensityAware="false"
+            iconInset="false"
+            title="EWMS4-01 2L x 2H x 2B"
+            description="18G.wt 18N.wt"
+        />
+        <StandardListItem
+            id="_IDGenStssandardListItem4"
+            icon="Image/sampleProduct1.png"
+            iconDensityAware="false"
+            iconInset="false"
+            title="EWMS4-06 14L x 8H x 7B"
+            description="25G.wt 25N.wt"
+        />
+        <StandardListItem
+            id="_IDGenStassndardListItem5"
+            icon="Image/SampleProduct2.png"
+            iconDensityAware="false"
+            iconInset="false"
+            title="EWMS4-05 6L x 9H x 5B"
+            description="15G.wt 15N.wt"
+        />
+    </SelectDialog>
+</core:FragmentDefinition>

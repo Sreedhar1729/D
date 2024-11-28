@@ -1,0 +1,104 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idListEdiwtDialog"
+        resizable="true"
+        draggable="true"
+        contentWidth="20%"
+        contentHeight="30%"
+        title="Edit List"
+    >
+        <beginButton>
+            <Button
+                id="idCrewfghateBudftton"
+                text="Create"
+                press="onCreateStar"
+                type="Success"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                id="idCbnmancelwBuftton"
+                text="Cancel"
+                press="onCancelInListEditDialog"
+                type="Negative"
+            />
+        </endButton>
+        <content>
+            <form:SimpleForm
+                id="idStarDetsadfvbnilsForm"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="3"
+                labelSpanL="3"
+                labelSpanM="3"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="4"
+                emptySpanL="4"
+                emptySpanM="4"
+                emptySpanS="0"
+                columnsXL="1"
+                columnsL="1"
+                columnsM="1"
+                singleContainerFullSize="false"
+            >
+                <Label
+                    id="idIvCsdVsvbnBDLnmabel"
+                    text="Vehicle"
+                />
+                <Input id="bnvbsvbnsdmVB" />
+                <Label
+                    id="idStFGssvbnmdvbarnmNameLabel"
+                    text="vehicle Type"
+                />
+                <Input id="idStasddbnmFbnGrbnNameInput" />
+                <Label
+                    id="idIDLddghadfbel"
+                    text="product"
+                />
+                <Input id="idIDssIvbnndfput" />
+                <Label
+                    id="idStvbdfdnmarNamxcvbl"
+                    text="product Type"
+                />
+                <Input id="idStaveebnxcrNabnmeInput" />
+                <Label
+                    id="idStdfwwgharNdfameLabel"
+                    text="product description"
+                />
+                <Input id="idStvwwjarNdfgameInput" />
+
+                <Label
+                    id="idCwwoghjnsdftellationLabel"
+                    text="dimensions"
+                />
+                <Input id="idCwwobnmndfstellationInput" />
+                <Label
+                    id="idTyeevbnmpedfgLabel"
+                    text="Weight"
+                />
+                <Input id="idbne3mTypdfgeInput" />
+
+                <Label
+                    id="idDe22bnmsffgvgbcriptionLabel"
+                    text="Volume"
+                />
+                <Input id="idDe2bnscrfgvbniptionInput" />
+                <Label
+                    id="idDevb3nmsfghffgvgbcriptionLabel"
+                    text="Capacity used"
+                />
+                <Input id="idDvbn3escvbnrfgvbniptionInput" />
+                <Label
+                    id="idDhjesf54vbnghffgvgbcriptionLabel"
+                    text="Remaining Capacity"
+                />
+                <Input id="idDesccvbnddbnmvbnrfgvbniptionInput" />
+            </form:SimpleForm>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>

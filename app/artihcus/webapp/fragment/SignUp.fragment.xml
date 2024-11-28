@@ -1,0 +1,164 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idSignssUp"
+        resizable="false"
+        draggable="false"
+        title="SignUp for A new Account"
+        class="sapMPopover sapMIBar sapMHeader-CTX"
+        beginButton="True"
+    >
+        <beginButton>
+            <Button
+                id="s"
+                text="cancel"
+                press="onCancelPressInSignUp"
+            />
+        </beginButton>
+        <content>
+            <form:SimpleForm
+                id="idSidgnUpForm_CS"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="4"
+                labelSpanS="12"
+                emptySpanXL="1"
+                emptySpanL="1"
+                emptySpanM="1"
+                emptySpanS="0"
+                columnsXL="2"
+                columnsL="2"
+                columnsM="1"
+            >
+                <VBox
+                    id="_IDGendVBox1"
+                    class="SignUpFragmentVbox"
+                    width="100%"
+                >
+                    <HBox id="_IDGenHddBox3">
+                        <Label
+                            id="_IDGenLaddbel4"
+                            class="sapUiTinyMarginTop"
+                            text="User Name"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGenLabeld5"
+                            class="sapUiTinyMarginTop"
+                            text=":"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInputd2"
+                            placeholder="username"
+                        />
+                    </HBox>
+
+                    <HBox id="_IDGenHBoxdd4">
+                        <Label
+                            id="_IDGenddLabel6"
+                            text="Email"
+                            class="sapUiTinyMarginTop"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGenLddabel7"
+                            text=":"
+                            class="sapUiTinyMarginTop"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInputd3"
+                            placeholder="Email"
+                        />
+                    </HBox>
+                    <HBox id="_IDGenHBosx5">
+                        <Label
+                            id="_IDGensLabel8"
+                            text="Phone"
+                            class="sapUiTinyMarginTop"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGensLabel9"
+                            text=":"
+                            class="sapUiTinyMarginTop"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInpust4"
+                            placeholder="Phone"
+                        />
+                    </HBox>
+                    <HBox id="_IDGenHBoxs6">
+                        <Label
+                            id="_IDGenLsabel10"
+                            text="Password"
+                            class="sapUiTinyMarginTop"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGenLsabel11"
+                            text=":"
+                            class="sapUiTinyMarginTop"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInputs5"
+                            placeholder="password"
+                        />
+                    </HBox>
+                    <HBox id="_IDGenHBosx7">
+                        <Label
+                            id="_IDGensLabel12"
+                            text="confirm Pwd"
+                            class="sapUiTinyMarginTop"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGensLabel13"
+                            text=":"
+                            class="sapUiTinyMarginTop"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInpust6"
+                            placeholder="Confirm Password"
+                        />
+                    </HBox>
+                    <Button
+                        id="_IDGenButtson4"
+                        class="sapUiSmallMarginTop"
+                        type="Emphasized"
+                        width="100%"
+                        text="Sign Up"
+                    />
+
+                    <!-- <HBox justifyContent="SpaceBetween">
+           
+                                    <CheckBox
+                                        id="_IDGenCheckBox"
+                                        text="Auto Save"
+                                        select="onSelectCheckBox"
+                                    />
+                                  
+                    
+                        <Link
+                            id="IDchangePassword"
+                            text="Change Password"
+                      
+                            press="onChangePasswordBtn"
+                        />
+                       
+                    </HBox> -->
+                </VBox>
+            </form:SimpleForm>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>

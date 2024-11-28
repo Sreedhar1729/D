@@ -71,6 +71,12 @@
           "bundleName": "com.app.artihcus.i18n.i18n"
         }
       },
+      "oJsonModelProd": {
+        "type": "sap.ui.model.json.JSONModel",
+        "settings": {
+            "data": {}
+        }
+    },
       "": {
         "dataSource": "mainService",
         "preload": true,
@@ -114,12 +120,39 @@
           "target": [
             "TargetHome"
           ]
+        },
+        {
+          "name": "MainPage",
+          "pattern": "MainPage",
+          "target": [
+            "TargetMainPage"
+          ]
+        },  {
+          "name": "ReqTruck",
+          "pattern": "ReqTruck",
+          "target": [
+            "TargetReqTruck"
+          ]
         }
       ],
       "targets": {
         "TargetHome": {
           "id": "Home",
           "name": "Home"
+        },
+        "TargetMainPage": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "MainPage",
+          "viewName": "MainPage"
+        },
+        "TargetReqTruck": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "ReqTruck",
+          "viewName": "ReqTruck"
         }
       }
     },
