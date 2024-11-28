@@ -1,0 +1,30 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <SelectDialog
+        id="valueHelpcfgddhDialog"
+        title="Vehicle Types"
+        search="_handleValueHelpSearch"
+        confirm="_handleValueHelpClose"
+        cancel="_handleValueHelpClose"
+        multiSelect="true"
+    >
+        <StandardListItem
+            id="_IDGenSsstandardListItem1"
+            icon="Image/truckWithGoods.gif"
+            iconDensityAware="false"
+            iconInset="false"
+            title="14FT Delivary Truck"
+            description="14L x 8H x 7B Capacity :  5-6 tons"
+        />
+        <StandardListItem
+            id="ss"
+            icon="Image/truck24FT.png"
+            iconDensityAware="false"
+            iconInset="false"
+            title="24FT- Cargo Delivary truck"
+            description="24L x 8H x 8B Capacity :  8-12 tons"
+        />
+    </SelectDialog>
+</core:FragmentDefinition>

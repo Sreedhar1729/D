@@ -1,0 +1,117 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idEditInssAddEquipmentDialog"
+        resizable="true"
+        draggable="true"
+        contentWidth="20%"
+        contentHeight="30%"
+        title="Edit Vehicle"
+    >
+        <beginButton>
+            <Button
+                id="idCreatessvgbhdfgjkButton"
+                text="Save"
+                press="onSave"
+                type="Success"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                id="idCancelssbnmdfgButton"
+                text="Cancel"
+                press="onCancelInEditVehicleDialog"
+                type="Negative"
+            />
+        </endButton>
+        <content>
+            <form:SimpleForm
+                id="idStarDesstanmidfglsForm"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="3"
+                labelSpanL="3"
+                labelSpanM="3"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="4"
+                emptySpanL="4"
+                emptySpanM="4"
+                emptySpanS="0"
+                columnsXL="1"
+                columnsL="1"
+                columnsM="1"
+                singleContainerFullSize="false"
+            >
+                <Label
+                    id="_IDGenLabel1"
+                    text="Truck Type"
+                />
+                <Input
+                    id="editTruckTypeInput"
+                    value=" "
+                />
+
+                <Label
+                    id="_IDGenLabel2"
+                    text="Length"
+                />
+                <Input
+                    id="editLengthInput"
+                    value=" "
+                />
+
+                <Label
+                    id="_IDGenLabel3"
+                    text="Width"
+                />
+                <Input
+                    id="editWidthInput"
+                    value=""
+                />
+
+                <Label
+                    id="_IDGenLabel4"
+                    text="Height"
+                />
+                <Input
+                    id="editHeightInput"
+                    value=" "
+                />
+
+                <!-- <Label id="_IDGenLabel5" text="Unit of Measurement (UOM)" />
+                <Input
+                    id="editUomInput"
+                    value=" "
+                /> -->
+
+                <!-- <Label id="_IDGenLabel6" text="Volume" />
+                <Input
+                    id="editVolumeInput"
+                    value=" "
+                /> -->
+
+                <Label
+                    id="_IDGenLabel7"
+                    text="Truck Weight"
+                />
+                <Input
+                    id="editTruckWeightInput"
+                    value=" "
+                />
+
+                <Label
+                    id="_IDGenLabel8"
+                    text="Capacity"
+                />
+                <Input
+                    id="editCapacityInput"
+                    value=" "
+                />
+            </form:SimpleForm>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>

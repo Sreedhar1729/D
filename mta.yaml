@@ -82,6 +82,22 @@ modules:
       buildpack: nodejs_buildpack
     requires:
       - name: dell-db
+
+  - name: dell
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: uaa_dell
 resources:
   - name: dell-destination-service
     type: org.cloudfoundry.managed-service
@@ -123,6 +139,9 @@ resources:
       service: xsuaa
       service-name: dell-xsuaa-service
       service-plan: application
+      config:
+        xsappname: dell-${org}-${space}
+        tenant-mode: dedicated
   - name: dell-db
     type: com.sap.xs.hdi-container
     parameters:

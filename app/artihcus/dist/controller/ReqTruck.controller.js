@@ -1,0 +1,2 @@
+sap.ui.define(["./BaseController"],function(e){"use strict";return e.extend("com.app.artihcus.controller.ReqTruck",{onInit:function(){},onBackPress:function(){const e=this.getOwnerComponent().getRouter();e.navTo("MainPage");this.getView().getModel("resultModel").refresh()}})});
+//# sourceMappingURL=ReqTruck.controller.js.map
