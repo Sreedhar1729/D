@@ -160,6 +160,29 @@ height: 125%;
    
     border-color: #fff; 
 }
+
+.backgroundColour{
+    background-image: linear-gradient(135deg, #d1f0f4, #f1e6fa,#fff5ea, #fff2e4) !important;
+
+}
+.sapMITH{
+
+    background-image: linear-gradient(135deg, #d1f0f4, #f1e6fa,#fff5ea,#fff5ea, #fff2e4);
+    
+    }
+.sapMITBFilter .sapMITBFilterIcon, .sapMITBFilter .sapMITBInlineIcon {
+        cursor:pointer;
+    }
+    .sapMITBItem .sapMITBFilterIcon {
+
+        overflow:hidden;
+       
+       }
+
+       .sapMITBFilterIcon {
+ 
+        border:none;
+    }
 /*end of classes to make the icon tab bar with no border and gif applicable  */
 /* ------------------------------------------------------------------------------------------------ */
 .overlayContainer {
