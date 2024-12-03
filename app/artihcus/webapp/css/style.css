@@ -251,3 +251,8 @@ height: 125%;
     font-weight: bolder;
     font-size: medium;
 }
+
+.customSelectedItem {
+    background-color: #ffcc00 !important; /* Yellow background */
+    color: white !important; /* White text */
+}

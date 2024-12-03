@@ -53,6 +53,7 @@
                                 text="{resultModel>/overallTotalWeight} KG"
                             />
                         </HBox>
+                      
                     </VBox>
                     <VBox
                         id="_IDGenVBox7"
@@ -67,16 +68,20 @@
 
                         <List
                             id="_IDGenList1"
-                            items="{resultModel>/RequiredTrucks}"
+                            items="{path:'resultModel>/RequiredTrucks', sorter:{path:'truckType',descending:true}}"
                             width="700px"
+                            mode="SingleSelect" 
+                            selectionChange="onSelectionChange"
                             headerLevel="Auto"
                             growing="true"
                             growingDirection="Downwards"
-                            growingThreshold="2"
+                            growingThreshold="4"
+                            
                         >
                             <items>
                                 <StandardListItem
                                     type="Active"
+                                    selected="true"
                                     id="_IDGenStandardListItem1"
                                     title="{resultModel>truckType}"
                                     info="{resultModel>numberOfTrucksNeeded} truck(s) needed, Volume: {resultModel>volume}M³"

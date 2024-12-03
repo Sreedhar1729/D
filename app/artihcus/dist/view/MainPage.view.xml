@@ -23,13 +23,13 @@
         id="_IDGenPage1"
         showHeader="false"
         backgroundDesign="Transparent"
-        class="PageBackground backgroundColour"
+       class="PageBackground"
         enableScrolling="true"
     >
         <tnt:ToolHeader
             id="shellLikeToolHeader"
             visible="true"
-            class="header"
+            class="header backgroundColour"
         >
             <Image
                 id="idArthcusIn_Mainpage"
@@ -101,7 +101,7 @@
                 expanded="true"
                 expandable="false"
                 id="IconTabBar"
-                class="iconTabBar"
+                 class="backgroundColour iconTabBar"
             >
                 <items>
                     <!-- add product -->
@@ -113,12 +113,15 @@
                         icon="Image/ProductInIconTabBar.png"
                         iconColor="Positive"
                         text="Add product"
+                                    class="backgroundColour"
                     >
-                        <HBox id="_IDGenHBox8">
+                        <HBox id="_IDGenHBox8" class="backgroundColour" >
                             <form:SimpleForm
                                 id="_IDGenSimpleForm"
                                 layout="ResponsiveGridLayout"
                                 backgroundDesign="Transparent"
+                                
+                                          
                             >
                                 <VBox
                                     class="vboxAdd"
@@ -355,10 +358,11 @@
                                 </VBox>
                             </form:SimpleForm>
                             <!-- sample -->
-                            <Image id="rtyu"  height="1.5rem" src="Image/productInBox.gif"/>
+                       <Image id="rtyu" width="120%"  height="100%" src="Image/productInBox.gif"/>
 
                             <!-- ghjk -->
                         </HBox>
+                        <Text id="idsampleLabel" width="100%" ></Text>
                     </IconTabFilter>
 
                     <!-- Add vehicle -->
@@ -370,10 +374,11 @@
                         visible="true"
                         key="info1"
                         icon="Image/TruckInIconTabBar.png"
+                                    class="backgroundColour"
                     >
                         <Toolbar
                             id="TB4ertdf_AHUOBQ"
-                            class="HeaderToolBar"
+                            class="HeaderToolBar backgroundColour"
                             width="80%"
                         >
                             <Title
@@ -420,15 +425,18 @@
                         <Table
                             id="idTruckTypeTable"
                             growing="true"
+                                noDataText="No Vehicle Types Available"
                             backgroundDesign="Transparent"
                             selectionChange="onRow"
                             items="{/TruckTypes}"
                             mode="MultiSelect"
+                                 class="backgroundColour"
                         >
                             <columns>
                                 <Column
                                     id="_IcvbnmvbnDGenC"
                                     width="100px"
+                                         class="backgroundColour"
                                 >
                                     <!-- Set specific widths -->
                                     <Text
@@ -495,6 +503,7 @@
                             <items>
                                 <ColumnListItem
                                     id="_IwedrfgDvbnGColumnListItem1"
+                                                  class="backgroundColour"
                                 >
                                     <cells>
                                         <Text
@@ -545,6 +554,7 @@
                         key="info1"
                         interactionMode="Auto"
                         icon="Image/listIcon.png"
+                                     class="backgroundColour"
                     >
                         <!-- Materials Table in the Creation Screen -->
                         <Table
@@ -553,11 +563,13 @@
                             backgroundDesign="Transparent"
                             items="{/Materials}"
                             width="80%"
+                               noDataText="No Products Available"
                             growing="true"
                             growingScrollToLoad="true"
+                                 class="backgroundColour"
                         >
                             <headerToolbar >
-                                <OverflowToolbar id="_IDGenOverflowToolbar" class="HeaderToolBar">
+                                <OverflowToolbar id="_IDGenOverflowToolbar"  class="backgroundColour">
                                     <Title
                                         id="Titlesd1455896_AHUOBQ"
                                         text="Products Table:"
@@ -626,7 +638,7 @@
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
-                                <Column id="_IDGenn2">
+                                <Column id="_IDGenn2" class="backgroundColour" >
                                     <Text
                                         id="_IDGnText2"
                                         text="SAP Productno"
@@ -692,7 +704,7 @@
                             </columns>
 
                             <items>
-                                <ColumnListItem id="_IDGColumnListItem1">
+                                <ColumnListItem id="_IDGColumnListItem1"  class="backgroundColour" >
                                     <cells>
                                         <Text
                                             id="_ID"
@@ -748,13 +760,14 @@
                         key="info21"
                         icon="Image/SimulateIconTabBar.gif"
                         text="Simulate"
-                        iconColor="Neutral"
-                        class="iconTabBar"
+                        iconColor="Marker"
+                        class="iconTabBar backgroundColour sapMITBItem sapMITBFilterIcon sapMITBSelected sapMITBFilterCritical"
                          interactionMode="Auto"
                     >
                         <HBox
                             id="Productarea"
                             visible="true"
+                                class="backgroundColour"
                         >
                             <HBox
                                 id="_IDGenHBox2"
@@ -872,9 +885,9 @@
                             </HBox>
                             <HBox
                                 id="_IDGenVdfgBox3"
-                                class="EmptyHBoxforgap"
+                                class="EmptyHBoxforgap backgroundColour"
                             />
-                            <HBox id="iDgenhboghjxcontainer_InitialView">
+                            <HBox id="iDgenhboghjxcontainer_InitialView" class="backgroundColour">
                                 <VBox id="_IDGenVBox">
                                     <HBox id="_IDGenHBox3" class="sapUiSmallMarginBottom">
                                         <Button
@@ -925,7 +938,7 @@
                             </VBox> -->
                                     <VBox
                                         id="_IDGenVBox2"
-                                        class="leftContainer"
+                                        class="leftContainer backgroundColour"
                                         width="60%"
                                     >
                                         <Table
@@ -937,6 +950,7 @@
                                             backgroundDesign="Transparent"
                                             growingThreshold="100"
                                             items="{oJsonModelProd>/products}"
+                                                class="backgroundColour"
                                         >
                                             <!-- Assuming 'products' is the array in your JSON model -->
 
@@ -974,7 +988,7 @@
                                             </columns>
 
                                             <items>
-                                                <ColumnListItem id="idcolistes">
+                                                <ColumnListItem id="idcolistes"   class="backgroundColour" >
                                                     <cells>
                                                         <Text
                                                             id="_IDGenText5"
@@ -1009,6 +1023,7 @@
                             id="_IDGenVBox4"
                             alignContent="Center"
                             alignItems="Center"
+                                class="backgroundColour"
                         >
                             <!-- New HBox for the table and container -->
                             <HBox
