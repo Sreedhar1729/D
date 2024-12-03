@@ -6,11 +6,16 @@ sap.ui.define(
         "use strict";
 
         return Controller.extend("com.app.artihcus.controller.ReqTruck", {
-            onInit: function () {
+            onInit:  function () {
+              
                 this._validateDependencies();
                 this._loadDependencies();
+ 
+             
+ 
                 const oModel = this.getOwnerComponent().getModel("resultModel");
                 console.log("hey mawa we got the data",oModel.getData())
+ 
 
                 // Attach the requestCompleted event
 
@@ -71,7 +76,7 @@ sap.ui.define(
 
             _init3DScene: function () {
                 this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x808080);
+                
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(20, 15, 30);
 
@@ -93,9 +98,9 @@ sap.ui.define(
                 this.controls.enableDamping = true;
 
                 this._addLighting();
-                this._loadDAEModel();
-                this._loadBackSideModel();
+              
                 this._animate();
+
             },
 
             _addLighting: function () {
@@ -116,6 +121,9 @@ sap.ui.define(
                 });
             },
 
+ 
+            
+ 
             _loadDAEModel: function () {
                 const loader = new THREE.ColladaLoader();
                 loader.load(
@@ -267,6 +275,7 @@ sap.ui.define(
 
 
 
+ 
             _animate: function () {
                 const animate = () => {
                     requestAnimationFrame(animate);
