@@ -6,9 +6,12 @@ sap.ui.define(
         "use strict";
 
         return Controller.extend("com.app.artihcus.controller.ReqTruck", {
-            onInit: function () {
+            onInit:  function () {
+              
                 this._validateDependencies();
                 this._loadDependencies();
+            
+             
 
 
             },
@@ -64,7 +67,7 @@ sap.ui.define(
 
             _init3DScene: function () {
                 this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x808080);
+                
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(20, 15, 30);
 
@@ -89,6 +92,7 @@ sap.ui.define(
                 this._loadDAEModel();
                 this._loadBackSideModel();
                 this._animate();
+
             },
 
             _addLighting: function () {
@@ -256,10 +260,113 @@ sap.ui.define(
                 this.scene.add(container);
             
                 console.log("Transparent container with a non-transparent double-sided base added.");
+                this._LoadData()
             },
             
            
-
+            _LoadData: function () {
+                var oData = this.getOwnerComponent().getModel("resultModel").getData();
+                var ProductDetails = oData.Products;
+                var VehicleType = oData.RequiredTrucks;
+            
+                // Assuming container is already created
+                this._addProductsToContainer(ProductDetails);
+            },
+            
+            _addProductsToContainer: function (ProductDetails, containerDimensions) {
+                let currentX = -containerDimensions.length / 2 + 0.5; // Start X position (centered in container)
+                let currentY = 0.5; // Start Y position (on the floor of the container)
+                let currentZ = -containerDimensions.width / 2 + 0.5; // Start Z position (centered in container)
+                const spacing = 0.1; // Spacing between products
+            
+                ProductDetails.forEach((product) => {
+                    const productWidth = parseFloat(product.width);
+                    const productHeight = parseFloat(product.height);
+                    const productLength = parseFloat(product.length);
+                    const quantity = parseInt(product.Quantity);
+            
+                    for (let i = 0; i < quantity; i++) {
+                        // Check if the product fits in the current layer
+                        if (currentX + productLength / 2 > containerDimensions.length / 2) {
+                            currentX = -containerDimensions.length / 2 + 0.5;
+                            currentZ += productWidth + spacing;
+            
+                            // Check if the row is full and move to the next layer
+                            if (currentZ + productWidth / 2 > containerDimensions.width / 2) {
+                                currentZ = -containerDimensions.width / 2 + 0.5;
+                                currentY += productHeight + spacing;
+                            }
+                        }
+            
+                        // Ensure the products do not exceed the container's height
+                        if (currentY + productHeight / 2 > containerDimensions.height) {
+                            console.error("Container is full. Cannot add more products.");
+                            break;
+                        }
+            
+                        // Create product geometry
+                        const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+            
+                        // Create product material with random color
+                        const randomColor = Math.random() * 0xffffff;
+                        const productMaterial = new THREE.MeshBasicMaterial({ color: randomColor });
+            
+                        // Create the product mesh
+                        const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+            
+                        // Position the product
+                        productMesh.position.set(currentX, currentY, currentZ);
+            
+                        // Add borders using EdgesGeometry
+                        const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+                        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 }); // Black border
+                        const border = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                        border.position.copy(productMesh.position);
+            
+                        // Create text for product number
+                        const textCanvas = document.createElement("canvas");
+                        const textContext = textCanvas.getContext("2d");
+                        textCanvas.width = 256;
+                        textCanvas.height = 256;
+            
+                        // Draw product number on canvas
+                        textContext.fillStyle = "white";
+                        textContext.fillRect(0, 0, textCanvas.width, textCanvas.height);
+                        textContext.font = "Bold 30px Arial";
+                        textContext.fillStyle = "black";
+                        textContext.fillText(product.Product, 20, 130);
+            
+                        // Create text material
+                        const textTexture = new THREE.CanvasTexture(textCanvas);
+                        const textMaterial = new THREE.MeshBasicMaterial({ map: textTexture });
+                        const textGeometry = new THREE.PlaneGeometry(productLength, productHeight / 2);
+            
+                        // Create text mesh
+                        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                        textMesh.position.set(
+                            currentX,
+                            currentY + productHeight / 2 + 0.1, // Slightly above the product
+                            currentZ
+                        );
+            
+                        // Group product and its border
+                        const productGroup = new THREE.Group();
+                        productGroup.add(productMesh);
+                        productGroup.add(border);
+                        productGroup.add(textMesh);
+            
+                        // Add product group to the scene
+                        this.scene.add(productGroup);
+            
+                        // Update X position for the next product
+                        currentX += productLength + spacing;
+                    }
+                });
+            
+                console.log("Products created and placed inside the container.");
+            },
+            
+            
             _animate: function () {
                 const animate = () => {
                     requestAnimationFrame(animate);
