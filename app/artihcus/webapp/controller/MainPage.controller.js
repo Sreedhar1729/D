@@ -787,7 +787,7 @@ sap.ui.define(
             // Step 3: Set the combined data to the local model
             oTempProduct.setData({ "products": combinedData }); // Update model with combined products
             oTempProduct.refresh(true); // Refresh the model to update UI bindings
-          };
+          });
           reader.onerror = function (ex) {
             console.log(ex);
 
@@ -1139,7 +1139,7 @@ sap.ui.define(
           const newProduct = {
             Product: oMat,
             MaterialDescription: oSuccessData.results[0].description,
-< 
+ 
             height: oSuccessData.results[0].height,
             length: oSuccessData.results[0].length,
             width: oSuccessData.results[0].width,
@@ -1255,9 +1255,9 @@ sap.ui.define(
           sap.m.MessageToast.show("All products have been removed.");
         }
  
-      }
- 
       },
+ 
+      
 
  
     });
