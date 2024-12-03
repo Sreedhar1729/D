@@ -13,8 +13,8 @@ sap.ui.define(
  
              
  
-                const oModel = this.getOwnerComponent().getModel("resultModel");
-                console.log("hey mawa we got the data",oModel.getData())
+                // const oModel = this.getOwnerComponent().getModel("resultModel");
+                // console.log("hey mawa we got the data",oModel.getData())
  
 
                 // Attach the requestCompleted event
