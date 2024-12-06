@@ -3,6 +3,7 @@
     padding: 20px;
 }
 
+
 .capacityTitle {
     font-size: 2rem;
     font-weight: Bold;
@@ -37,10 +38,10 @@
 
 }
 
-.backgroundColour {
+/* .backgroundColour {
     background-color: rgb(236, 242, 242);
 
-}
+} */
 
 
 
@@ -250,4 +251,21 @@ height: 125%;
 .addingcolor{
     font-weight: bolder;
     font-size: medium;
+}
+
+/* start of required truck CSS */
+.sapMIBar.sapMHeader-CTX {
+
+    background-image: linear-gradient(135deg, #d1f0f4, #f1e6fa,#fff5ea, #fff2e4) !important;
+    filter: none;
+  
+}
+/* End of required truck CSS */
+
+.textSimulate{
+    font-weight:Bold;
+    color:black;
+}
+.tileLayout{
+    margin-left: 50%;
 }

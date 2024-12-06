@@ -23,6 +23,7 @@ define entity Materials {
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : string;
+    key    freezed:Boolean;
         length      : String;
         width       : String;
         height      : String;
@@ -32,5 +33,6 @@ define entity TruckTypes {
         truckWeight : String;
         capacity    : String;
         tuom        : String;
+    
 
 }

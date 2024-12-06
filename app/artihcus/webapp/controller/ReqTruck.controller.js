@@ -64,7 +64,7 @@ sap.ui.define(
 
             _init3DScene: function () {
                 this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x808080);
+     
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(20, 15, 30);
 
