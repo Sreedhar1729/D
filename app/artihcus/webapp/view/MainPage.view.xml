@@ -1166,6 +1166,99 @@
                                         </TileContent>
                                     </GenericTile> -->
                                 </HBox>
+=======
+                                            <columns>
+                                                <Column id="_IDGenColumn1">
+                                                    <Text
+                                                        id="_IDGensdfText"
+                                                        text="Product"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn2">
+                                                    <Text
+                                                        id="_IDGensdfText1"
+                                                        text="Material Description"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn21" visible="false">
+                                                    <Text
+                                                        id="_IDGensdfText11"
+                                                        text="Height"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn22"  visible="false">
+                                                    <Text
+                                                        id="_IDGensdfText12"
+                                                        text="Length"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn23" visible="false">
+                                                    <Text
+                                                        id="_IDGensdfText13"
+                                                        text="width"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn4">
+                                                    <Text
+                                                        id="_IDGsdfenText3"
+                                                        text="Quantity (PC)"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn3">
+                                                    <Text
+                                                        id="_IDGesdfnText2"
+                                                        text="Volume (m³)"
+                                                    />
+                                                </Column>
+                                                <Column id="_IDGenColumn5">
+                                                    <Text
+                                                        id="_IDGesdfnText3"
+                                                        text="Weight"
+                                                    />
+                                                </Column>
+                                            </columns>
+
+                                            <items>
+                                                <ColumnListItem id="idcolistes"   class="backgroundColour" >
+                                                    <cells>
+                                                        <Text
+                                                            id="_IDGenText5"
+                                                            text="{oJsonModelProd>Product}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText6"
+                                                            text="{oJsonModelProd>MaterialDescription}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText61"
+                                                            text="{oJsonModelProd>height}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText62"
+                                                            text="{oJsonModelProd>length}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText63"
+                                                            text="{oJsonModelProd>width}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText8"
+                                                            text="{oJsonModelProd>Quantity}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText9"
+                                                            text="{oJsonModelProd>Volume}"
+                                                        />
+                                                        <Text
+                                                            id="_IDGenText10"
+                                                            text="{oJsonModelProd>Weight}"
+                                                        />
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </VBox>
+
                                 </VBox>
 
                                 <Button

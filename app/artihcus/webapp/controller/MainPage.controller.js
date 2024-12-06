@@ -18,10 +18,14 @@ sap.ui.define(
     
   ],
   function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent,Text) {
-    "use strict";
+
+    "sap/ui/core/UIComponent"
+  ],
+
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+
        this.oObject={
         "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
         "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
@@ -34,12 +38,13 @@ sap.ui.define(
        }
        let link = this.oObject["14ft"];
 console.log(link);
+
+
         // Initialize your JSON model
         const oJsonModel1 = new sap.ui.model.json.JSONModel({ products: [] });
         this.getView().setModel(oJsonModel1, "oJsonModelProd");
         /***storing table  */
         this.loadProductsFromLocalStorage();
-        
 
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
@@ -73,6 +78,7 @@ console.log(link);
           volume: "",
           truckWeight: "",
           capacity: "",
+
           freezed: "",
         });
         this.getView().setModel(oJsonModelVeh, "VehModel");
@@ -164,6 +170,11 @@ console.log(link);
       //   alert("Tile pressed!");
       //   console.log(oEvent.oSource.mProperties.header)
       // },
+
+        });
+        this.getView().setModel(oJsonModelVeh, "VehModel");
+      },
+
       handleValueHelp: function (oEvent) {
         var sInputValue = oEvent.getSource().getValue(),
           oView = this.getView();
@@ -197,6 +208,7 @@ console.log(link);
           }).then(function (oProductsDialog) {
             oView.addDependent(oProductsDialog);
             return oProductsDialog;
+
           });
         }
 
@@ -260,6 +272,33 @@ console.log(link);
           "Volume(M)",
           "Capacity",
           "TruckWeight",
+
+          });
+        }
+
+        this._pProductsDialog.then(function (oProductsDialog) {
+          oProductsDialog.open(sInputValue);
+        });
+      },
+
+      onPrintPressInProductsTable: function () {
+
+        var oTable = this.byId("ProductsTable");
+        var aItems = oTable.getItems();
+        var aData = [];
+        // Push column headers as the first row
+        var aHeaders = [
+          "SAP Productno",
+          "Description",
+          "EANUPC",
+          "Material Category",
+          "Length",
+          "Width",
+          "Height",
+          "Volume",
+          "UOM",
+          "Weight",
+
         ];
         aData.push(aHeaders);
 
@@ -276,6 +315,72 @@ console.log(link);
         // Prepare Excel workbook
         var oSheet = XLSX.utils.aoa_to_sheet(aData);
         var oWorkbook = XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idProductsTableEdit");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(oWorkbook, "VehicleTable.xlsx");
+      },
+
+      // 
+      //print in list  
+      onPressPrintInListTable: function () {
+
+        var oTable = this.byId("idListTable");
+
+        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "ProductsTable");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(oWorkbook, "ProductsTable.xlsx");
+      },
+
+      //print in add Equipment 
+      onPressDownloadInAddVehicleTable: function () {
+
+        var oTable = this.byId("idTruckTypeTable");
+
+        var aItems = oTable.getItems();
+        var aData = [];
+
+        // Push column headers as the first row
+        var aHeaders = [
+
+          "S.No",
+          "Vehicle",
+          "Vehicle Type",
+          "Product",
+          "Product Type",
+          "Product Description",
+          "Dimensions",
+          "Volume",
+          "Weight",
+          "Capacity Used",
+          "Remaining Capacity",
+          "TruckType",
+          "Length(M)",
+          "Width(M)",
+          "Height(M)",
+          "Volume(M)",
+          "Capacity",
+          "TruckWeight",
+
+        ];
+        aData.push(aHeaders);
+
+        // Iterate through table items and collect data
+        aItems.forEach(function (oItem) {
+          var oCells = oItem.getCells();
+          var rowData = [];
+          oCells.forEach(function (oCell) {
+            rowData.push(oCell.getText());
+          });
+          aData.push(rowData);
+        });
+
+        // Prepare Excel workbook
+        var oSheet = XLSX.utils.aoa_to_sheet(aData);
+        var oWorkbook = XLSX.utils.book_new();
+
         XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idProductsTableEdit");
 
         // Generate and download the Excel file
@@ -319,6 +424,7 @@ console.log(link);
         // Prepare Excel workbook
         var oSheet = XLSX.utils.aoa_to_sheet(aData);
         var oWorkbook = XLSX.utils.book_new();
+
         XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idListTable");
 
         // Generate and download the Excel file
@@ -347,7 +453,9 @@ console.log(link);
       },
       onCancelInCreateVehicleDialog: function () {
         this.byId("idCreateInAddddEquipmentDialog").close();
+
         this.ClearVeh();
+
       },
       // edit  fragment in products table
       oOpenProductEdit: async function () {
@@ -393,6 +501,7 @@ console.log(link);
 
       /** ************************Creating New Product  ***************************************************/
       onCreateProduct: async function () {
+
         const oPayloadModel = this.getView().getModel("ProductModel"),
           oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
@@ -444,7 +553,9 @@ console.log(link);
           this.getView().byId("ProductsTable").getBinding("items").refresh();
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
+
           MessageToast.show("Successfully Created!");
+
           this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
@@ -505,6 +616,7 @@ console.log(link);
           MessageBox.warning("Please Enter all Values");
           return;
         }
+
         const oFreeze = this.byId("idFreezedInput").getSelectedKey();
         if(!oFreeze){
           MessageBox.warning("Please Enter all Values");
@@ -512,6 +624,7 @@ console.log(link);
         }
         const oFreezeVal = oFreeze === 'Yes'?true:false;
         oPayload.freezed = oFreezeVal;
+
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
@@ -520,12 +633,22 @@ console.log(link);
         try {
           await this.createData(oModel, oPayload, oPath);
           debugger
+
           this.ClearVeh();
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
           this.byId("parkingLotSelect").getBinding("items").refresh();
           
+  this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
+          this.onCancelInCreateVehicleDialog();
+          this.byId("idvehtypeUOM").setSelectedKey("");
+          this.byId("parkingLotSelect").getBinding("items").refresh();
+ 
+          this.byId("idkekke3").getBinding("items").refresh();
+ 
+          this.ClearVeh(true);
+
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.onCancelInCreateVehicleDialog();
@@ -564,6 +687,11 @@ console.log(link);
           }));
           this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
           this.byId("parkingLotSelect").getBinding("items").refresh();
+
+ 
+          this.byId("idkekke3").getBinding("items").refresh();
+ 
+
           MessageToast.show('Successfully Deleted')
         } catch (error) {
           MessageToast.show('Error Occurs');
@@ -609,7 +737,15 @@ console.log(link);
         const oPath = `/TruckTypes('${truckType}')`;
         try {
           await this.updateData(oModel, oPayload, oPath);
+
           this.byId("idTruckTypeTable").getBinding("items").refresh();
+
+          this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
+ 
+ 
+          this.byId("idkekke3").getBinding("items").refresh();
+ 
+
           this.onCancelInEditVehicleDialog();
           this.onClearEditDialog();
           MessageToast.show('Successfully Updated');
@@ -621,7 +757,11 @@ console.log(link);
       },
 
       /**Clearing Vehicle Editing Values */
+
       idTruckTypeTable: function () {
+
+      onClearEditDialog: function () {
+
         this.byId("editTruckTypeInput").setValue(""); // Set to empty string
         this.byId("editLengthInput").setValue(""); // Set to empty string
         this.byId("editWidthInput").setValue(""); // Set to empty string
@@ -790,6 +930,8 @@ console.log(link);
       },
       /** Simulating excel sheet products */
       onClickSimulate: async function () {
+
+   
         var oTable = this.byId("myTable");
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
@@ -810,6 +952,11 @@ console.log(link);
               var rowData = {
                 Product: oTable.getModel("oJsonModelProd").getProperty("Product", oContext),
                 MaterialDescription: oTable.getModel("oJsonModelProd").getProperty("MaterialDescription", oContext),
+
+                height : oTable.getModel("oJsonModelProd").getProperty("height", oContext),
+                length : oTable.getModel("oJsonModelProd").getProperty("length", oContext),
+                width : oTable.getModel("oJsonModelProd").getProperty("width", oContext),
+
                 Quantity: oTable.getModel("oJsonModelProd").getProperty("Quantity", oContext),
                 Volume: oTable.getModel("oJsonModelProd").getProperty("Volume", oContext),
                 Weight: oTable.getModel("oJsonModelProd").getProperty("Weight", oContext)
@@ -865,13 +1012,129 @@ console.log(link);
               console.log(`- ${truck.truckType}: ${truck.numberOfTrucksNeeded} truck(s) needed (Capacity: ${truck.volume} Kgs)`);
             });
 
+ 
+       
+            workbook.SheetNames.forEach(function (sheetName) {
+              // Here is your object for every sheet in workbook
+              excelData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+
+            });
+            console.log(excelData);
+            excelData.forEach(record => {
+              if (record.Weight) { // Check if Weight field exists
+                record.Weight += 'KG'; // Concatenate 'kg' to the Weight field
+              }
+            });
+            var uniqueData = [...new Set(excelData)];
+            console.log(uniqueData)
+            // Step 2: Store new Excel data in local storage
+            const combinedData = [...existData, ...uniqueData]; // Combine existing and new data
+            localStorage.setItem("productsData", JSON.stringify(combinedData)); // Store combined data back in local storage
+
+            // Step 3: Set the combined data to the local model
+            oTempProduct.setData({ "products": combinedData }); // Update model with combined products
+            oTempProduct.refresh(true); // Refresh the model to update UI bindings
+          });
+          reader.onerror = function (ex) {
+            console.log(ex);
+
+          };
+          reader.readAsBinaryString(file);
+        }
+      },
+      /** Simulating excel sheet products */
+      onClickSimulate: async function () {
+        var oTable = this.byId("myTable");
+        var aSelectedItems = oTable.getSelectedItems(); // Get selected items
+        var aSelectedItems = oTable.getSelectedItems(); // Get selected items
+        console.log("Selected Items Count:", aSelectedItems.length);
+        console.log("Selected Items:", aSelectedItems); // Log selected items for debugging
+        const oDropdown = this.byId("parkingLotSelect");
+        const oSelectedKey = oDropdown ? oDropdown.getSelectedKey() : "";
+        // Check if there are any selected items
+        if (aSelectedItems.length > 0) {
+          var selectedData = []; // Array to hold data of all selected items
+
+          // Iterate over each selected item
+          aSelectedItems.forEach(function (oItem) {
+            var oContext = oItem.getBindingContext("oJsonModelProd"); // Get the binding context for each item
+
+            if (oContext) {
+              // Retrieve properties from the context
+              var rowData = {
+                Product: oTable.getModel("oJsonModelProd").getProperty("Product", oContext),
+                MaterialDescription: oTable.getModel("oJsonModelProd").getProperty("MaterialDescription", oContext),
+                Quantity: oTable.getModel("oJsonModelProd").getProperty("Quantity", oContext),
+                Volume: oTable.getModel("oJsonModelProd").getProperty("Volume", oContext),
+                Weight: oTable.getModel("oJsonModelProd").getProperty("Weight", oContext)
+              };
+              // Push the row data into the selectedData array
+              selectedData.push(rowData);
+            } else {
+              console.error("Binding context is undefined for a selected item.");
+            }
+          });
+
+          // Log the data of all selected items
+          console.log("Selected Items Data:", selectedData);
+
+          // Calculate overall total volume across all rows
+          const overallTotalVolume = selectedData.reduce((accumulator, item) => {
+            return accumulator + item.Volume; // Use TotalVolume calculated for each row
+          }, 0);
+          function extractWeight(weightString) {
+            // Use regex to match the numeric part of the string
+            let match = weightString.match(/(\d+\.?\d*)/);
+            // Return the parsed float or 0 if no match is found
+            return match ? parseFloat(match[0]) : 0;
+          }
+
+          // Calculate overall total weight
+          const overallTotalWeight = selectedData.reduce((accumulator, item) => {
+            return accumulator + extractWeight(item.Weight); // Extract numeric weight and add to accumulator
+          }, 0);
+
+          console.log("Overall Total Weight:", overallTotalWeight); // Output the total weight
+
+          console.log("Overall Total Volume:", overallTotalVolume);
+          console.log("Overall Total Volume:", overallTotalWeight);
+
+          // Load truck details
+
+          await this.onTruckDetailsLoad().then(Trucks => {
+            let requiredTrucks = [];
+            Trucks.forEach(truck => {
+              // if (!oSelectedKey || truck.truckType === oSelectedKey) {
+              const numberOfTrucksNeeded = Math.ceil(overallTotalVolume / truck.volume);
+              const trucksToUse = numberOfTrucksNeeded > 0 ? numberOfTrucksNeeded : 1;
+              requiredTrucks.push({
+                truckType: truck.truckType,
+                volume: truck.volume,
+                height:truck.height,
+                length:truck.length,
+                width:truck.width,
+                numberOfTrucksNeeded: trucksToUse,
+              });
+              //}
+            });
+
+            console.log("Required Trucks for Loading:");
+            requiredTrucks.forEach(truck => {
+              console.log(`- ${truck.truckType}: ${truck.numberOfTrucksNeeded} truck(s) needed (Capacity: ${truck.volume} Kgs)`);
+            });
+ 
+
+
             // Construct JSON model for storing overall total volume and product details
             const jsonModelData = {
               OverallTotalVolume: overallTotalVolume,
               overallTotalWeight: overallTotalWeight,
               Products: selectedData,
               TProducts: selectedData.length,
-              RequiredTrucks: requiredTrucks
+              RequiredTrucks: requiredTrucks,
+              selectedTruck: oSelectedKey
+ 
+
             };
 
             // Assuming you want to set this data to a model named "resultModel"
@@ -903,6 +1166,7 @@ console.log(link);
       /** Truck Details reading */
       onTruckDetailsLoad: function () {
         return new Promise((resolve, reject) => {
+
           const oPath = "/TruckTypes";
           const oModel = this.getView().getModel("ModelV2");
 
@@ -911,6 +1175,26 @@ console.log(link);
               resolve(odata.results); // Resolve with the truck data array
             },
             error: function (oError) {
+
+ 
+          const oPath = "/TruckTypes";
+          const oModel = this.getOwnerComponent().getModel("ModelV2");
+
+        
+ 
+          oModel.read(oPath, {
+            success: function (odata) {
+              resolve(odata.results);
+              console.log(odata.results);// Resolve with the truck data array
+            },
+            error: function (oError) {
+              console.error("Failed to load truck types:", oError);
+              if (oError.response) {
+                console.error("Response data:", oError.response.data);
+                console.error("Response status:", oError.response.status);
+              }
+ 
+
               reject(oError); // Reject with error information
             }
           });
@@ -1072,6 +1356,7 @@ console.log(link);
 
       /**Simulating single products with simulations */
       onSimulate: function () {
+
         var oSelKey = this.byId("parkingLotSelect").getSelectedKey();
         if (!oSelKey) {
           MessageBox.warning("Please Select Truck Type");
@@ -1111,6 +1396,13 @@ console.log(link);
           const newProduct = {
             Product: oMat,
             MaterialDescription: oSuccessData.results[0].description,
+
+ 
+            height: oSuccessData.results[0].height,
+            length: oSuccessData.results[0].length,
+            width: oSuccessData.results[0].width,
+            MaterialDescription: oSuccessData.results[0].description,
+
             Quantity: oQuan,
             Volume: oVolume,
             Weight: oWeight
@@ -1221,6 +1513,7 @@ console.log(link);
           // Inform the user that all products have been removed
           sap.m.MessageToast.show("All products have been removed.");
         }
+
       },
 
       // for the simluate second screen add vehicle type 
@@ -1264,5 +1557,12 @@ onNextPressInSeconsSrInAddVehicleType:function(){
 
 }
       
+
+ 
+      },
+ 
+      
+
+
     });
   });
