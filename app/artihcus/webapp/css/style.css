@@ -268,9 +268,4 @@ height: 125%;
 }
 .tileLayout{
     margin-left: 50%;
-
-.customSelectedItem {
-    background-color: #ffcc00 !important; /* Yellow background */
-    color: white !important; /* White text */
-
 }
