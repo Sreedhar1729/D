@@ -10,13 +10,36 @@ sap.ui.define(
     "sap/m/MessageToast",
     "sap/ui/model/odata/v2/ODataModel",
     "sap/m/MessageBox",
+    "sap/ui/core/UIComponent",
+    "sap/m/GenericTile",
+    "sap/m/TileContent",
+    "sap/m/ImageContent",
+    "sap/m/Text",
+    
+  ],
+  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent,Text) {
+
     "sap/ui/core/UIComponent"
   ],
-  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent) {
-    "use strict";
+
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+
+       this.oObject={
+        "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+        "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+        "17FT":"https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+        "17FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+        "22FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+        "22FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+        "32FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+        "32FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+       }
+       let link = this.oObject["14ft"];
+console.log(link);
+
+
         // Initialize your JSON model
         const oJsonModel1 = new sap.ui.model.json.JSONModel({ products: [] });
         this.getView().setModel(oJsonModel1, "oJsonModelProd");
@@ -55,9 +78,103 @@ sap.ui.define(
           volume: "",
           truckWeight: "",
           capacity: "",
+
+          freezed: "",
+        });
+        this.getView().setModel(oJsonModelVeh, "VehModel");
+        
+      },
+      _createGenericTile: async function () {
+        
+        console.log("Called")
+        // Get the container where the tile will be placed
+        var oTileContainer = this.byId("idVBoxInSelectVehicleType");
+        //getting model
+        var that=this;
+        const oModel = this.getOwnerComponent().getModel("ModelV2"),
+          oPath = "/TruckTypes";
+          var oObject={
+            "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+            "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+            "17FT":"https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+            "17FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+            "22FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+            "22FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+            "32FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+            "32FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+           }
+        try {
+          const oSuccessData = await this.readData(oModel, oPath, [])
+          oSuccessData.results.forEach(
+            function(item){
+              if(item.freezed){
+                var oId=item.truckType+"_f"
+                var oImage=oObject[`${item.truckType}F`]
+              }
+              else{
+                var oId=item.truckType
+                var oImage=oObject[`${item.truckType}`]
+              }
+              var oGenericTile = new GenericTile({
+                id:`id_generictile_${oId}`,
+                class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+                header: `${item.truckType}`,   // The tile's header
+                width: "150px",    // The tile's width
+                
+                press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+              });
+      
+              // Create the TileContent control
+              var oTileContent = new TileContent({
+                id: `id_idTileContent_${oId}`
+              });
+      
+              // Create the ImageContent inside the TileContent
+              var oImageContent = new ImageContent({
+                id: `id_idImageContentN_${oId}` ,
+                src:`${oImage}`
+              });
+      
+              // Add the ImageContent to the TileContent
+              oTileContent.setContent(oImageContent);
+      
+              // Add the TileContent to the GenericTile
+              oGenericTile.addTileContent(oTileContent);
+      
+              // Now, add the GenericTile to the container
+              oTileContainer.addItem(oGenericTile);
+              oTileContainer.addItem(new Text({ text: "",width:"10Px" })); 
+            }
+          )
+         
+        } catch (error) {
+          console.log(error)
+          MessageToast.show(error)
+        }
+
+        // Create the GenericTile control dynamically
+       
+      },
+      onPressGenericTilePress: function () {
+     
+        var oWizard = this.byId("idProcesstWizard_changeQueue");
+        var oCurrentStep = oWizard.getCurrentStep();
+
+        oWizard.nextStep();
+
+      },
+
+      // Define your press handler
+      // onPressGenericTilePress: function (oEvent) {
+      //   // Handle the press event here
+      //   alert("Tile pressed!");
+      //   console.log(oEvent.oSource.mProperties.header)
+      // },
+
         });
         this.getView().setModel(oJsonModelVeh, "VehModel");
       },
+
       handleValueHelp: function (oEvent) {
         var sInputValue = oEvent.getSource().getValue(),
           oView = this.getView();
@@ -91,6 +208,7 @@ sap.ui.define(
           }).then(function (oProductsDialog) {
             oView.addDependent(oProductsDialog);
             return oProductsDialog;
+
           });
         }
 
@@ -154,6 +272,33 @@ sap.ui.define(
           "Volume(M)",
           "Capacity",
           "TruckWeight",
+
+          });
+        }
+
+        this._pProductsDialog.then(function (oProductsDialog) {
+          oProductsDialog.open(sInputValue);
+        });
+      },
+
+      onPrintPressInProductsTable: function () {
+
+        var oTable = this.byId("ProductsTable");
+        var aItems = oTable.getItems();
+        var aData = [];
+        // Push column headers as the first row
+        var aHeaders = [
+          "SAP Productno",
+          "Description",
+          "EANUPC",
+          "Material Category",
+          "Length",
+          "Width",
+          "Height",
+          "Volume",
+          "UOM",
+          "Weight",
+
         ];
         aData.push(aHeaders);
 
@@ -170,6 +315,72 @@ sap.ui.define(
         // Prepare Excel workbook
         var oSheet = XLSX.utils.aoa_to_sheet(aData);
         var oWorkbook = XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idProductsTableEdit");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(oWorkbook, "VehicleTable.xlsx");
+      },
+
+      // 
+      //print in list  
+      onPressPrintInListTable: function () {
+
+        var oTable = this.byId("idListTable");
+
+        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "ProductsTable");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(oWorkbook, "ProductsTable.xlsx");
+      },
+
+      //print in add Equipment 
+      onPressDownloadInAddVehicleTable: function () {
+
+        var oTable = this.byId("idTruckTypeTable");
+
+        var aItems = oTable.getItems();
+        var aData = [];
+
+        // Push column headers as the first row
+        var aHeaders = [
+
+          "S.No",
+          "Vehicle",
+          "Vehicle Type",
+          "Product",
+          "Product Type",
+          "Product Description",
+          "Dimensions",
+          "Volume",
+          "Weight",
+          "Capacity Used",
+          "Remaining Capacity",
+          "TruckType",
+          "Length(M)",
+          "Width(M)",
+          "Height(M)",
+          "Volume(M)",
+          "Capacity",
+          "TruckWeight",
+
+        ];
+        aData.push(aHeaders);
+
+        // Iterate through table items and collect data
+        aItems.forEach(function (oItem) {
+          var oCells = oItem.getCells();
+          var rowData = [];
+          oCells.forEach(function (oCell) {
+            rowData.push(oCell.getText());
+          });
+          aData.push(rowData);
+        });
+
+        // Prepare Excel workbook
+        var oSheet = XLSX.utils.aoa_to_sheet(aData);
+        var oWorkbook = XLSX.utils.book_new();
+
         XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idProductsTableEdit");
 
         // Generate and download the Excel file
@@ -213,6 +424,7 @@ sap.ui.define(
         // Prepare Excel workbook
         var oSheet = XLSX.utils.aoa_to_sheet(aData);
         var oWorkbook = XLSX.utils.book_new();
+
         XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idListTable");
 
         // Generate and download the Excel file
@@ -241,6 +453,9 @@ sap.ui.define(
       },
       onCancelInCreateVehicleDialog: function () {
         this.byId("idCreateInAddddEquipmentDialog").close();
+
+        this.ClearVeh();
+
       },
       // edit  fragment in products table
       oOpenProductEdit: async function () {
@@ -286,7 +501,7 @@ sap.ui.define(
 
       /** ************************Creating New Product  ***************************************************/
       onCreateProduct: async function () {
- 
+
         const oPayloadModel = this.getView().getModel("ProductModel"),
           oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
@@ -338,6 +553,9 @@ sap.ui.define(
           this.getView().byId("ProductsTable").getBinding("items").refresh();
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
+
+          MessageToast.show("Successfully Created!");
+
           this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
@@ -399,6 +617,14 @@ sap.ui.define(
           return;
         }
 
+        const oFreeze = this.byId("idFreezedInput").getSelectedKey();
+        if(!oFreeze){
+          MessageBox.warning("Please Enter all Values");
+          return;
+        }
+        const oFreezeVal = oFreeze === 'Yes'?true:false;
+        oPayload.freezed = oFreezeVal;
+
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
@@ -407,7 +633,14 @@ sap.ui.define(
         try {
           await this.createData(oModel, oPayload, oPath);
           debugger
-          this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
+
+          this.ClearVeh();
+          this.byId("idTruckTypeTable").getBinding("items").refresh();
+          this.onCancelInCreateVehicleDialog();
+          this.byId("idvehtypeUOM").setSelectedKey("");
+          this.byId("parkingLotSelect").getBinding("items").refresh();
+          
+  this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
           this.byId("parkingLotSelect").getBinding("items").refresh();
@@ -415,6 +648,7 @@ sap.ui.define(
           this.byId("idkekke3").getBinding("items").refresh();
  
           this.ClearVeh(true);
+
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.onCancelInCreateVehicleDialog();
@@ -453,9 +687,11 @@ sap.ui.define(
           }));
           this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
           this.byId("parkingLotSelect").getBinding("items").refresh();
+
  
           this.byId("idkekke3").getBinding("items").refresh();
  
+
           MessageToast.show('Successfully Deleted')
         } catch (error) {
           MessageToast.show('Error Occurs');
@@ -501,11 +737,15 @@ sap.ui.define(
         const oPath = `/TruckTypes('${truckType}')`;
         try {
           await this.updateData(oModel, oPayload, oPath);
+
+          this.byId("idTruckTypeTable").getBinding("items").refresh();
+
           this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
  
  
           this.byId("idkekke3").getBinding("items").refresh();
  
+
           this.onCancelInEditVehicleDialog();
           this.onClearEditDialog();
           MessageToast.show('Successfully Updated');
@@ -517,7 +757,11 @@ sap.ui.define(
       },
 
       /**Clearing Vehicle Editing Values */
+
+      idTruckTypeTable: function () {
+
       onClearEditDialog: function () {
+
         this.byId("editTruckTypeInput").setValue(""); // Set to empty string
         this.byId("editLengthInput").setValue(""); // Set to empty string
         this.byId("editWidthInput").setValue(""); // Set to empty string
@@ -686,8 +930,8 @@ sap.ui.define(
       },
       /** Simulating excel sheet products */
       onClickSimulate: async function () {
-        debugger
 
+   
         var oTable = this.byId("myTable");
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
@@ -708,9 +952,11 @@ sap.ui.define(
               var rowData = {
                 Product: oTable.getModel("oJsonModelProd").getProperty("Product", oContext),
                 MaterialDescription: oTable.getModel("oJsonModelProd").getProperty("MaterialDescription", oContext),
+
                 height : oTable.getModel("oJsonModelProd").getProperty("height", oContext),
                 length : oTable.getModel("oJsonModelProd").getProperty("length", oContext),
                 width : oTable.getModel("oJsonModelProd").getProperty("width", oContext),
+
                 Quantity: oTable.getModel("oJsonModelProd").getProperty("Quantity", oContext),
                 Volume: oTable.getModel("oJsonModelProd").getProperty("Volume", oContext),
                 Weight: oTable.getModel("oJsonModelProd").getProperty("Weight", oContext)
@@ -765,6 +1011,7 @@ sap.ui.define(
             requiredTrucks.forEach(truck => {
               console.log(`- ${truck.truckType}: ${truck.numberOfTrucksNeeded} truck(s) needed (Capacity: ${truck.volume} Kgs)`);
             });
+
  
        
             workbook.SheetNames.forEach(function (sheetName) {
@@ -877,18 +1124,17 @@ sap.ui.define(
             });
  
 
+
             // Construct JSON model for storing overall total volume and product details
             const jsonModelData = {
               OverallTotalVolume: overallTotalVolume,
               overallTotalWeight: overallTotalWeight,
               Products: selectedData,
               TProducts: selectedData.length,
- 
-         
- 
               RequiredTrucks: requiredTrucks,
               selectedTruck: oSelectedKey
  
+
             };
 
             // Assuming you want to set this data to a model named "resultModel"
@@ -920,6 +1166,16 @@ sap.ui.define(
       /** Truck Details reading */
       onTruckDetailsLoad: function () {
         return new Promise((resolve, reject) => {
+
+          const oPath = "/TruckTypes";
+          const oModel = this.getView().getModel("ModelV2");
+
+          oModel.read(oPath, {
+            success: function (odata) {
+              resolve(odata.results); // Resolve with the truck data array
+            },
+            error: function (oError) {
+
  
           const oPath = "/TruckTypes";
           const oModel = this.getOwnerComponent().getModel("ModelV2");
@@ -938,6 +1194,7 @@ sap.ui.define(
                 console.error("Response status:", oError.response.status);
               }
  
+
               reject(oError); // Reject with error information
             }
           });
@@ -1099,7 +1356,7 @@ sap.ui.define(
 
       /**Simulating single products with simulations */
       onSimulate: function () {
- 
+
         var oSelKey = this.byId("parkingLotSelect").getSelectedKey();
         if (!oSelKey) {
           MessageBox.warning("Please Select Truck Type");
@@ -1139,11 +1396,13 @@ sap.ui.define(
           const newProduct = {
             Product: oMat,
             MaterialDescription: oSuccessData.results[0].description,
+
  
             height: oSuccessData.results[0].height,
             length: oSuccessData.results[0].length,
             width: oSuccessData.results[0].width,
             MaterialDescription: oSuccessData.results[0].description,
+
             Quantity: oQuan,
             Volume: oVolume,
             Weight: oWeight
@@ -1254,11 +1513,56 @@ sap.ui.define(
           // Inform the user that all products have been removed
           sap.m.MessageToast.show("All products have been removed.");
         }
+
+      },
+
+      // for the simluate second screen add vehicle type 
+
+      onNextInAddProduct: function () {
+
+        // this.getView().byId("idAddVehicleTypeSrInSimulate_changeQueue").setVisible("true");
+
+        var oWizard = this.byId("idProcesstWizard_changeQueue");
+
+        var oCurrentStep = oWizard.getCurrentStep();
+
+        oWizard.nextStep();
+        this._createGenericTile()
+        //this.getView().byId("idVBoxInSelectVehicleType").setVisible("false");
+       
+      },
+
+
+    
+      // // dialog for the Stack
+      // onPressStackBtn:async function () {
+      //     if (!this.oStackDialog) {
+      //       this.oStackDialog = await this.loadFragment("Stack");
+      //     }
+      //     this.oStackDialog.open();
+      //   },
+      //   onCancelInCreateVehicleDialog: function () {
+      //     this.oStackDialog.close();
+      //   }, 
+
+// creating stak tile in the Stack dialog
+_createGenericStackTile : function() {
+  // Get the container where the tile will be placed
+  var oTileContainer = this.byId("VboxIdStacktiles");
+  //getting model 
+  
+},
+onNextPressInSeconsSrInAddVehicleType:function(){
+  this.getView().byId("idProcessQueueStep_changeQueue").setVisible(true);
+
+}
+      
+
  
       },
  
       
 
- 
+
     });
   });

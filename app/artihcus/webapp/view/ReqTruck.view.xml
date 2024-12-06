@@ -12,13 +12,15 @@
         titleAlignment="Center"
         showNavButton="true"
         navButtonPress="onBackPress"
+        class="backgroundColour"
     >
         <content>
-            <VBox id="_IDGenVBox1">
-                <HBox id="_IDGenHBox">
+            <VBox id="_IDGenVBox1"         class="backgroundColour" >
+                <HBox id="_IDGenHBox"         class="backgroundColour" >
                     <VBox
                         id="_IDGenVBox6"
                         width="500px"
+                        
                     >
                         <Title
                             id="_IDGenTitle"

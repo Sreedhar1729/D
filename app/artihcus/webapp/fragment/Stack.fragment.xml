@@ -1,0 +1,51 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idStackDialog"
+        resizable="false"
+        draggable="false"
+        title="SignUp for A new Account"
+        class="sapMPopover sapMIBar sapMHeader-CTX"
+        beginButton="True"
+    >
+        <beginButton>
+            <Button
+                id="tfs"
+                text="cancel"
+                press="onCancelPressInSignUp"
+            />
+        </beginButton>
+        <content>
+            <form:SimpleForm
+                id="idSidgnUpFortrm_CS"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="4"
+                labelSpanS="12"
+                emptySpanXL="1"
+                emptySpanL="1"
+                emptySpanM="1"
+                emptySpanS="0"
+                columnsXL="2"
+                columnsL="2"
+                columnsM="1"
+            >
+                  <VBox id="VboxIdStacktiles"
+                  height="150%">
+                                  
+
+                  <HBox
+                  id="idStackTiles">
+
+                  </HBox>
+                  </VBox>
+            </form:SimpleForm>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>
