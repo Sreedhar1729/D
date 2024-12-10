@@ -269,3 +269,10 @@ height: 125%;
 .tileLayout{
     margin-left: 50%;
 }
+
+/* Simulater Css*/
+#threejsCanvas {
+    width: 1500px;    /* Custom width */
+    height: 800px;    /* Custom height */
+    aspect-ratio: auto; /* Set aspect ratio */
+}
