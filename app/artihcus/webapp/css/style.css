@@ -269,3 +269,13 @@ height: 125%;
 .tileLayout{
     margin-left: 50%;
 }
+
+/* begin of stack fragment CSS */
+.widthDialog{
+width:auto;
+}
+
+.sapMPopover .sapUiRespGrid {
+    width: 110%;
+}
+/* end of stack fragment CSS */

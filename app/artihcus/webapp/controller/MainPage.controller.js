@@ -15,9 +15,22 @@ sap.ui.define(
     "sap/m/TileContent",
     "sap/m/ImageContent",
     "sap/m/Text",
+    'sap/ui/comp/library',
+	
+	'sap/ui/model/type/String',
+	'sap/m/ColumnListItem',
+	'sap/m/Label',
+	'sap/m/SearchField',
+	'sap/m/Token',
+	
+	
+	
+	'sap/ui/table/Column',
+	'sap/m/Column',
+	
     
   ],
-  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent,Text) {
+  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent,Tex,library,TypeString,ColumnListItem,Label,SearchField,Token, UIColumn, MColumn ) {
     "use strict";
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
@@ -76,6 +89,8 @@ console.log(link);
           freezed: "",
         });
         this.getView().setModel(oJsonModelVeh, "VehModel");
+
+      
         
       },
       _createGenericTile: async function () {
@@ -222,6 +237,10 @@ console.log(link);
           "Volume",
           "UOM",
           "Weight",
+          "Quantity",  
+          "Layers",       
+          "Mass",       
+          "Layers_height" 
         ];
         aData.push(aHeaders);
 
@@ -405,7 +424,8 @@ console.log(link);
           !oPayload.height ||
           !oPayload.mCategory ||
           !oPayload.description ||
-          !oPayload.weight
+          !oPayload.weight ||
+          !oPayload.quantity 
         ) {
           console.log("Please Enter All Values");
           MessageBox.information("Please Enter All Values");
@@ -466,6 +486,7 @@ console.log(link);
           description: "",
           EANUPC: "",
           weight: "",
+          quantity:""
         })
       },
 
@@ -649,6 +670,7 @@ console.log(link);
         // this.byId("editVolumeInput").setValue(oData.volume); // Volume
         this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
         this.byId("editWeightInput").setValue(oData.weight); // Weight
+        this.byId("editQuantityInput").setValue(oData.quantity);
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
@@ -662,7 +684,8 @@ console.log(link);
           height: this.byId("editprodHeightInput").getValue(),       // Height
           volume: "",                                                // Volume (currently set to an empty string)
           uom: this.byId("editUOMInput").getValue(),                                                   // Unit of Measure (UOM, currently set to an empty string)
-          weight: this.byId("editWeightInput").getValue()           // Weight
+          weight: this.byId("editWeightInput").getValue(), 
+          quantity:this.byId("editQuantityInput").getValue()           // Weight
         };
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
@@ -695,6 +718,7 @@ console.log(link);
         // this.byId("editVolumeInput").setValue(""); // Volume (currently commented out)
         this.byId("editUOMInput").setValue(""); // Unit of Measure (UOM, currently commented out)
         this.byId("editWeightInput").setValue(""); // Weight
+        this.byId("editQuantityInput").setValue("");
       },
 
       /**Product Simulation */
@@ -1013,7 +1037,8 @@ console.log(link);
               mCategory: String(product['Material Category']), // Ensure it's a string
               description: String(product.Description),        // Ensure it's a string
               EANUPC: String(product.EANUPC),                  // Ensure it's a string
-              weight: String(product.Weight)                    // Ensure it's a string
+              weight: String(product.Weight),
+              quantity:String(product.Quantity)                    // Ensure it's a string
             };
 
             await this.createData(oModel, oPayload, oPath);
@@ -1157,7 +1182,7 @@ console.log(link);
             console.log("Products set in model:", oTempJSon.getProperty("/products"));
 
             // Refresh the table binding
-            this.getView().byId("myTable").getBinding("items").refresh();
+            // this.getView().byId("myTable").getBinding("items").refresh();
             this.getView().getModel("oJsonModelProd").refresh(true);
           } else {
             console.error("Loaded data is not an array:", products);
@@ -1241,16 +1266,16 @@ console.log(link);
 
 
     
-      // // dialog for the Stack
-      // onPressStackBtn:async function () {
-      //     if (!this.oStackDialog) {
-      //       this.oStackDialog = await this.loadFragment("Stack");
-      //     }
-      //     this.oStackDialog.open();
-      //   },
-      //   onCancelInCreateVehicleDialog: function () {
-      //     this.oStackDialog.close();
-      //   }, 
+      // dialog for the Stack
+      onPressStackBtn:async function () {
+          if (!this.oStackDialog) {
+            this.oStackDialog = await this.loadFragment("Stack");
+          }
+          this.oStackDialog.open();
+        },
+        onCancelInStackDialog: function () {
+          this.oStackDialog.close();
+        }, 
 
 // creating stak tile in the Stack dialog
 _createGenericStackTile : function() {
@@ -1262,7 +1287,130 @@ _createGenericStackTile : function() {
 onNextPressInSeconsSrInAddVehicleType:function(){
   this.getView().byId("idProcessQueueStep_changeQueue").setVisible(true);
 
+},
+onPressAddProductInSimulate:function() {
+  // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
+},
+onValueHelpWithSuggestionsRequested:async function() {
+  if (!this.oValueDialog) {
+    this.oValueDialog = await this.loadFragment("ValueHelp");
+  }
+  this.oValueDialog.open();
+ 
+  // this._oBasicSearchFieldWithSuggestions = new SearchField();
+
+  // Fragment.load({
+  //   name: `com.app.artihcus.fragment.ValueHelp`
+  // }).then(function(oDialogSuggestions) {
+  //   var oFilterBar = oDialogSuggestions.getFilterBar(), oColumnProductCode, oColumnProductName;
+  //   this._oVHDWithSuggestions = oDialogSuggestions;
+
+  //   this.getView().addDependent(oDialogSuggestions);
+
+  //   // Set key fields for filtering in the Define Conditions Tab
+  //   oDialogSuggestions.setRangeKeyFields([{
+  //     label: "Product Code",
+  //     key: "ProductCode",
+  //     type: "string",
+  //     typeInstance: new TypeString({}, {
+  //       maxLength: 7
+  //     })
+  //   }]);
+
+  //   // Set Basic Search for FilterBar
+  //   oFilterBar.setFilterBarExpanded(false);
+  //   oFilterBar.setBasicSearch(this._oBasicSearchFieldWithSuggestions);
+
+  //   // Trigger filter bar search when the basic search is fired
+  //   this._oBasicSearchFieldWithSuggestions.attachSearch(function() {
+  //     oFilterBar.search();
+  //   });
+
+  //   oDialogSuggestions.getTableAsync().then(function (oTable) {
+
+  //     //oTable.setModel(this.oProductsModel);
+
+  //     //For Desktop and tabled the default table is sap.ui.table.Table
+  //     if (oTable.bindRows) {
+  //       // Bind rows to the ODataModel and add columns
+  //       // oTable.bindAggregation("rows", {
+  //       //   path: "/ZSALESREPORTSuggestions",
+  //       //   events: {
+  //       //     dataReceived: function() {
+  //       //       oDialogSuggestions.update();
+  //       //     }
+  //       //   }
+  //       // });
+  //       oColumnProductCode = new UIColumn({label: new Label({text: "Product Code"}), template: new Text({wrapping: false, text: "{ProductCode}"})});
+  //       oColumnProductCode.data({
+  //         fieldName: "ProductCode"
+  //       });
+  //       oTable.addColumn(oColumnProductCode);
+
+  //       oColumnProductName = new UIColumn({label: new Label({text: "Quantity"}), template: new Text({wrapping: false, text: "{Quantity}"})});
+  //       oColumnProductName.data({
+  //         fieldName: "Quantity"
+  //       });
+  //       oTable.addColumn(oColumnProductName);
+
+  //       // oColumnDis = new UIColumn({label: new Label({text: "Dis"}), template: new Text({wrapping: false, text: "{Dis}"})});
+  //       // oColumnDis.data({
+  //       //   fieldName: ""
+  //       // });
+  //       // oTable.addColumn(oColumnQuantity);
+  //     }
+
+  //     //For Mobile the default table is sap.m.Table
+  //     // if (oTable.bindItems) {
+  //     //   // Bind items to the ODataModel and add columns
+  //     //   oTable.bindAggregation("items", {
+  //     //     path: "/ZSALESREPORTSuggestions",
+  //     //     template: new ColumnListItem({
+  //     //       cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
+  //     //     }),
+  //     //     events: {
+  //     //       dataReceived: function() {
+  //     //         oDialogSuggestions.update();
+  //     //       }
+  //     //     }
+  //     //   });
+  //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Code"})}));
+  //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Name"})}));
+  //     // }
+  //     oDialogSuggestions.update();
+  //   }.bind(this));
+
+  //  // oDialogSuggestions.setTokens(this._oMultiInputWithSuggestions.getTokens());
+  //   oDialogSuggestions.open();
+  // }.bind(this));
+},
+onValueHelpWithSuggestionsCancelPress: function () {
+  this._oVHDWithSuggestions.close();
+},
+
+onPressBigBagsTile:function(){
+  var oModel1 = new JSONModel({
+
+ 
+
+
+
+    //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
+    //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
+    //  newImageUrl2 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg", // Update with your logic
+    
+});
+this.getView().byId("idVbox4InStack").setModel(oModel1,"oimage");
+ 
+    var oModel = this.getView().byId("idVbox4InStack").getModel();
+    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+//     oModel.setProperty("/imageUrl", newImageUrl);
+// /this.getView()by.setModel(oJsonModelVeh, "VehModel");
+const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
+console.log(oPayload);
 }
-      
+
     });
   });

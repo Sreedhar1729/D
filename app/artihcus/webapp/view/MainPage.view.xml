@@ -246,6 +246,26 @@
                                         />
                                     </HBox>
 
+                                    <HBox
+                                        id="idhboxApplicationServer_MainPage"
+                                    >
+                                        <Label
+                                            id="idLableApplicationServer_MainPage"
+                                            text="Quantity:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                        <Input
+                                            id="idApplicationServerInput_MainPage"
+                                            value="{ProductModel>/quantity}"
+                                            placeholder="Enter Quantity"
+                                            class="customInput"
+                                            width="100%"
+                                            maxLength="200"
+                                        />
+                                    </HBox>
+
+
                                     <HBox id="idhboxService_InitialView">
                                         <Label
                                             id="idLableService_InitialView"
@@ -692,6 +712,12 @@
                                         text="Material Category"
                                     />
                                 </Column>
+                                 <Column id="_IDGenCcvbnmo0">
+                                    <Text
+                                        id="_IDGenxcvjhj"
+                                        text="Quantity"
+                                    />
+                                </Column>
                                 <Column id="_IDGenCrtyuo">
                                     <Text
                                         id="_IDGecvn"
@@ -753,6 +779,10 @@
                                         <Text
                                             id="_Iext8"
                                             text="{mCategory}"
+                                        />
+                                         <Text
+                                            id="_Iext89"
+                                            text="{quantity}"
                                         />
 
                                         <Text
@@ -817,16 +847,62 @@
                                     noDataText="No products available"
                                     backgroundDesign="Transparent"
                                     growingThreshold="100"
-                                    items="{oJsonModelProd>/products}"
+                                   
                                     class="backgroundColour"
                                 >
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
-                                            <!-- <Title
-                                        id="idUsersInfoTitl"
-                                        text="Users Data:"
-                                    /> -->
+                                        
+                                         
+                                         <HBox id="idHBoxInAddSimulate" visible="true">
+                                        <Label
+                                            id="idLabvbnbhnjkleDescription_InitialView"
+                                            text="Product"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop overlayLabel"
+                                        />
+                                       	<MultiInput
+			id="multiInputWithSuggestions"
+			valueHelpRequest=".onValueHelpWithSuggestionsRequested"
+			width="60%"
+			>
+			<suggestionColumns>
+				<Column>
+					<Label text="Product Code"/>
+				</Column>
+				<Column>
+					<Label text="Product Name"/>
+				</Column>
+			</suggestionColumns>
+			<suggestionRows>
+				<ColumnListItem>
+					<Label text="{ProductCode}" />
+					<Label text="{ProductName}" />
+				</ColumnListItem>
+			</suggestionRows>
+		</MultiInput>
+                                            <Label
+                                            id="idLableSystemId_InitialView"
+                                            text="Quantity"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop overlayLabel"
+                                        />
+                                      
+                                        <Input
+                                            id="idSystemvghjdfghkIdIhjnput_InitialView"
+                                            value=""
+                                            placeholder=""
+                                            maxLength="3"
+                                            width="100px"
+                                        />
+                                    </HBox>
+                                    <Button id="idAddButtonInProductSimulate"
+                                        icon="sap-icon://add"
+                                        text="Add Product"
+                                        press="onPressAddProductInSimulate"
+                                        
+                                         />
                                             <ToolbarSpacer id="as" />
 
                                             <u:FileUploader
@@ -939,43 +1015,43 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5"
-                                                    text="{oJsonModelProd>Product}"
+                                                    text="5678"
                                                 />
                                                 <Text
                                                     id="_IDGenText6"
-                                                    text="{oJsonModelProd>MaterialDescription}"
+                                                    text="rtyu"
                                                 />
                                                 <Text
                                                     id="_IDGenText8"
-                                                    text="{oJsonModelProd>Quantity}"
+                                                    text="tyui"
                                                 />
                                                 <Text
                                                     id="_IDGenText9"
-                                                    text="{oJsonModelProd>Volume}"
+                                                    text="yuio"
                                                 />
                                                 <Text
                                                     id="_IDGenText10"
-                                                    text="{oJsonModelProd>Weight}"
+                                                    text="t7890"
                                                 />
                                                 <Text
                                                     id="_IDGenTe6xt8"
-                                                    text="{}"
+                                                    text="56789"
                                                 />
                                                 <Text
                                                     id="_IDGenTex45t9"
-                                                    text="{}"
+                                                    text="56789"
                                                 />
                                                 <Text
                                                     id="_IDGenTextert10"
-                                                    text="{}"
+                                                    text="56789"
                                                 />
                                                  <Text
                                                     id="_IDGenTextert11"
-                                                    text="{}"
+                                                    text="45678"
                                                 />
                                                  <Button
                                                     id="_IDGenTextert12"
-                                                    text="{}"
+                                                    text=""
                                                     icon="sap-icon://action-settings"
                                                 press="onPressStackBtn"
                                                 />
@@ -1001,10 +1077,7 @@
                             >
                                 <Toolbar id="rfty">
                                     <OverflowToolbar id="idUserfghsInfoHeade">
-                                        <!-- <Title
-                                        id="idUsersInfoTitl"
-                                        text="Users Data:"
-                                    /> -->
+                                  
                                         <ToolbarSpacer id="afghs" />
 
                                     </OverflowToolbar>
@@ -1023,148 +1096,7 @@
                             
                                 >
 
-                                 <!-- <GenericTile
-                                        id="generictile"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="14FT"
-                                        width="150px"
-                                     
-                                        press="onPressGenericTilePress"
-                                        
-                                    >
-                                        <TileContent id="idTileContent">
-                                            <ImageContent
-                                                id="idImageContent"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/20st.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                   
-                                    <GenericTile
-                                        id="generictile1"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="17FT"
-                                        width="150px"
-                                  
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent1">
-                                            <ImageContent
-                                                id="idImageContent1"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/40st.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                     <GenericTile
-                                        id="generictile2"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="22FT"
-                                        width="150px"
-                                      
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent2">
-                                            <ImageContent
-                                                id="idImageContent2"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/40hq.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile
-                                        id="generictile3"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="32FT"
-                                        width="150px"
-                                     
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent3">
-                                            <ImageContent
-                                                id="idImageContent3"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/40hq.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    
-
-                                     <GenericTile
-                                        id="generictile14"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="14FT"
-                                        width="150px"
-                                        subheader="Freezed"
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent14">
-                                            <ImageContent
-                                                id="idImageContent14"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/20ref.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    
-                                     <GenericTile
-                                        id="generictile15"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="17FT"
-                                        width="150px"
-                                        subheader="Freezed"
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent15">
-                                            <ImageContent
-                                                id="idImageContent15"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/20ref.svg"
-                                                
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    <GenericTile
-                                        id="generictile16"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="22FT"
-                                        width="150px"
-                                        subheader="Freezed"
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent16">
-                                            <ImageContent
-                                                id="idImageContent16"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile>
-
-                                    
-
-                                    <GenericTile
-                                        id="generictile18"
-                                        class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
-                                        header="32FT"
-                                        width="150px"
-                                        subheader="Freezed"
-                                        press="press"
-                                        
-                                    >
-                                        <TileContent id="idTileContent18">
-                                            <ImageContent
-                                                id="idImageContent18"
-                                                src="https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-                                            />
-                                        </TileContent>
-                                    </GenericTile> -->
+                                 
                                 </HBox>
                                 </VBox>
 
