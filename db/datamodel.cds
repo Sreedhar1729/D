@@ -41,7 +41,6 @@ define entity TruckTypes {
 
 
 }
-
 define entity SelectedProduct {
     key ID               : UUID;
         Productno        : Association to Materials;
