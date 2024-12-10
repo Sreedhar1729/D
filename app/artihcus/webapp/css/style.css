@@ -270,9 +270,21 @@ height: 125%;
     margin-left: 50%;
 }
 
+
+/* begin of stack fragment CSS */
+.widthDialog{
+width:auto;
+}
+
+.sapMPopover .sapUiRespGrid {
+    width: 110%;
+}
+/* end of stack fragment CSS */
+
 /* Simulater Css*/
 #threejsCanvas {
     width: 1500px;    /* Custom width */
     height: 800px;    /* Custom height */
     aspect-ratio: auto; /* Set aspect ratio */
 }
+
