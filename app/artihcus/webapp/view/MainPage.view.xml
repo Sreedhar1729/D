@@ -1116,7 +1116,11 @@
                             <VBox id="idVBoxInVehicleType1" wrap="Wrap" alignContent="Stretch" alignItems="Stretch">
                             <HBox id="idHBoxInVehicleType1"  justifyContent="Start" alignItems="Stretch" wrap="Wrap" fitContainer="true" class="sapUiResponsoiveMargin">
                             <HBox id="idHBoxInVehicleType3"  alignContent="Start" alignItems="Start" justifyContent="Start">
-                            <Image id="idImageInHbox" src="https://www.searates.com/design/images/apps/load-calculator/20st.svg"  width="130%"/>
+                            <core:HTML
+                id="threeContainer"
+                content="&lt;div id=&quot;threejsCanvas&quot; style=&quot;width: 5%; height: 5px;&quot;&gt;&lt;/div&gt;"
+                xmlns:core="sap.ui.core"
+            />
                             </HBox>
                                <!-- <Label id="idLabel1EmptyLabel" width="70%" ></Label> -->
                                <HBox id="idHBoxInVehicleType5"  alignContent="Center" alignItems="Center" justifyContent="Center" class="sapUiLargeMarginBegin">

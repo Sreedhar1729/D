@@ -92,6 +92,7 @@ console.log(link);
 
       
         
+      
       },
       _createGenericTile: async function () {
         
@@ -164,14 +165,7 @@ console.log(link);
         // Create the GenericTile control dynamically
        
       },
-      onPressGenericTilePress: function () {
-     
-        var oWizard = this.byId("idProcesstWizard_changeQueue");
-        var oCurrentStep = oWizard.getCurrentStep();
-
-        oWizard.nextStep();
-
-      },
+    
 
       // Define your press handler
       // onPressGenericTilePress: function (oEvent) {
@@ -218,6 +212,7 @@ console.log(link);
         this._pProductsDialog.then(function (oProductsDialog) {
           oProductsDialog.open(sInputValue);
         });
+      
       },
 
       onPrintPressInProductsTable: function () {
@@ -1285,9 +1280,55 @@ _createGenericStackTile : function() {
   
 },
 onNextPressInSeconsSrInAddVehicleType:function(){
+  debugger
+
   this.getView().byId("idProcessQueueStep_changeQueue").setVisible(true);
+  
 
 },
+/*  ****************************************************************************Simulation code**************************************************************************** */
+
+
+
+
+onPressGenericTilePress: function (oEvent) {
+  debugger;
+
+  const oTile = oEvent.getSource();
+  const header = oTile.getHeader();
+
+  // Move to the next step in the wizar
+  const oWizard = this.byId("idProcesstWizard_changeQueue");
+  oWizard.nextStep();
+
+  // Reinitialize the 3D scene
+  this._init3DScene();
+  
+// Fetch dimensions based on truck type
+  const oModel = this.getOwnerComponent().getModel("ModelV2");
+  const sPath = "/TruckTypes";
+  const oFilter = new Filter("truckType", FilterOperator.EQ, header);
+
+  oModel.read(sPath, {
+      filters: [oFilter],
+      success: function (odata) {
+          if (odata.results.length > 0) {
+              const height = parseFloat(odata.results[0].height);
+              const length = parseFloat(odata.results[0].length);
+              const width = parseFloat(odata.results[0].width);
+
+              // Create a new container
+              this._createContainer(height, length, width);
+          } else {
+              console.error("No data found for the selected truck type.");
+          }
+      }.bind(this),
+      error: function (oError) {
+          console.error("Error fetching truck type data:", oError);
+      }
+  });
+},
+
 onPressAddProductInSimulate:function() {
   // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
 },
@@ -1410,7 +1451,114 @@ this.getView().byId("idVbox4InStack").setModel(oModel1,"oimage");
 // /this.getView()by.setModel(oJsonModelVeh, "VehModel");
 const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
 console.log(oPayload);
-}
+},
 
+
+  
+
+_init3DScene: function () {
+  // If the scene and renderer exist, clear them
+  if (this.scene) {
+      while (this.scene.children.length > 0) {
+          this.scene.remove(this.scene.children[0]);
+      }
+  } else {
+      this.scene = new THREE.Scene();
+      this.scene.background = new THREE.Color(0xFFA500); // Orange background
+  }
+
+  // If the renderer exists, dispose of its DOM element
+  if (this.renderer) {
+      this.renderer.domElement.remove();
+      this.renderer.dispose();
+  }
+
+  // Set up the renderer and append it to the canvas container
+  this.renderer = new THREE.WebGLRenderer({ alpha: true });
+  const canvasContainer = document.getElementById("threejsCanvas");
+  if (!canvasContainer) {
+      console.error("Canvas container not found");
+      return;
+  }
+  this.renderer.setSize(800, 600); // Increase canvas size
+  this.renderer.outputEncoding = THREE.sRGBEncoding;
+  this.renderer.shadowMap.enabled = true;
+  canvasContainer.appendChild(this.renderer.domElement);
+
+  // Set up the camera with increased initial zoom
+  this.camera = new THREE.PerspectiveCamera(40, 1000 / 700, 0.1, 1000); // Reduced FOV to make objects appear larger
+  this.camera.position.set(10, 10, 20); // Position closer to the scene for larger appearance
+  // Set up orbit controls
+  this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+  this.controls.enableDamping = true;
+
+  // Add lighting
+  this._addLighting();
+
+  // Start the animation loop
+  this._animate();
+},
+
+_createContainer: function (height, length, width) {
+  // Remove any existing container
+  if (this.container) {
+      this.scene.remove(this.container);
+      this.container.geometry.dispose();
+      this.container.material.dispose();
+  }
+
+  // Create geometry for the container
+  const geometry = new THREE.BoxGeometry(length, height, width);
+
+  // Create a material with transparency and metallic properties
+  const material = new THREE.MeshPhysicalMaterial({
+      color: 0x007BFF, // Blue color
+      metalness: 0.8, // Metallic effect
+      roughness: 0.4, // Smooth metallic surface
+      opacity: 0.5, // Transparent effect
+      transparent: true, // Enable transparency
+      side: THREE.DoubleSide // Render both sides
+  });
+
+  // Create the container mesh
+  this.container = new THREE.Mesh(geometry, material);
+  this.container.castShadow = true;
+  this.container.receiveShadow = true;
+
+  // Position the container at the origin
+  this.container.position.set(0, height / 2, 0);
+
+  // Add the container to the scene
+  this.scene.add(this.container);
+
+  console.log("Container created with dimensions:", { height, length, width });
+},
+
+_addLighting: function () {
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+  this.scene.add(ambientLight);
+
+  const lightPositions = [
+      { x: 50, y: 50, z: 50 },
+      { x: -50, y: 50, z: 50 },
+      { x: 50, y: 50, z: -50 },
+      { x: -50, y: 50, z: -50 }
+  ];
+
+  lightPositions.forEach((pos) => {
+      const light = new THREE.DirectionalLight(0xffffff, 0.5);
+      light.position.set(pos.x, pos.y, pos.z);
+      this.scene.add(light);
+  });
+},
+
+_animate: function () {
+  const animate = () => {
+      requestAnimationFrame(animate);
+      this.controls.update();
+      this.renderer.render(this.scene, this.camera);
+  };
+  animate();
+}
     });
   });

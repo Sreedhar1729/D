@@ -21,7 +21,8 @@ define entity Materials {
         quantity      : String;
         layers        : String;
         mass          : String;
-        layers_height : string;
+        layars_height : string;
+
 }
 
 /**Defining Vehicle Entity */
