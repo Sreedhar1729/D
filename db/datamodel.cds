@@ -41,7 +41,6 @@ define entity TruckTypes {
 
 
 }
-
 define entity SelectedProduct {
     
        key Productno     : Association to Materials;
