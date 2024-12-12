@@ -165,6 +165,57 @@ console.log(link);
         // Create the GenericTile control dynamically
        
       },
+
+      onAddPress:function(){
+        var oTable = this.byId("idTableAddProduct");
+        var that=this;
+        // Get the selected items (rows) from the table
+        var aSelectedItems = oTable.getSelectedItems();
+        var oModel=this.getOwnerComponent().getModel("ModelV2")
+        // Check if there are selected items
+        if (aSelectedItems.length > 0) {
+            var selectedData = [];
+
+            // Loop through the selected rows and collect data
+            aSelectedItems.forEach(function (oItem) {
+                var oBindingContext = oItem.getBindingContext();
+                var oData = oBindingContext.getObject();  // Get the data object of the row
+
+                // Get the Input control for Picking Quantity
+                var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+
+                // Get the value entered in the Input field
+                var sPickingQty = oInput.getValue();
+
+                // Add the relevant data along with the entered Picking Quantity
+                var dummy={
+                  Productno_sapProductno: oData.sapProductno,
+                  SelectedQuantity:sPickingQty
+                };
+                selectedData.push({
+                    product: oData.sapProductno,
+                    description: oData.description,
+                    actualQuantity: oData.quantity, // Replace with the correct field name from the data
+                    pickingQuantity: sPickingQty
+                });
+                try{
+                  
+                  that.createData(oModel,dummy,"/SelectedProduct")
+                }
+                catch(error){
+                  console.log(error)
+                  MessageToast.show(error)
+                }
+                
+            });
+
+            // Do something with the selected data, e.g., display it
+            MessageToast.show("Selected Products: " + JSON.stringify(selectedData));
+        } else {
+            MessageToast.show("No rows selected.");
+        }
+    
+      },
     
 
       // Define your press handler
@@ -1332,7 +1383,7 @@ onPressGenericTilePress: function (oEvent) {
 onPressAddProductInSimulate:function() {
   // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
 },
-onValueHelpWithSuggestionsRequested:async function() {
+onPressAddProductInSimulate:async function() {
   if (!this.oValueDialog) {
     this.oValueDialog = await this.loadFragment("ValueHelp");
   }
@@ -1431,10 +1482,6 @@ onValueHelpWithSuggestionsCancelPress: function () {
 
 onPressBigBagsTile:function(){
   var oModel1 = new JSONModel({
-
- 
-
-
 
     //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
     //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
