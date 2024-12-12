@@ -43,8 +43,8 @@ define entity TruckTypes {
 }
 
 define entity SelectedProduct {
-    key ID               : UUID;
-        Productno        : Association to Materials;
+    
+       key Productno     : Association to Materials;
         Truckdetails     : Association to TruckTypes;
         SelectedQuantity : String;
 }

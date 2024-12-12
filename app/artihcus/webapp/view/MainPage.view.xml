@@ -845,6 +845,7 @@
                                     width="80%"
                                     growing="true"
                                     noDataText="No products available"
+                                    items="{/SelectedProduct}"
                                     backgroundDesign="Transparent"
                                     growingThreshold="100"
                                    
@@ -855,7 +856,7 @@
                                         <OverflowToolbar id="idUsersInfoHeade">
                                         
                                          
-                                         <HBox id="idHBoxInAddSimulate" visible="true">
+                                         <!-- <HBox id="idHBoxInAddSimulate" visible="true">
                                         <Label
                                             id="idLabvbnbhnjkleDescription_InitialView"
                                             text="Product"
@@ -896,7 +897,7 @@
                                             maxLength="3"
                                             width="100px"
                                         />
-                                    </HBox>
+                                    </HBox> -->
                                     <Button id="idAddButtonInProductSimulate"
                                         icon="sap-icon://add"
                                         text="Add Product"
@@ -1015,39 +1016,39 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5"
-                                                    text="5678"
+                                                    text="{Productno_sapProductno}"
                                                 />
                                                 <Text
                                                     id="_IDGenText6"
-                                                    text="rtyu"
+                                                    text="{Productno/description}"
                                                 />
                                                 <Text
                                                     id="_IDGenText8"
-                                                    text="tyui"
+                                                    text="{SelectedQuantity}"
                                                 />
                                                 <Text
                                                     id="_IDGenText9"
-                                                    text="yuio"
+                                                    text="{Productno/volume}"
                                                 />
                                                 <Text
                                                     id="_IDGenText10"
-                                                    text="t7890"
+                                                    text="{Productno/weight}"
                                                 />
                                                 <Text
                                                     id="_IDGenTe6xt8"
-                                                    text="56789"
+                                                    text="{Productno/length}"
                                                 />
                                                 <Text
                                                     id="_IDGenTex45t9"
-                                                    text="56789"
+                                                    text="{Productno/width}"
                                                 />
                                                 <Text
                                                     id="_IDGenTextert10"
-                                                    text="56789"
+                                                    text="{Productno/height}"
                                                 />
                                                  <Text
                                                     id="_IDGenTextert11"
-                                                    text="45678"
+                                                    text="Color"
                                                 />
                                                  <Button
                                                     id="_IDGenTextert12"
