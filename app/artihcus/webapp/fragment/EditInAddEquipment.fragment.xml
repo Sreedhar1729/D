@@ -111,6 +111,14 @@
                     id="editCapacityInput"
                     value=" "
                 />
+                <Label
+                    id="_IDGenLabel9"
+                    text="Freezed"
+                />
+                <Input
+                    id="editFreezedInput"
+                    value=" "
+                />
             </form:SimpleForm>
         </content>
     </Dialog>
