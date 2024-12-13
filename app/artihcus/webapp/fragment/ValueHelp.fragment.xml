@@ -15,8 +15,8 @@
 	<Title text="Add Products"></Title>
 	</contentLeft>
 	<contentRight>
-	<Button text="add"></Button>
-	<Button text="delete"></Button>
+	<Button id="idValueHelpAdd" text="Add" press="onPressAddButtonValueHelp"></Button>
+	<!-- <Button id="idValueHelpDelete" text="delete"></Button> -->
 	</contentRight>
 	
 	</Bar>

@@ -166,7 +166,7 @@ console.log(link);
       },
       onPressGenericTilePress: function () {
      
-        var oWizard = this.byId("idProcesstWizard_changeQueue");
+        var oWizard = this.byId("idWizardIn_simulate");
         var oCurrentStep = oWizard.getCurrentStep();
 
         oWizard.nextStep();
@@ -814,7 +814,7 @@ console.log(link);
       },
       /** Simulating excel sheet products */
       onClickSimulate: async function () {
-        var oTable = this.byId("myTable");
+        var oTable = this.byId("idAddProductsTableIn_simulate");
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         console.log("Selected Items Count:", aSelectedItems.length);
@@ -910,10 +910,10 @@ console.log(link);
 
             // this.onLoadRequiredTrucks();
 
-            this.getView().byId("myTable").getBinding("items").refresh();
+            this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("resultModel").refresh();
             this.MoveToNextScreen();
-            this.getView().byId("myTable").getBinding("items").refresh();
+            this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("resultModel").refresh();
           }).catch(error => {
             console.error("Error loading truck details:", error);
@@ -1157,7 +1157,7 @@ console.log(link);
       },
       /***Blocking the truck type in simulations */
       Blocking: function () {
-        var oLength = this.byId("myTable").getItems().length;
+        var oLength = this.byId("idAddProductsTableIn_simulate").getItems().length;
         if (oLength > 0) {
           this.byId("parkingLotSelect").setEditable(false);
         }
@@ -1182,7 +1182,7 @@ console.log(link);
             console.log("Products set in model:", oTempJSon.getProperty("/products"));
 
             // Refresh the table binding
-            // this.getView().byId("myTable").getBinding("items").refresh();
+            // this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("oJsonModelProd").refresh(true);
           } else {
             console.error("Loaded data is not an array:", products);
@@ -1197,7 +1197,7 @@ console.log(link);
         const oTempJSon = this.getView().getModel("oJsonModelProd");
 
         // Get the table and selected items
-        const oTable = this.getView().byId("myTable");
+        const oTable = this.getView().byId("idAddProductsTableIn_simulate");
         const aSelectedItems = oTable.getSelectedItems();
 
         // If there are selected items, remove them
@@ -1254,7 +1254,7 @@ console.log(link);
 
         // this.getView().byId("idAddVehicleTypeSrInSimulate_changeQueue").setVisible("true");
 
-        var oWizard = this.byId("idProcesstWizard_changeQueue");
+        var oWizard = this.byId("idWizardIn_simulate");
 
         var oCurrentStep = oWizard.getCurrentStep();
 
@@ -1387,29 +1387,64 @@ onValueHelpWithSuggestionsRequested:async function() {
 onValueHelpWithSuggestionsCancelPress: function () {
   this._oVHDWithSuggestions.close();
 },
+onPressTile: function (oEvent) {
+  var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
+  var oObjectImage = {
+      Box: [
+          "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
+      ],
+      Bigbags: [
+          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
+      ],
+      Sacks: [
+        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
+        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
+        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
+      ],
+      Barrels: [
+          "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
+      ],
+      Roll: [
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+      ],
+      Pipes: [
+         "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+      ],
+      Bulk: [
+          // Add URLs for Bulk images if needed
+      ]
+  };
 
-onPressBigBagsTile:function(){
-  var oModel1 = new JSONModel({
+  // Check if there are images for the clicked tile
+  if (oObjectImage[sHeader]) {
+      var aImages = oObjectImage[sHeader];
+      
+      this.byId("idImageInStack").setSrc(aImages[0]);
+      this.byId("idImage3InStack").setSrc(aImages[1]);
+      this.byId("idImage43InStack").setSrc(aImages[2]);
+      
+      // Show the image display section
+      this.byId("imageDisplayHBox").setVisible(true);
+  }
+},
 
- 
 
 
 
-    //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
-    //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
-    //  newImageUrl2 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg", // Update with your logic
-    
-});
-this.getView().byId("idVbox4InStack").setModel(oModel1,"oimage");
- 
-    var oModel = this.getView().byId("idVbox4InStack").getModel();
-    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-//     oModel.setProperty("/imageUrl", newImageUrl);
-// /this.getView()by.setModel(oJsonModelVeh, "VehModel");
-const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
-console.log(oPayload);
+
+onPressAddButtonValueHelp:function(){
+  var oTable = this.byId("idAssignedQueueTable_changeQueue");
+			var aSelectedItems = oTable.getSelectedItems();
 }
 
     });
