@@ -1587,7 +1587,7 @@ onPressTile: function (oEvent) {
 onPressAddButtonValueHelp:function(){
   var oTable = this.byId("idAssignedQueueTable_changeQueue");
 			var aSelectedItems = oTable.getSelectedItems();
-}
+},
 
 
 onPressBigBagsTile:function(){
