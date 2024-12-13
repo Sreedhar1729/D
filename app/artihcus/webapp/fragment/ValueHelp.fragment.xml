@@ -15,8 +15,8 @@
 	<Title text="Add Products"></Title>
 	</contentLeft>
 	<contentRight>
-	<Button id="idValueHelpAdd" text="Add" press="onPressAddButtonValueHelp"></Button>
-	<!-- <Button id="idValueHelpDelete" text="delete"></Button> -->
+	<Button text="Add" press="onAddPress" ></Button>
+	<!-- <Button text="delete"></Button> -->
 	</contentRight>
 	
 	</Bar>
@@ -98,7 +98,7 @@
                                         />
 										 <Text
 											id="idTableColumnListTextActQty"
-                                            text="Qty"
+                                            text="{quantity}"
                                         />
 										 <Input
 											id="idTableColumnListTextPickingQty"
