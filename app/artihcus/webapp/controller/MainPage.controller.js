@@ -200,7 +200,21 @@ console.log(link);
                 });
                 try{
                   
+                  var oProductExistStatus =  that.productExists(oModel, dummy.Productno_sapProductno)
+                  if(oProductExistStatus){
+                    console.log("exixts")
+                    oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
+                      success: function () {
+                        
+                      }.bind(this),
+                      error: function (oError) {
+                          sap.m.MessageBox.error("Failed " + oError.message);
+                      }.bind(this)
+                  });
+                    return
+                  }
                   that.createData(oModel,dummy,"/SelectedProduct")
+                  
                 }
                 catch(error){
                   console.log(error)
@@ -211,11 +225,14 @@ console.log(link);
 
             // Do something with the selected data, e.g., display it
             MessageToast.show("Selected Products: " + JSON.stringify(selectedData));
+            this.oValueDialog.close();
+
         } else {
             MessageToast.show("No rows selected.");
         }
     
       },
+
     
       onPressGenericTilePress: function () {
      
@@ -225,6 +242,31 @@ console.log(link);
         oWizard.nextStep();
 
       },
+
+      onCancelPress_valueHelp:function(){
+        this.oValueDialog.close();
+      },
+      productExists: async function (oModel, product) {
+        console.log(product)
+        return new Promise((resolve, reject) => {
+            oModel.read("/SelectedProduct", {
+                filters: [
+                    new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+ 
+ 
+                ],
+                success: function (oData) {
+                    resolve(oData);
+                },
+                error: function () {
+                    reject(
+                        "An error occurred while checking username existence."
+                    );
+                }
+            })
+        })
+    },
+
 
       // Define your press handler
       // onPressGenericTilePress: function (oEvent) {
