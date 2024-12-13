@@ -10,13 +10,13 @@
         draggable="false"
     >
 	<customHeader>
-	<Bar >
+	<Bar id="idBar_valueHelp" >
 	<contentLeft>
-	<Title text="Add Products"></Title>
+	<Title id="idTitle_valueHelp" text="Add Products"></Title>
 	</contentLeft>
 	<contentRight>
-	<Button text="Add" press="onAddPress" ></Button>
-	<!-- <Button text="delete"></Button> -->
+	<Button id="idAddBtn_valueHelp" text="Add" press="onAddPress" ></Button>
+	 <Button id="idCancelBtn_valueHelp" text="Cancel" press="onCancelPress_valueHelp"></Button> 
 	</contentRight>
 	
 	</Bar>
