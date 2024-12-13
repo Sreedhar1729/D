@@ -22,13 +22,13 @@ define entity Materials {
         quantity      : String;
         layers        : String;
         mass          : String;
-        layars_height : string;
+        layersHeight      : String;
 }
  
 /**Defining Vehicle Entity */
 define entity TruckTypes {
-    key truckType   : string;
-    key freezed     : Boolean;
+    key truckType   : String;
+     freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
