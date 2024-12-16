@@ -22,9 +22,6 @@ sap.ui.define(
 	'sap/m/Label',
 	'sap/m/SearchField',
 	'sap/m/Token',
-	
-	
-	
 	'sap/ui/table/Column',
 	'sap/m/Column',
 	
