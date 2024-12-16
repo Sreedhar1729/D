@@ -1398,9 +1398,11 @@ onPressGenericTilePress: function (oEvent) {
   const oTile = oEvent.getSource();
   const header = oTile.getHeader();
 
-  // Move to the next step in the wizar
-  const oWizard = this.byId("idProcesstWizard_changeQueue");
-  oWizard.nextStep();
+  // // Move to the next step in the wizar
+  // const oWizard = this.byId("idProcesstWizard_changeQueue");
+  // oWizard.nextStep();
+  
+
 
   // Reinitialize the 3D scene
   this._init3DScene();
@@ -1689,7 +1691,94 @@ _createContainer: function (height, length, width) {
   this.scene.add(this.container);
 
   console.log("Container created with dimensions:", { height, length, width });
+
+
+  var oTable = this.getView().byId("idAddProductsTableIn_simulate");
+    
+    // Fetch all selected items from the table
+    var aSelectedItems = oTable.getSelectedItems();
+
+    // Extract objects bound to each selected item
+    var aSelectedData = aSelectedItems.map(function(oItem) {
+        return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+    });
+    
+    // Log the array of selected objects
+    console.log("Selected Items Data as Objects:", aSelectedData);
+    this._createProducts(aSelectedData, height, length, width);
+  
 },
+_createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+  let currentX = -containerLength / 2; // Start at one corner of the container
+  let currentY = 0; // Start at the base
+  let currentZ = -containerWidth / 2; // Start at one edge along the Z-axis
+
+  selectedProducts.forEach(product => {
+      const SelectedQuantity = parseInt(product.SelectedQuantity); // Get the quantity of products
+      const productLength = parseFloat(product.Productno.length);
+      const productHeight = parseFloat(product.Productno.height);
+      const productWidth = parseFloat(product.Productno.width);
+
+      for (let i = 0; i < SelectedQuantity; i++) {
+          // Check if the product fits in the container
+          if (
+              currentY + productHeight > containerHeight ||
+              currentX + productLength > containerLength / 2 ||
+              currentZ + productWidth > containerWidth / 2
+          ) {
+              console.warn("Product does not fit in the container, skipping:", product);
+              return;
+          }
+
+          // Create geometry and material for the product
+          const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+          const productMaterial = new THREE.MeshStandardMaterial({
+              color: 0x00FF00, // Green color for products
+              metalness: 0.5,
+              roughness: 0.5
+          });
+
+          // Create the product mesh
+          const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+          productMesh.castShadow = true;
+          productMesh.receiveShadow = true;
+
+          // Dynamically adjust product positions based on container dimensions
+          productMesh.position.set(
+              currentX + productLength / 2, // Center the product along the X-axis
+              currentY + productHeight / 2, // Stack on top of other products
+              currentZ + productWidth / 2 // Center the product along the Z-axis
+          );
+
+          // Add the product to the scene
+          this.scene.add(productMesh);
+
+          // Update positions for the next product
+          currentX += productLength;
+
+          // Check if we need to move to the next row (Z-axis)
+          if (currentX + productLength > containerLength / 2) {
+              currentX = -containerLength / 2; // Reset X to the start
+              currentZ += productWidth;
+
+              // Check if we need to stack products (Y-axis)
+              if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2; // Reset Z to the start
+                  currentY += productHeight;
+
+                  // Stop placement if we exceed the container's height
+                  if (currentY + productHeight > containerHeight) {
+                      console.warn("Container is full, cannot place more products.");
+                      return;
+                  }
+              }
+          }
+      }
+  });
+
+  console.log("Products dynamically positioned based on container size.");
+},
+
 
 _addLighting: function () {
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);

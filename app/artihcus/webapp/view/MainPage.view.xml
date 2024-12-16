@@ -1087,7 +1087,7 @@
                                 id="idProcessQueueStep_changeQueue"
                                 title="Simulated Result"
                                 icon="sap-icon://collections-management"
-                            
+                                
                             >
                             <VBox id="idVBoxInVehicleType1" wrap="Wrap" alignContent="Stretch" alignItems="Stretch">
                             <HBox id="idHBoxInVehicleType1"  justifyContent="Start" alignItems="Stretch" wrap="Wrap" fitContainer="true" class="sapUiResponsoiveMargin">
