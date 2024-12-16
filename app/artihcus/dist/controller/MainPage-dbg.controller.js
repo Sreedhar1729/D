@@ -55,6 +55,7 @@ sap.ui.define(
           volume: "",
           truckWeight: "",
           capacity: "",
+          freezed:"",
         });
         this.getView().setModel(oJsonModelVeh, "VehModel");
       },
@@ -394,7 +395,8 @@ sap.ui.define(
           !oPayload.width ||
           !oPayload.height ||
           !oPayload.truckWeight ||
-          !oPayload.capacity) {
+          !oPayload.capacity ||
+          !oPayload.freezed) {
           MessageBox.warning("Please Enter all Values");
           return;
         }
@@ -403,15 +405,23 @@ sap.ui.define(
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idvehtypeUOM").getSelectedItem();
+        
+        var oSelectedItem1=this.byId("idFreezedInput").getSelectedItem();
+        if(!oSelectedItem1){
+          MessageBox.show("Please select key");
+          return;
+        }
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
+        oPayload.freezed=  oSelectedItem1.getKey() === 'Yes' ?true:false;
         try {
           await this.createData(oModel, oPayload, oPath);
           debugger
           this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
+          this.byId("idFreezedInput").setSelectedKey("");
           this.byId("parkingLotSelect").getBinding("items").refresh();
- 
+         
           this.byId("idkekke3").getBinding("items").refresh();
  
           this.ClearVeh(true);
@@ -434,6 +444,7 @@ sap.ui.define(
           volume: "",
           truckWeight: "",
           capacity: "",
+          freezed:"",
         })
       },
 
