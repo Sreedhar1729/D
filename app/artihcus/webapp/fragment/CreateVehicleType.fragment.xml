@@ -49,11 +49,13 @@
                 <Label
                     id="idTruckTypeLabel"
                     text="Truck Type"
+                   
                 />
 
                 <Input
                     id="idTruckTypeInput"
                     value="{VehModel>/truckType}"
+                     liveChange="onLiveChangeVehType"
                 />
 
                 <Label
@@ -64,6 +66,7 @@
                 <Input
                     id="idLengthInputVeh"
                     value="{VehModel>/length}"
+                    liveChange="onFloatLiveChange"
                 />
 
                 <Label
@@ -74,6 +77,7 @@
                 <Input
                     id="idWidthInputveh"
                     value="{VehModel>/width}"
+                    liveChange="onFloatLiveChange"
                 />
 
                 <Label
@@ -84,6 +88,7 @@
                 <Input
                     id="idHeightInputveh"
                     value="{VehModel>/height}"
+                    liveChange="onFloatLiveChange"
                 />
 
                 <Label
@@ -131,6 +136,7 @@
                 <Input
                     id="idTruckWeightInput"
                     value="{VehModel>/truckWeight}"
+                    liveChange="onFloatLiveChange"
                 />
 
                 <Label
@@ -141,6 +147,7 @@
                 <Input
                     id="idCapacityInput"
                     value="{VehModel>/capacity}"
+                    liveChange="onFloatLiveChange"
                 />
 
                 <Label
