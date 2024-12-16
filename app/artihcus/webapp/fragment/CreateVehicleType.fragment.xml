@@ -9,7 +9,7 @@
         draggable="true"
         contentWidth="20%"
         contentHeight="30%"
-        title="Create Vehicle"
+        title="Create New Vehicle Type"
     >
         <beginButton>
             <Button

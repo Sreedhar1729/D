@@ -456,7 +456,7 @@ console.log(link);
       // create fragment in add Eqipment page
       onPressInAddEquipment: async function () {
         if (!this.oCreateInAddEquipmentDialog) {
-          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateInAddEquipment");
+          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateVehicleType");
         }
         this.oCreateInAddEquipmentDialog.open();
       },
@@ -467,7 +467,7 @@ console.log(link);
       // edit  fragment in products table
       oOpenProductEdit: async function () {
         if (!this.oEditDialog) {
-          this.oEditDialog = await this.loadFragment("EditDialog");
+          this.oEditDialog = await this.loadFragment("EditProduct");
         }
         this.oEditDialog.open();
       },
@@ -477,7 +477,7 @@ console.log(link);
       // edit  fragment in Add equipment table
       onPressEditInAddEquipmentTable: async function () {
         if (!this.oEditInAddEquipment) {
-          this.oEditInAddEquipment = await this.loadFragment("EditInAddEquipment");
+          this.oEditInAddEquipment = await this.loadFragment("EditTruckType");
         }
         this.oEditInAddEquipment.open();
       },
