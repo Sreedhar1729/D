@@ -4,31 +4,39 @@ namespace capacitymanagement.db;
 type string : String(40);
 
 /**Defining entity */
-define entity Materials {
 
-    key sapProductno  : string;
-        length        : String;
-        width         : String;
-        height        : String;
-        volume        : String;
-        vuom          : String;
-        muom          : String;
-        uom           : String;
-        mCategory     : string;
-        description   : String;
-        EANUPC        : String;
-        weight        : String;
-        wuom          : String;
-        quantity      : String;
-        layers        : String;
-        mass          : String;
-        layersHeight      : String;
+// for unique fields
+@assert.unique: {
+    sapProductno: [sapProductno],
+    EANUPC      : [EANUP]
+
 }
- 
+
+define entity Materials {
+    key ID           : UUID;
+        sapProductno : string;
+        EANUPC       : String;
+        length       : String;
+        width        : String;
+        height       : String;
+        volume       : String;
+        vuom         : String;
+        muom         : String;
+        uom          : String;
+        mCategory    : string;
+        description  : String;
+        weight       : String;
+        wuom         : String;
+        quantity     : String;
+        layers       : String;
+        mass         : String;
+        layersHeight : String;
+}
+
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
-    Key  freezed     : Boolean;
+    key freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
@@ -39,8 +47,9 @@ define entity TruckTypes {
         capacity    : String;
         tuom        : String;
 }
-define entity SelectedProduct {  
-       key Productno     : Association to Materials;
+
+define entity SelectedProduct {
+    key Productno        : Association to Materials;
         Truckdetails     : Association to TruckTypes;
         SelectedQuantity : String;
 }

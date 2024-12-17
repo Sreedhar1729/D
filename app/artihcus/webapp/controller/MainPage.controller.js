@@ -512,6 +512,7 @@ console.log(link);
         // Check if oPayload is empty
         if (
           !oPayload.sapProductno ||
+          !oPayload.EANUPC ||
           !oPayload.length ||
           !oPayload.width ||
           !oPayload.height ||
@@ -520,26 +521,26 @@ console.log(link);
           !oPayload.weight ||
           !oPayload.quantity 
         ) {
-          console.log("Please Enter All Values");
+          // console.log("Please Enter All Values");
           MessageBox.information("Please Enter All Values");
           return;
         }
         // Get the selected item from the event parameters
-        var oSelectedItem = this.byId("idselectuom").getSelectedItem();
-        if (oSelectedItem.getKey() === '') {
+        var oSelectedItem = this.byId("idselectuom").getSelectedKey();
+        if (oSelectedItem === 'Select') {
           MessageBox.error("Please Select UOM!!");
           return;
         }
-        oPayload.uom = oSelectedItem.getKey();
+        oPayload.uom = oSelectedItem;
         //get the selected item
-        var oSelectedItem1 = this.byId("uomSelect").getSelectedItem();
-        if (oSelectedItem1.getKey() === '') {
+        var oSelectedItem1 = this.byId("uomSelect").getSelectedKey()
+        if (oSelectedItem1 === '') {
           MessageBox.error("Please Select UOM!!");
           return;
         }
         oPayload.muom = 'PC';
         oPayload.vuom = "M³";
-        oPayload.wuom = oSelectedItem1 ? oSelectedItem1.getKey() : "";
+        oPayload.wuom = oSelectedItem1 ? oSelectedItem1 : "";
         var oVolume;
 
         if (oPayload.uom === 'CM') {
@@ -553,35 +554,40 @@ console.log(link);
         }
         try {
           await this.createData(oModel, oPayload, oPath);
-          debugger
           this.getView().byId("ProductsTable").getBinding("items").refresh();
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
-          this.ClearingModel(true);
+          this.getView().getModel("ProductModel").setProperty("/",{}) // clear data after successful creation
+          // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
-          MessageToast.show("Error at the time of creation");
+          console.error(error);
+          if (error.statusCode === "400") {
+            MessageBox.information("Product Number and EANUPC Should be unique enter different values")
+          }
+          MessageToast.show("Facing technical issue");
         }
       },
 
-      /**Clearing Properties after creation */
-      ClearingModel: function () {
-        const oPayloadModel = this.getView().getModel("ProductModel");
-        oPayloadModel.setProperty("/", {
-          sapProductno: "",
-          length: "",
-          width: "",
-          height: "",
-          volume: "",
-          uom: "",
-          mCategory: "",
-          description: "",
-          EANUPC: "",
-          weight: "",
-          quantity:""
-        })
-      },
+      // /**Clearing Properties after creation */
+
+      // ClearingModel: function () {
+      //   const oPayloadModel = this.getView().getModel("ProductModel");
+      //   oPayloadModel.setProperty("/", {
+      //     sapProductno: "",
+      //     length: "",
+      //     width: "",
+      //     height: "",
+      //     volume: "",
+      //     uom: "",
+      //     mCategory: "",
+      //     description: "",
+      //     EANUPC: "",
+      //     weight: "",
+      //     quantity:""
+      //   })
+      // },
 
       /**Deleting Products */
       onProductDel: async function () {

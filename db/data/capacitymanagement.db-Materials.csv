@@ -1,1 +1,1 @@
-sapProductno,length,width,height,volume,vuom,muom,uom,mCategory,description,EANUPC,weight,wuom,quantity,layers,mass,layersHeight
+ID,sapProductno,EANUPC,length,width,height,volume,vuom,muom,uom,mCategory,description,weight,wuom,quantity,layers,mass,layersHeight
