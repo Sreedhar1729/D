@@ -5,6 +5,7 @@ type string : String(40);
 
 /**Defining entity */
 define entity Materials {
+
     key sapProductno  : string;
         length        : String;
         width         : String;
@@ -21,14 +22,13 @@ define entity Materials {
         quantity      : String;
         layers        : String;
         mass          : String;
-        layars_height : string;
-
+        layersHeight      : String;
 }
-
+ 
 /**Defining Vehicle Entity */
 define entity TruckTypes {
-    key truckType   : string;
-    key freezed     : Boolean;
+    key truckType   : String;
+    Key  freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
@@ -38,11 +38,8 @@ define entity TruckTypes {
         truckWeight : String;
         capacity    : String;
         tuom        : String;
-
-
 }
-define entity SelectedProduct {
-    
+define entity SelectedProduct {  
        key Productno     : Association to Materials;
         Truckdetails     : Association to TruckTypes;
         SelectedQuantity : String;

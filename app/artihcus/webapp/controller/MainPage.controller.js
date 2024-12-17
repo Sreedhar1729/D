@@ -16,43 +16,40 @@ sap.ui.define(
     "sap/m/ImageContent",
     "sap/m/Text",
     'sap/ui/comp/library',
-	
-	'sap/ui/model/type/String',
-	'sap/m/ColumnListItem',
-	'sap/m/Label',
-	'sap/m/SearchField',
-	'sap/m/Token',
-	
-	
-	
-	'sap/ui/table/Column',
-	'sap/m/Column',
-	
-    
+
+    'sap/ui/model/type/String',
+    'sap/m/ColumnListItem',
+    'sap/m/Label',
+    'sap/m/SearchField',
+    'sap/m/Token',
+    'sap/ui/table/Column',
+    'sap/m/Column',
+
+
   ],
-  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent,Tex,library,TypeString,ColumnListItem,Label,SearchField,Token, UIColumn, MColumn ) {
+  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent, Tex, library, TypeString, ColumnListItem, Label, SearchField, Token, UIColumn, MColumn) {
     "use strict";
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
-       this.oObject={
-        "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
-        "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
-        "17FT":"https://www.searates.com/design/images/apps/load-calculator/40st.svg",
-        "17FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-        "22FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-        "22FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-        "32FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-        "32FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-       }
-       let link = this.oObject["14ft"];
-console.log(link);
+        this.oObject = {
+          "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+          "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+          "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+          "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+        }
+        let link = this.oObject["14ft"];
+        console.log(link);
         // Initialize your JSON model
         const oJsonModel1 = new sap.ui.model.json.JSONModel({ products: [] });
         this.getView().setModel(oJsonModel1, "oJsonModelProd");
         /***storing table  */
         this.loadProductsFromLocalStorage();
-        
+
 
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
@@ -90,88 +87,89 @@ console.log(link);
         });
         this.getView().setModel(oJsonModelVeh, "VehModel");
 
-      
-        
-      
+
+
+
       },
       _createGenericTile: async function () {
-        
+
         console.log("Called")
         // Get the container where the tile will be placed
         var oTileContainer = this.byId("idVBoxInSelectVehicleType");
         //getting model
-        var that=this;
+        var that = this;
         const oModel = this.getOwnerComponent().getModel("ModelV2"),
           oPath = "/TruckTypes";
-          var oObject={
-            "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
-            "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
-            "17FT":"https://www.searates.com/design/images/apps/load-calculator/40st.svg",
-            "17FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-            "22FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-            "22FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-            "32FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-            "32FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-           }
+        var oObject = {
+          "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+          "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+          "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+          "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+        }
         try {
           const oSuccessData = await this.readData(oModel, oPath, [])
           oSuccessData.results.forEach(
-            function(item){
-              if(item.freezed){
-                var oId=item.truckType+"_f"
-                var oImage=oObject[`${item.truckType}F`]
+            function (item) {
+              if (item.freezed) {
+                var oId = item.truckType + "_f"
+                var oImage = oObject[`${item.truckType}F`]
               }
-              else{
-                var oId=item.truckType
-                var oImage=oObject[`${item.truckType}`]
+              else {
+                var oId = item.truckType
+                var oImage = oObject[`${item.truckType}`]
               }
               var oGenericTile = new GenericTile({
-                id:`id_generictile_${oId}`,
+                id: `id_generictile_${oId}`,
                 class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
                 header: `${item.truckType}`,   // The tile's header
                 width: "150px",    // The tile's width
-                
+
                 press: that.onPressGenericTilePress.bind(that)  // Event handler for press
               });
-      
+
               // Create the TileContent control
               var oTileContent = new TileContent({
                 id: `id_idTileContent_${oId}`
               });
-      
+
               // Create the ImageContent inside the TileContent
               var oImageContent = new ImageContent({
-                id: `id_idImageContentN_${oId}` ,
-                src:`${oImage}`
+                id: `id_idImageContentN_${oId}`,
+                src: `${oImage}`
               });
-      
+
               // Add the ImageContent to the TileContent
               oTileContent.setContent(oImageContent);
-      
+
               // Add the TileContent to the GenericTile
               oGenericTile.addTileContent(oTileContent);
-      
+
               // Now, add the GenericTile to the container
               oTileContainer.addItem(oGenericTile);
-              oTileContainer.addItem(new Text({ text: "",width:"10Px" })); 
+              oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
             }
           )
-         
+
         } catch (error) {
           console.log(error)
           MessageToast.show(error)
         }
 
         // Create the GenericTile control dynamically
-       
+
       },
 
       onAddPress:async function(){
+
         var oTable = this.byId("idTableAddProduct");
-        var that=this;
+        var that = this;
         // Get the selected items (rows) from the table
         var aSelectedItems = oTable.getSelectedItems();
-        var oModel=this.getOwnerComponent().getModel("ModelV2")
+        var oModel = this.getOwnerComponent().getModel("ModelV2")
         // Check if there are selected items
         if (aSelectedItems.length > 0) {
             var selectedData = [];
@@ -221,23 +219,84 @@ console.log(link);
                   MessageToast.show(error)
                 }
                 
-            });
+=======
+          var selectedData = [];
 
-            // Do something with the selected data, e.g., display it
-            MessageToast.show("Selected Products: " + JSON.stringify(selectedData));
-            this.oValueDialog.close();
+          // Loop through the selected rows and collect data
+          aSelectedItems.forEach(function (oItem) {
+            var oBindingContext = oItem.getBindingContext();
+            var oData = oBindingContext.getObject();  // Get the data object of the row
+
+            // Get the Input control for Picking Quantity
+            var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+
+            // Get the value entered in the Input field
+            var sPickingQty = oInput.getValue();
+
+            // Add the relevant data along with the entered Picking Quantity
+            var dummy = {
+              Productno_sapProductno: oData.sapProductno,
+              SelectedQuantity: sPickingQty
+            };
+            selectedData.push({
+              product: oData.sapProductno,
+              description: oData.description,
+              actualQuantity: oData.quantity, // Replace with the correct field name from the data
+              pickingQuantity: sPickingQty
+
+            });
+            try {
+
+              var oProductExistStatus = that.productExists(oModel, dummy.Productno_sapProductno)
+              if (oProductExistStatus) {
+                console.log("exixts")
+                oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
+                  success: function () {
+
+                  }.bind(this),
+                  error: function (oError) {
+                    sap.m.MessageBox.error("Failed " + oError.message);
+                  }.bind(this)
+                });
+                return
+              }
+              that.createData(oModel, dummy, "/SelectedProduct")
+
+            }
+            catch (error) {
+              console.log(error)
+              MessageToast.show(error)
+            }
+
+          });
+
+          // Do something with the selected data, e.g., display it
+          MessageToast.show("Selected Products: " + JSON.stringify(selectedData));
+          this.oValueDialog.close();
 
         } else {
-            MessageToast.show("No rows selected.");
+          MessageToast.show("No rows selected.");
         }
-    
+
       },
-      onCancelPress_valueHelp:function(){
+
+
+      onPressGenericTilePress: function () {
+
+        var oWizard = this.byId("idWizardIn_simulate");
+        var oCurrentStep = oWizard.getCurrentStep();
+
+        oWizard.nextStep();
+
+      },
+
+      onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
       },
       productExists: async function (oModel, product) {
         console.log(product)
         return new Promise((resolve, reject) => {
+
             oModel.read("/SelectedProduct", {
                 // filters: [
                 //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
@@ -263,8 +322,10 @@ console.log(link);
                     );
                 }
             })
+
         })
-    },
+      },
+
 
       // Define your press handler
       // onPressGenericTilePress: function (oEvent) {
@@ -311,7 +372,7 @@ console.log(link);
         this._pProductsDialog.then(function (oProductsDialog) {
           oProductsDialog.open(sInputValue);
         });
-      
+
       },
 
       onPrintPressInProductsTable: function () {
@@ -331,10 +392,10 @@ console.log(link);
           "Volume",
           "UOM",
           "Weight",
-          "Quantity",  
-          "Layers",       
-          "Mass",       
-          "Layers_height" 
+          "Quantity",
+          "Layers",
+          "Mass",
+          "Layers_height"
         ];
         aData.push(aHeaders);
 
@@ -454,7 +515,7 @@ console.log(link);
       // create fragment in add Eqipment page
       onPressInAddEquipment: async function () {
         if (!this.oCreateInAddEquipmentDialog) {
-          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateInAddEquipment");
+          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateVehicleType");
         }
         this.oCreateInAddEquipmentDialog.open();
       },
@@ -465,7 +526,7 @@ console.log(link);
       // edit  fragment in products table
       oOpenProductEdit: async function () {
         if (!this.oEditDialog) {
-          this.oEditDialog = await this.loadFragment("EditDialog");
+          this.oEditDialog = await this.loadFragment("EditProduct");
         }
         this.oEditDialog.open();
       },
@@ -475,7 +536,7 @@ console.log(link);
       // edit  fragment in Add equipment table
       onPressEditInAddEquipmentTable: async function () {
         if (!this.oEditInAddEquipment) {
-          this.oEditInAddEquipment = await this.loadFragment("EditInAddEquipment");
+          this.oEditInAddEquipment = await this.loadFragment("EditTruckType");
         }
         this.oEditInAddEquipment.open();
       },
@@ -519,7 +580,7 @@ console.log(link);
           !oPayload.mCategory ||
           !oPayload.description ||
           !oPayload.weight ||
-          !oPayload.quantity 
+          !oPayload.quantity
         ) {
           console.log("Please Enter All Values");
           MessageBox.information("Please Enter All Values");
@@ -561,8 +622,9 @@ console.log(link);
           MessageToast.show("Successfully Created!");
           this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
-        } catch (error) {
-          MessageToast.show("Error at the time of creation");
+        } catch (oError) {
+          var ojson = JSON.parse(oError.responseText)
+          sap.m.MessageToast.show(ojson.error.message.value);
         }
       },
 
@@ -580,7 +642,7 @@ console.log(link);
           description: "",
           EANUPC: "",
           weight: "",
-          quantity:""
+          quantity: ""
         })
       },
 
@@ -621,11 +683,11 @@ console.log(link);
           return;
         }
         const oFreeze = this.byId("idFreezedInput").getSelectedKey();
-        if(!oFreeze){
+        if (!oFreeze) {
           MessageBox.warning("Please Enter all Values");
           return;
         }
-        const oFreezeVal = oFreeze === 'Yes'?true:false;
+        const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
@@ -640,11 +702,12 @@ console.log(link);
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
           this.byId("parkingLotSelect").getBinding("items").refresh();
-          
+
           MessageToast.show("Successfully Created!");
         } catch (error) {
+          var t = JSON.parse(error.responseText);
           this.onCancelInCreateVehicleDialog();
-          MessageToast.show("Error at the time of creation");
+          MessageToast.show(t.error.message.value);
         }
       },
 
@@ -676,12 +739,13 @@ console.log(link);
           await Promise.all(aSelectedItems.map(async (oItem) => {
             const oPath = oItem.getBindingContext().getPath();
             await this.deleteData(oModel, oPath);
-          }));
+            MessageToast.show('Successfully Deleted')
+          })).this;
           this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
           this.byId("parkingLotSelect").getBinding("items").refresh();
-          MessageToast.show('Successfully Deleted')
+
         } catch (error) {
-          MessageToast.show('Error Occurs');
+
         }
       },
       onRow: function (oEvent) {
@@ -778,8 +842,8 @@ console.log(link);
           height: this.byId("editprodHeightInput").getValue(),       // Height
           volume: "",                                                // Volume (currently set to an empty string)
           uom: this.byId("editUOMInput").getValue(),                                                   // Unit of Measure (UOM, currently set to an empty string)
-          weight: this.byId("editWeightInput").getValue(), 
-          quantity:this.byId("editQuantityInput").getValue()           // Weight
+          weight: this.byId("editWeightInput").getValue(),
+          quantity: this.byId("editQuantityInput").getValue()           // Weight
         };
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
@@ -908,7 +972,7 @@ console.log(link);
       },
       /** Simulating excel sheet products */
       onClickSimulate: async function () {
-        var oTable = this.byId("myTable");
+        var oTable = this.byId("idAddProductsTableIn_simulate");
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         console.log("Selected Items Count:", aSelectedItems.length);
@@ -1004,10 +1068,10 @@ console.log(link);
 
             // this.onLoadRequiredTrucks();
 
-            this.getView().byId("myTable").getBinding("items").refresh();
+            this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("resultModel").refresh();
             this.MoveToNextScreen();
-            this.getView().byId("myTable").getBinding("items").refresh();
+            this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("resultModel").refresh();
           }).catch(error => {
             console.error("Error loading truck details:", error);
@@ -1132,7 +1196,7 @@ console.log(link);
               description: String(product.Description),        // Ensure it's a string
               EANUPC: String(product.EANUPC),                  // Ensure it's a string
               weight: String(product.Weight),
-              quantity:String(product.Quantity)                    // Ensure it's a string
+              quantity: String(product.Quantity)                    // Ensure it's a string
             };
 
             await this.createData(oModel, oPayload, oPath);
@@ -1251,7 +1315,7 @@ console.log(link);
       },
       /***Blocking the truck type in simulations */
       Blocking: function () {
-        var oLength = this.byId("myTable").getItems().length;
+        var oLength = this.byId("idAddProductsTableIn_simulate").getItems().length;
         if (oLength > 0) {
           this.byId("parkingLotSelect").setEditable(false);
         }
@@ -1276,7 +1340,7 @@ console.log(link);
             console.log("Products set in model:", oTempJSon.getProperty("/products"));
 
             // Refresh the table binding
-            // this.getView().byId("myTable").getBinding("items").refresh();
+            // this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("oJsonModelProd").refresh(true);
           } else {
             console.error("Loaded data is not an array:", products);
@@ -1291,7 +1355,7 @@ console.log(link);
         const oTempJSon = this.getView().getModel("oJsonModelProd");
 
         // Get the table and selected items
-        const oTable = this.getView().byId("myTable");
+        const oTable = this.getView().byId("idAddProductsTableIn_simulate");
         const aSelectedItems = oTable.getSelectedItems();
 
         // If there are selected items, remove them
@@ -1348,185 +1412,488 @@ console.log(link);
 
         // this.getView().byId("idAddVehicleTypeSrInSimulate_changeQueue").setVisible("true");
 
-        var oWizard = this.byId("idProcesstWizard_changeQueue");
+        var oWizard = this.byId("idWizardIn_simulate");
 
         var oCurrentStep = oWizard.getCurrentStep();
 
         oWizard.nextStep();
         this._createGenericTile()
         //this.getView().byId("idVBoxInSelectVehicleType").setVisible("false");
-       
+
       },
 
 
-    
+
       // dialog for the Stack
-      onPressStackBtn:async function () {
-          if (!this.oStackDialog) {
-            this.oStackDialog = await this.loadFragment("Stack");
-          }
-          this.oStackDialog.open();
-        },
-        onCancelInStackDialog: function () {
-          this.oStackDialog.close();
-        }, 
+      onPressStackBtn: async function () {
+        if (!this.oStackDialog) {
+          this.oStackDialog = await this.loadFragment("Stack");
+        }
+        this.oStackDialog.open();
+      },
+      onCancelInStackDialog: function () {
+        this.oStackDialog.close();
+      },
 
-// creating stak tile in the Stack dialog
-_createGenericStackTile : function() {
-  // Get the container where the tile will be placed
-  var oTileContainer = this.byId("VboxIdStacktiles");
-  //getting model 
+      // creating stak tile in the Stack dialog
+      _createGenericStackTile: function () {
+        // Get the container where the tile will be placed
+        var oTileContainer = this.byId("VboxIdStacktiles");
+        //getting model 
+
+      },
+      onNextPressInSeconsSrInAddVehicleType: function () {
+        debugger
+
+        this.getView().byId("idProcessQueueStep_changeQueue").setVisible(true);
+
+
+      },
+      /*  ****************************************************************************Simulation code**************************************************************************** */
+
+
+
+
+      onPressGenericTilePress: function (oEvent) {
+        debugger;
+
+        const oTile = oEvent.getSource();
+        const header = oTile.getHeader();
+        
+  // // Move to the next step in the wizar
+  // const oWizard = this.byId("idProcesstWizard_changeQueue");
+  // oWizard.nextStep();
   
-},
-onNextPressInSeconsSrInAddVehicleType:function(){
-  debugger
-
-  this.getView().byId("idProcessQueueStep_changeQueue").setVisible(true);
-  
-
-},
-/*  ****************************************************************************Simulation code**************************************************************************** */
+        // Reinitialize the 3D scene
+        this._init3DScene();
 
 
+        // Fetch dimensions based on truck type
+        const oModel = this.getOwnerComponent().getModel("ModelV2");
+        const sPath = "/TruckTypes";
+        const oFilter = new Filter("truckType", FilterOperator.EQ, header);
 
-
-onPressGenericTilePress: function (oEvent) {
-  debugger;
-
-  const oTile = oEvent.getSource();
-  const header = oTile.getHeader();
-
-  // Move to the next step in the wizar
-  const oWizard = this.byId("idProcesstWizard_changeQueue");
-  oWizard.nextStep();
-
-  // Reinitialize the 3D scene
-  this._init3DScene();
-  
-// Fetch dimensions based on truck type
-  const oModel = this.getOwnerComponent().getModel("ModelV2");
-  const sPath = "/TruckTypes";
-  const oFilter = new Filter("truckType", FilterOperator.EQ, header);
-
-  oModel.read(sPath, {
-      filters: [oFilter],
-      success: function (odata) {
-          if (odata.results.length > 0) {
+        oModel.read(sPath, {
+          filters: [oFilter],
+          success: function (odata) {
+            if (odata.results.length > 0) {
               const height = parseFloat(odata.results[0].height);
               const length = parseFloat(odata.results[0].length);
               const width = parseFloat(odata.results[0].width);
 
               // Create a new container
               this._createContainer(height, length, width);
-          } else {
+            } else {
               console.error("No data found for the selected truck type.");
+            }
+          }.bind(this),
+          error: function (oError) {
+            console.error("Error fetching truck type data:", oError);
           }
-      }.bind(this),
-      error: function (oError) {
-          console.error("Error fetching truck type data:", oError);
-      }
+        });
+      },
+
+      onPressAddProductInSimulate: function () {
+        // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
+      },
+      onPressAddProductInSimulate: async function () {
+        if (!this.oValueDialog) {
+          this.oValueDialog = await this.loadFragment("ValueHelp");
+        }
+        this.oValueDialog.open();
+
+        // this._oBasicSearchFieldWithSuggestions = new SearchField();
+
+        // Fragment.load({
+        //   name: `com.app.artihcus.fragment.ValueHelp`
+        // }).then(function(oDialogSuggestions) {
+        //   var oFilterBar = oDialogSuggestions.getFilterBar(), oColumnProductCode, oColumnProductName;
+        //   this._oVHDWithSuggestions = oDialogSuggestions;
+
+        //   this.getView().addDependent(oDialogSuggestions);
+
+        //   // Set key fields for filtering in the Define Conditions Tab
+        //   oDialogSuggestions.setRangeKeyFields([{
+        //     label: "Product Code",
+        //     key: "ProductCode",
+        //     type: "string",
+        //     typeInstance: new TypeString({}, {
+        //       maxLength: 7
+        //     })
+        //   }]);
+
+        //   // Set Basic Search for FilterBar
+        //   oFilterBar.setFilterBarExpanded(false);
+        //   oFilterBar.setBasicSearch(this._oBasicSearchFieldWithSuggestions);
+
+        //   // Trigger filter bar search when the basic search is fired
+        //   this._oBasicSearchFieldWithSuggestions.attachSearch(function() {
+        //     oFilterBar.search();
+        //   });
+
+        //   oDialogSuggestions.getTableAsync().then(function (oTable) {
+
+        //     //oTable.setModel(this.oProductsModel);
+
+        //     //For Desktop and tabled the default table is sap.ui.table.Table
+        //     if (oTable.bindRows) {
+        //       // Bind rows to the ODataModel and add columns
+        //       // oTable.bindAggregation("rows", {
+        //       //   path: "/ZSALESREPORTSuggestions",
+        //       //   events: {
+        //       //     dataReceived: function() {
+        //       //       oDialogSuggestions.update();
+        //       //     }
+        //       //   }
+        //       // });
+        //       oColumnProductCode = new UIColumn({label: new Label({text: "Product Code"}), template: new Text({wrapping: false, text: "{ProductCode}"})});
+        //       oColumnProductCode.data({
+        //         fieldName: "ProductCode"
+        //       });
+        //       oTable.addColumn(oColumnProductCode);
+
+        //       oColumnProductName = new UIColumn({label: new Label({text: "Quantity"}), template: new Text({wrapping: false, text: "{Quantity}"})});
+        //       oColumnProductName.data({
+        //         fieldName: "Quantity"
+        //       });
+        //       oTable.addColumn(oColumnProductName);
+
+        //       // oColumnDis = new UIColumn({label: new Label({text: "Dis"}), template: new Text({wrapping: false, text: "{Dis}"})});
+        //       // oColumnDis.data({
+        //       //   fieldName: ""
+        //       // });
+        //       // oTable.addColumn(oColumnQuantity);
+        //     }
+
+        //     //For Mobile the default table is sap.m.Table
+        //     // if (oTable.bindItems) {
+        //     //   // Bind items to the ODataModel and add columns
+        //     //   oTable.bindAggregation("items", {
+        //     //     path: "/ZSALESREPORTSuggestions",
+        //     //     template: new ColumnListItem({
+        //     //       cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
+        //     //     }),
+        //     //     events: {
+        //     //       dataReceived: function() {
+        //     //         oDialogSuggestions.update();
+        //     //       }
+        //     //     }
+        //     //   });
+        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Code"})}));
+        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Name"})}));
+        //     // }
+        //     oDialogSuggestions.update();
+        //   }.bind(this));
+
+        //  // oDialogSuggestions.setTokens(this._oMultiInputWithSuggestions.getTokens());
+        //   oDialogSuggestions.open();
+        // }.bind(this));
+      },
+      onValueHelpWithSuggestionsCancelPress: function () {
+        this._oVHDWithSuggestions.close();
+      },
+      onPressTile: function (oEvent) {
+        var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
+        var oObjectImage = {
+          Box: [
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
+          ],
+          Bigbags: [
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
+          ],
+          Sacks: [
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
+          ],
+          Barrels: [
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
+          ],
+          Roll: [
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+          ],
+          Pipes: [
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+          ],
+          Bulk: [
+            // Add URLs for Bulk images if needed
+          ]
+        };
+
+        // Check if there are images for the clicked tile
+        if (oObjectImage[sHeader]) {
+          var aImages = oObjectImage[sHeader];
+
+          this.byId("idImageInStack").setSrc(aImages[0]);
+          this.byId("idImage3InStack").setSrc(aImages[1]);
+          this.byId("idImage43InStack").setSrc(aImages[2]);
+
+          // Show the image display section
+          this.byId("imageDisplayHBox").setVisible(true);
+        }
+      },
+
+
+
+
+
+      onPressAddButtonValueHelp: function () {
+        var oTable = this.byId("idAssignedQueueTable_changeQueue");
+        var aSelectedItems = oTable.getSelectedItems();
+      },
+
+
+      onPressBigBagsTile: function () {
+        var oModel1 = new JSONModel({
+
+          //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
+          //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
+          //  newImageUrl2 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg", // Update with your logic
+
+        });
+        this.getView().byId("idVbox4InStack").setModel(oModel1, "oimage");
+
+        var oModel = this.getView().byId("idVbox4InStack").getModel();
+        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+        //     oModel.setProperty("/imageUrl", newImageUrl);
+        // /this.getView()by.setModel(oJsonModelVeh, "VehModel");
+        const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
+        console.log(oPayload);
+      },
+
+
+
+
+      _init3DScene: function () {
+        // If the scene and renderer exist, clear them
+        if (this.scene) {
+          while (this.scene.children.length > 0) {
+            this.scene.remove(this.scene.children[0]);
+          }
+        } else {
+          this.scene = new THREE.Scene();
+          this.scene.background = new THREE.Color(0xFFA500); // Orange background
+        }
+
+        // If the renderer exists, dispose of its DOM element
+        if (this.renderer) {
+          this.renderer.domElement.remove();
+          this.renderer.dispose();
+        }
+
+        // Set up the renderer and append it to the canvas container
+        this.renderer = new THREE.WebGLRenderer({ alpha: true });
+        const canvasContainer = document.getElementById("threejsCanvas");
+        if (!canvasContainer) {
+          console.error("Canvas container not found");
+          return;
+        }
+        this.renderer.setSize(800, 600); // Increase canvas size
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.shadowMap.enabled = true;
+        canvasContainer.appendChild(this.renderer.domElement);
+
+        // Set up the camera with increased initial zoom
+        this.camera = new THREE.PerspectiveCamera(40, 1000 / 700, 0.1, 1000); // Reduced FOV to make objects appear larger
+        this.camera.position.set(10, 10, 20); // Position closer to the scene for larger appearance
+        // Set up orbit controls
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+
+        // Add lighting
+        this._addLighting();
+
+        // Start the animation loop
+        this._animate();
+      },
+
+     _createContainer: function (height, length, width) {
+  // Remove any existing container
+  if (this.container) {
+      this.scene.remove(this.container);
+      this.container.geometry.dispose();
+      this.container.material.dispose();
+  }
+ 
+  // Create geometry for the container
+  const geometry = new THREE.BoxGeometry(length, height, width);
+ 
+  // Create a material with transparency and metallic properties
+  const material = new THREE.MeshPhysicalMaterial({
+      color: 0x007BFF, // Blue color
+      metalness: 0.8, // Metallic effect
+      roughness: 0.4, // Smooth metallic surface
+      opacity: 0.5, // Transparent effect
+      transparent: true, // Enable transparency
+      side: THREE.DoubleSide // Render both sides
   });
+ 
+  // Create the container mesh
+  this.container = new THREE.Mesh(geometry, material);
+  this.container.castShadow = true;
+  this.container.receiveShadow = true;
+ 
+  // Position the container at the origin
+  this.container.position.set(0, height / 2, 0);
+ 
+  // Add the container to the scene
+  this.scene.add(this.container);
+ 
+  console.log("Container created with dimensions:", { height, length, width });
+ 
+ 
+  var oTable = this.getView().byId("idAddProductsTableIn_simulate");
+   
+    // Fetch all selected items from the table
+    var aSelectedItems = oTable.getSelectedItems();
+ 
+    // Extract objects bound to each selected item
+    var aSelectedData = aSelectedItems.map(function(oItem) {
+        return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+    });
+   
+    // Log the array of selected objects
+    console.log("Selected Items Data as Objects:", aSelectedData);
+    this._createProducts(aSelectedData, height, length, width);
+ 
 },
 
-onPressAddProductInSimulate:function() {
-  // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
-},
+      _addLighting: function () {
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        this.scene.add(ambientLight);
+
+        const lightPositions = [
+          { x: 50, y: 50, z: 50 },
+          { x: -50, y: 50, z: 50 },
+          { x: 50, y: 50, z: -50 },
+          { x: -50, y: 50, z: -50 }
+        ];
+
+        lightPositions.forEach((pos) => {
+          const light = new THREE.DirectionalLight(0xffffff, 0.5);
+          light.position.set(pos.x, pos.y, pos.z);
+          this.scene.add(light);
+        });
+      },
+
+      _animate: function () {
+        const animate = () => {
+          requestAnimationFrame(animate);
+          this.controls.update();
+          this.renderer.render(this.scene, this.camera);
+        };
+        animate();
+      },
+
+      /**validations */
+
+      onFloatLiveChange: function (evt) {
+        var inputValue = evt.getParameter("value");
+        var regex = /^-?\d+(\.\d+)?$/; // Regular expression for floating-point numbers  
+        if (!regex.test(inputValue)) {
+          evt.getSource().setValueState(sap.ui.core.ValueState.Error);
+          evt.getSource().setValueStateText("Please enter a valid number.");
+        } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
+      },
+         /**validations */
+
+         onStringLiveChange: function (evt) {
+          var inputValue = evt.getParameter("value");
+          var regex = /^[A-Za-z\s]+$/; // Regular expression for String numbers  
+          if (!regex.test(inputValue)) {
+            evt.getSource().setValueState(sap.ui.core.ValueState.Error);
+            evt.getSource().setValueStateText("Please enter Characters only");
+          } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
+        },
+        /**validations */
+
+        onLiveChangeVehType: function (evt) {
+          var inputValue = evt.getParameter("value");
+          const regex = /^\d+FT$/;
+          if (!regex.test(inputValue)) {
+            evt.getSource().setValueState(sap.ui.core.ValueState.Error);
+            evt.getSource().setValueStateText("Please enter exactly 2 digits followed by 'FT' (e.g., 13FT)");
+          } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
+        },
+
+
 onPressAddProductInSimulate:async function() {
   if (!this.oValueDialog) {
     this.oValueDialog = await this.loadFragment("ValueHelp");
   }
   this.oValueDialog.open();
- 
-  // this._oBasicSearchFieldWithSuggestions = new SearchField();
-
-  // Fragment.load({
-  //   name: `com.app.artihcus.fragment.ValueHelp`
-  // }).then(function(oDialogSuggestions) {
-  //   var oFilterBar = oDialogSuggestions.getFilterBar(), oColumnProductCode, oColumnProductName;
-  //   this._oVHDWithSuggestions = oDialogSuggestions;
-
-  //   this.getView().addDependent(oDialogSuggestions);
-
-  //   // Set key fields for filtering in the Define Conditions Tab
-  //   oDialogSuggestions.setRangeKeyFields([{
-  //     label: "Product Code",
-  //     key: "ProductCode",
-  //     type: "string",
-  //     typeInstance: new TypeString({}, {
-  //       maxLength: 7
-  //     })
-  //   }]);
-
-  //   // Set Basic Search for FilterBar
-  //   oFilterBar.setFilterBarExpanded(false);
-  //   oFilterBar.setBasicSearch(this._oBasicSearchFieldWithSuggestions);
-
-  //   // Trigger filter bar search when the basic search is fired
-  //   this._oBasicSearchFieldWithSuggestions.attachSearch(function() {
-  //     oFilterBar.search();
-  //   });
-
-  //   oDialogSuggestions.getTableAsync().then(function (oTable) {
-
-  //     //oTable.setModel(this.oProductsModel);
-
-  //     //For Desktop and tabled the default table is sap.ui.table.Table
-  //     if (oTable.bindRows) {
-  //       // Bind rows to the ODataModel and add columns
-  //       // oTable.bindAggregation("rows", {
-  //       //   path: "/ZSALESREPORTSuggestions",
-  //       //   events: {
-  //       //     dataReceived: function() {
-  //       //       oDialogSuggestions.update();
-  //       //     }
-  //       //   }
-  //       // });
-  //       oColumnProductCode = new UIColumn({label: new Label({text: "Product Code"}), template: new Text({wrapping: false, text: "{ProductCode}"})});
-  //       oColumnProductCode.data({
-  //         fieldName: "ProductCode"
-  //       });
-  //       oTable.addColumn(oColumnProductCode);
-
-  //       oColumnProductName = new UIColumn({label: new Label({text: "Quantity"}), template: new Text({wrapping: false, text: "{Quantity}"})});
-  //       oColumnProductName.data({
-  //         fieldName: "Quantity"
-  //       });
-  //       oTable.addColumn(oColumnProductName);
-
-  //       // oColumnDis = new UIColumn({label: new Label({text: "Dis"}), template: new Text({wrapping: false, text: "{Dis}"})});
-  //       // oColumnDis.data({
-  //       //   fieldName: ""
-  //       // });
-  //       // oTable.addColumn(oColumnQuantity);
-  //     }
-
-  //     //For Mobile the default table is sap.m.Table
-  //     // if (oTable.bindItems) {
-  //     //   // Bind items to the ODataModel and add columns
-  //     //   oTable.bindAggregation("items", {
-  //     //     path: "/ZSALESREPORTSuggestions",
-  //     //     template: new ColumnListItem({
-  //     //       cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
-  //     //     }),
-  //     //     events: {
-  //     //       dataReceived: function() {
-  //     //         oDialogSuggestions.update();
-  //     //       }
-  //     //     }
-  //     //   });
-  //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Code"})}));
-  //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Name"})}));
-  //     // }
-  //     oDialogSuggestions.update();
-  //   }.bind(this));
-
-  //  // oDialogSuggestions.setTokens(this._oMultiInputWithSuggestions.getTokens());
-  //   oDialogSuggestions.open();
-  // }.bind(this));
 },
 onValueHelpWithSuggestionsCancelPress: function () {
   this._oVHDWithSuggestions.close();
 },
+onPressTile: function (oEvent) {
+  var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
+  var oObjectImage = {
+      Box: [
+          "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
+      ],
+      Bigbags: [
+          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
+      ],
+      Sacks: [
+        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
+        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
+        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
+      ],
+      Barrels: [
+          "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
+      ],
+      Roll: [
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+      ],
+      Pipes: [
+         "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+          "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+      ],
+      Bulk: [
+          // Add URLs for Bulk images if needed
+      ]
+  };
+
+  // Check if there are images for the clicked tile
+  if (oObjectImage[sHeader]) {
+      var aImages = oObjectImage[sHeader];
+      
+      this.byId("idImageInStack").setSrc(aImages[0]);
+      this.byId("idImage3InStack").setSrc(aImages[1]);
+      this.byId("idImage43InStack").setSrc(aImages[2]);
+      
+      // Show the image display section
+      this.byId("imageDisplayHBox").setVisible(true);
+  }
+},
+
+onPressAddButtonValueHelp:function(){
+  var oTable = this.byId("idAssignedQueueTable_changeQueue");
+			var aSelectedItems = oTable.getSelectedItems();
+},
+
 
 onPressBigBagsTile:function(){
   var oModel1 = new JSONModel({
@@ -1547,10 +1914,7 @@ this.getView().byId("idVbox4InStack").setModel(oModel1,"oimage");
 const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
 console.log(oPayload);
 },
-
-
-  
-
+      
 _init3DScene: function () {
   // If the scene and renderer exist, clear them
   if (this.scene) {
@@ -1627,7 +1991,94 @@ _createContainer: function (height, length, width) {
   this.scene.add(this.container);
 
   console.log("Container created with dimensions:", { height, length, width });
+
+
+  var oTable = this.getView().byId("idAddProductsTableIn_simulate");
+    
+    // Fetch all selected items from the table
+    var aSelectedItems = oTable.getSelectedItems();
+
+    // Extract objects bound to each selected item
+    var aSelectedData = aSelectedItems.map(function(oItem) {
+        return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+    });
+    
+    // Log the array of selected objects
+    console.log("Selected Items Data as Objects:", aSelectedData);
+    this._createProducts(aSelectedData, height, length, width);
+  
 },
+_createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+  let currentX = -containerLength / 2; // Start at one corner of the container
+  let currentY = 0; // Start at the base
+  let currentZ = -containerWidth / 2; // Start at one edge along the Z-axis
+
+  selectedProducts.forEach(product => {
+      const SelectedQuantity = parseInt(product.SelectedQuantity); // Get the quantity of products
+      const productLength = parseFloat(product.Productno.length);
+      const productHeight = parseFloat(product.Productno.height);
+      const productWidth = parseFloat(product.Productno.width);
+
+      for (let i = 0; i < SelectedQuantity; i++) {
+          // Check if the product fits in the container
+          if (
+              currentY + productHeight > containerHeight ||
+              currentX + productLength > containerLength / 2 ||
+              currentZ + productWidth > containerWidth / 2
+          ) {
+              console.warn("Product does not fit in the container, skipping:", product);
+              return;
+          }
+
+          // Create geometry and material for the product
+          const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+          const productMaterial = new THREE.MeshStandardMaterial({
+              color: 0x00FF00, // Green color for products
+              metalness: 0.5,
+              roughness: 0.5
+          });
+
+          // Create the product mesh
+          const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+          productMesh.castShadow = true;
+          productMesh.receiveShadow = true;
+
+          // Dynamically adjust product positions based on container dimensions
+          productMesh.position.set(
+              currentX + productLength / 2, // Center the product along the X-axis
+              currentY + productHeight / 2, // Stack on top of other products
+              currentZ + productWidth / 2 // Center the product along the Z-axis
+          );
+
+          // Add the product to the scene
+          this.scene.add(productMesh);
+
+          // Update positions for the next product
+          currentX += productLength;
+
+          // Check if we need to move to the next row (Z-axis)
+          if (currentX + productLength > containerLength / 2) {
+              currentX = -containerLength / 2; // Reset X to the start
+              currentZ += productWidth;
+
+              // Check if we need to stack products (Y-axis)
+              if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2; // Reset Z to the start
+                  currentY += productHeight;
+
+                  // Stop placement if we exceed the container's height
+                  if (currentY + productHeight > containerHeight) {
+                      console.warn("Container is full, cannot place more products.");
+                      return;
+                  }
+              }
+          }
+      }
+  });
+
+  console.log("Products dynamically positioned based on container size.");
+},
+
 
 _addLighting: function () {
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -1655,5 +2106,6 @@ _animate: function () {
   };
   animate();
 }
+
     });
   });

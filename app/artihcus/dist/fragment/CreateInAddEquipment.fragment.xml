@@ -9,7 +9,7 @@
         draggable="true"
         contentWidth="20%"
         contentHeight="30%"
-        title="Create Vehicle"
+        title="Create New Vehicle Type"
     >
         <beginButton>
             <Button
@@ -142,6 +142,22 @@
                     id="idCapacityInput"
                     value="{VehModel>/capacity}"
                 />
+                 <Label
+                    id="idFreezedLabel"
+                    text="Freezed"
+                />
+                <ComboBox id="idFreezedInput">
+                    <core:Item
+                        id="idforflags"
+                        text="Yes"
+                        key="Yes"
+                    />
+                    <core:Item
+                        id="idforflags1"
+                        text="No"
+                        key="No"
+                    />
+                </ComboBox>
             </form:SimpleForm>
         </content>
     </Dialog>
