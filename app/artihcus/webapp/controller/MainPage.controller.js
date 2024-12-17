@@ -166,7 +166,7 @@ console.log(link);
        
       },
 
-      onAddPress:function(){
+      onAddPress:async function(){
         var oTable = this.byId("idTableAddProduct");
         var that=this;
         // Get the selected items (rows) from the table
@@ -177,7 +177,7 @@ console.log(link);
             var selectedData = [];
 
             // Loop through the selected rows and collect data
-            aSelectedItems.forEach(function (oItem) {
+            aSelectedItems.forEach(async function (oItem) {
                 var oBindingContext = oItem.getBindingContext();
                 var oData = oBindingContext.getObject();  // Get the data object of the row
 
@@ -200,7 +200,7 @@ console.log(link);
                 });
                 try{
                   
-                  var oProductExistStatus =  that.productExists(oModel, dummy.Productno_sapProductno)
+                  var oProductExistStatus =await  that.productExists(oModel, dummy.Productno_sapProductno)
                   if(oProductExistStatus){
                     console.log("exixts")
                     oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
@@ -239,13 +239,23 @@ console.log(link);
         console.log(product)
         return new Promise((resolve, reject) => {
             oModel.read("/SelectedProduct", {
-                filters: [
-                    new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+                // filters: [
+                //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
  
  
-                ],
+                // ],
                 success: function (oData) {
-                    resolve(oData);
+                  console.log(oData.results)
+                        var oProduct1 = oData.results.filter(checkProduct)
+                        function checkProduct(v) {
+                            console.log(v)
+                            return v.Productno_sapProductno === product ;
+                        }
+                        console.log(oProduct1)
+                        console.log(oProduct1.length)
+                        resolve(oProduct1.length > 0);
+                       
+                   
                 },
                 error: function () {
                     reject(
