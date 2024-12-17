@@ -163,7 +163,8 @@ sap.ui.define(
 
       },
 
-      onAddPress: function () {
+      onAddPress:async function(){
+
         var oTable = this.byId("idTableAddProduct");
         var that = this;
         // Get the selected items (rows) from the table
@@ -171,6 +172,54 @@ sap.ui.define(
         var oModel = this.getOwnerComponent().getModel("ModelV2")
         // Check if there are selected items
         if (aSelectedItems.length > 0) {
+            var selectedData = [];
+
+            // Loop through the selected rows and collect data
+            aSelectedItems.forEach(async function (oItem) {
+                var oBindingContext = oItem.getBindingContext();
+                var oData = oBindingContext.getObject();  // Get the data object of the row
+
+                // Get the Input control for Picking Quantity
+                var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+
+                // Get the value entered in the Input field
+                var sPickingQty = oInput.getValue();
+
+                // Add the relevant data along with the entered Picking Quantity
+                var dummy={
+                  Productno_sapProductno: oData.sapProductno,
+                  SelectedQuantity:sPickingQty
+                };
+                selectedData.push({
+                    product: oData.sapProductno,
+                    description: oData.description,
+                    actualQuantity: oData.quantity, // Replace with the correct field name from the data
+                    pickingQuantity: sPickingQty
+                });
+                try{
+                  
+                  var oProductExistStatus =await  that.productExists(oModel, dummy.Productno_sapProductno)
+                  if(oProductExistStatus){
+                    console.log("exixts")
+                    oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
+                      success: function () {
+                        
+                      }.bind(this),
+                      error: function (oError) {
+                          sap.m.MessageBox.error("Failed " + oError.message);
+                      }.bind(this)
+                  });
+                    return
+                  }
+                  that.createData(oModel,dummy,"/SelectedProduct")
+                  
+                }
+                catch(error){
+                  console.log(error)
+                  MessageToast.show(error)
+                }
+                
+=======
           var selectedData = [];
 
           // Loop through the selected rows and collect data
@@ -194,6 +243,7 @@ sap.ui.define(
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
               pickingQuantity: sPickingQty
+
             });
             try {
 
@@ -246,21 +296,33 @@ sap.ui.define(
       productExists: async function (oModel, product) {
         console.log(product)
         return new Promise((resolve, reject) => {
-          oModel.read("/SelectedProduct", {
-            filters: [
-              new Filter("Productno_sapProductno", FilterOperator.EQ, product),
 
+            oModel.read("/SelectedProduct", {
+                // filters: [
+                //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+ 
+ 
+                // ],
+                success: function (oData) {
+                  console.log(oData.results)
+                        var oProduct1 = oData.results.filter(checkProduct)
+                        function checkProduct(v) {
+                            console.log(v)
+                            return v.Productno_sapProductno === product ;
+                        }
+                        console.log(oProduct1)
+                        console.log(oProduct1.length)
+                        resolve(oProduct1.length > 0);
+                       
+                   
+                },
+                error: function () {
+                    reject(
+                        "An error occurred while checking username existence."
+                    );
+                }
+            })
 
-            ],
-            success: function (oData) {
-              resolve(oData);
-            },
-            error: function () {
-              reject(
-                "An error occurred while checking username existence."
-              );
-            }
-          })
         })
       },
 
