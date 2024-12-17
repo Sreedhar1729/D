@@ -164,6 +164,7 @@
                                             class="customInput"
                                             width="100%"
                                             maxLength="200"
+                                            liveChange="onStringLiveChange"
                                         />
                                     </HBox>
 
@@ -180,6 +181,7 @@
                                             placeholder="Material Category"
                                             width="100%"
                                             liveChange="ongetSAPPress"
+                                            
                                         />
                                     </HBox>
 
@@ -196,6 +198,7 @@
                                             placeholder="Enter Length"
                                             maxLength="5"
                                             width="100%"
+                                            liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -213,6 +216,7 @@
                                             maxLength="5"
                                             width="100%"
                                             editable="true"
+                                              liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -232,6 +236,7 @@
                                             class="customInput"
                                             width="100%"
                                             maxLength="200"
+                                              liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -251,6 +256,7 @@
                                             class="customInput"
                                             width="100%"
                                             maxLength="200"
+                                              liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
