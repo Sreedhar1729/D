@@ -32,6 +32,7 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+        this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
           "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
@@ -94,6 +95,9 @@ sap.ui.define(
       _createGenericTile: async function () {
 
         console.log("Called")
+
+        var oTileContainer = this.getView().byId("idVBoxInSelectVehicleType");
+
         // Get the container where the tile will be placed
         var oTileContainer = this.byId("idVBoxInSelectVehicleType");
         //getting model
@@ -110,10 +114,76 @@ sap.ui.define(
           "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
           "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
         }
+
+        function checkRange(num) {
+          if (num < 14) {
+            return 14;  // If the number is below 14, return 14
+          } else if (num >= 14 && num <= 16) {
+            return 14;  // If the number is between 14 and 16 (inclusive), return 14
+          } else if (num >= 17 && num <= 21) {
+            return 17;  // If the number is between 17 and 21 (inclusive), return 17
+          } else if (num >= 22 && num <= 31) {
+            return 22;  // If the number is between 22 and 31 (inclusive), return 22
+          } else if (num >= 32) {
+            return 32;  // If the number is 32 or above, return 32
+          }
+          return num; // If it doesn't fit any condition (although all cases are covered)
+        }
         try {
           const oSuccessData = await this.readData(oModel, oPath, [])
           oSuccessData.results.forEach(
             function (item) {
+              let alphanumeric = item.truckType;
+              let numbers = alphanumeric.match(/\d+/g);  // This will find all sequences of digits
+
+              // Join them back together if you want the number as a single string
+              let result = parseInt(numbers.join(""));  // "123456"
+              let otructype = checkRange(result);
+              console.log(result);
+              if (item.freezed) {
+                var oId = item.truckType + "_f"
+                var oImage = oObject[`${otructype}FTF`]
+              }
+              else {
+                var oId = item.truckType
+                var oImage = oObject[`${otructype}FT`]
+              }
+              if (!(that.ogenerictitesIdarray.includes(oId))) {
+
+
+                that.ogenerictitesIdarray.push(oId)
+                var oGenericTile = new GenericTile({
+                  id: `id_generictile_${oId}`,
+                  // class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+                  header: `${item.truckType}`,   // The tile's header
+                  width: "150px",    // The tile's width
+
+                  press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+                });
+                oGenericTile.addStyleClass("sapUiSmallMarginEnd sapUiTinyMarginTop")
+                // Create the TileContent control
+                var oTileContent = new TileContent({
+                  id: `id_idTileContent_${oId}`
+                });
+
+                // Create the ImageContent inside the TileContent
+                var oImageContent = new ImageContent({
+                  id: `id_idImageContentN_${oId}`,
+                  src: `${oImage}`
+                });
+
+                // Add the ImageContent to the TileContent
+                oTileContent.setContent(oImageContent);
+
+                // Add the TileContent to the GenericTile
+                oGenericTile.addTileContent(oTileContent);
+
+                // Now, add the GenericTile to the container
+                oTileContainer.addItem(oGenericTile);
+
+                
+               
+              }
               if (item.freezed) {
                 var oId = item.truckType + "_f"
                 var oImage = oObject[`${item.truckType}F`]
@@ -172,58 +242,10 @@ sap.ui.define(
         var oModel = this.getOwnerComponent().getModel("ModelV2")
         // Check if there are selected items
         if (aSelectedItems.length > 0) {
-            var selectedData = [];
-
-            // Loop through the selected rows and collect data
-            aSelectedItems.forEach(async function (oItem) {
-                var oBindingContext = oItem.getBindingContext();
-                var oData = oBindingContext.getObject();  // Get the data object of the row
-
-                // Get the Input control for Picking Quantity
-                var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
-
-                // Get the value entered in the Input field
-                var sPickingQty = oInput.getValue();
-
-                // Add the relevant data along with the entered Picking Quantity
-                var dummy={
-                  Productno_sapProductno: oData.sapProductno,
-                  SelectedQuantity:sPickingQty
-                };
-                selectedData.push({
-                    product: oData.sapProductno,
-                    description: oData.description,
-                    actualQuantity: oData.quantity, // Replace with the correct field name from the data
-                    pickingQuantity: sPickingQty
-                });
-                try{
-                  
-                  var oProductExistStatus =await  that.productExists(oModel, dummy.Productno_sapProductno)
-                  if(oProductExistStatus){
-                    console.log("exixts")
-                    oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
-                      success: function () {
-                        
-                      }.bind(this),
-                      error: function (oError) {
-                          sap.m.MessageBox.error("Failed " + oError.message);
-                      }.bind(this)
-                  });
-                    return
-                  }
-                  that.createData(oModel,dummy,"/SelectedProduct")
-                  
-                }
-                catch(error){
-                  console.log(error)
-                  MessageToast.show(error)
-                }
-                
-=======
           var selectedData = [];
 
           // Loop through the selected rows and collect data
-          aSelectedItems.forEach(function (oItem) {
+          aSelectedItems.forEach(async function (oItem) {
             var oBindingContext = oItem.getBindingContext();
             var oData = oBindingContext.getObject();  // Get the data object of the row
 
@@ -243,11 +265,10 @@ sap.ui.define(
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
               pickingQuantity: sPickingQty
-
             });
             try {
 
-              var oProductExistStatus = that.productExists(oModel, dummy.Productno_sapProductno)
+              var oProductExistStatus = await that.productExists(oModel, dummy.Productno_sapProductno)
               if (oProductExistStatus) {
                 console.log("exixts")
                 oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
@@ -687,6 +708,7 @@ sap.ui.define(
           MessageBox.warning("Please Enter all Values");
           return;
         }
+        //oPayload.truckType=`${oPayload.truckType}FT`
         const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
@@ -1454,19 +1476,38 @@ sap.ui.define(
 
 
 
+  //     onPressGenericTilePress: function (oEvent) {
+  //       debugger;
+
+  //       const oTile = oEvent.getSource();
+  //       const header = oTile.getHeader();
+        
+  // // // Move to the next step in the wizar
+  // // const oWizard = this.byId("idProcesstWizard_changeQueue");
+  // // oWizard.nextStep();
+  
+  //       // Reinitialize the 3D scene
+  //       this._init3DScene();
+
+
+  //       // Fetch dimensions based on truck type
+  //       const oModel = this.getOwnerComponent().getModel("ModelV2");
+  //       const sPath = "/TruckTypes";
+  //       const oFilter = new Filter("truckType", FilterOperator.EQ, header);
+
+
       onPressGenericTilePress: function (oEvent) {
         debugger;
 
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
-        
-  // // Move to the next step in the wizar
-  // const oWizard = this.byId("idProcesstWizard_changeQueue");
-  // oWizard.nextStep();
-  
+
+        // Move to the next step in the wizar
+        const oWizard = this.byId("idProcesstWizard_changeQueue");
+        oWizard.nextStep();
+
         // Reinitialize the 3D scene
         this._init3DScene();
-
 
         // Fetch dimensions based on truck type
         const oModel = this.getOwnerComponent().getModel("ModelV2");

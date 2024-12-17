@@ -804,7 +804,7 @@
                         icon="Image/SimulateIconTabBar.gif"
                         text="Simulate"
                         iconColor="Marker"
-                        class="iconTabBar backgroundColour sapMITBItem sapMITBFilterIcon sapMITBSelected sapMITBFilterCritical"
+                        class=" backgroundColour sapMITBItem sapMITBFilterIcon sapMITBSelected sapMITBFilterCritical"
                         interactionMode="Auto"
                     >
                         <Wizard
@@ -1070,16 +1070,18 @@
 
                                 <!-- tiles VBox -->
                                   <VBox id="VboxIdtiles"
-                                  height="150%">
+                                  >
                                   
 
-                                <HBox
+                                <FlexBox wrap="Wrap"
                                     id="idVBoxInSelectVehicleType"
-                            
+                                
+
+
                                 >
 
                                  
-                                </HBox>
+                                </FlexBox>
                                 </VBox>
 
                                 <Button
