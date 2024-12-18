@@ -166,7 +166,7 @@ sap.ui.define(
 
       },
 
-      onAddPress:async function(){
+      onAddPress: async function () {
 
         var oTable = this.byId("idTableAddProduct");
         var that = this;
@@ -177,64 +177,16 @@ sap.ui.define(
         if (aSelectedItems.length > 0) {
           var selectedData = [];
 
-            // Loop through the selected rows and collect data
-            aSelectedItems.forEach(async function (oItem) {
-                var oBindingContext = oItem.getBindingContext();
-                var oData = oBindingContext.getObject();  // Get the data object of the row
+          // Loop through the selected rows and collect data
+          aSelectedItems.forEach(async function (oItem) {
+            var oBindingContext = oItem.getBindingContext();
+            var oData = oBindingContext.getObject();  // Get the data object of the row
 
             // Get the Input control for Picking Quantity
             var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
 
             // Get the value entered in the Input field
             var sPickingQty = oInput.getValue();
-
-                // Add the relevant data along with the entered Picking Quantity
-                var dummy={
-                  Productno_sapProductno: oData.sapProductno,
-                  SelectedQuantity:sPickingQty
-                };
-                selectedData.push({
-                    product: oData.sapProductno,
-                    description: oData.description,
-                    actualQuantity: oData.quantity, // Replace with the correct field name from the data
-                    pickingQuantity: sPickingQty
-                });
-                try{
-                  
-                  var oProductExistStatus =await  that.productExists(oModel, dummy.Productno_sapProductno)
-                  if(oProductExistStatus){
-                    console.log("exixts")
-                    oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
-                      success: function () {
-                        
-                      }.bind(this),
-                      error: function (oError) {
-                          sap.m.MessageBox.error("Failed " + oError.message);
-                      }.bind(this)
-                  });
-                    return
-                  }
-                  that.createData(oModel,dummy,"/SelectedProduct")
-                  
-                }
-                catch(error){
-                  console.log(error)
-                  MessageToast.show(error)
-                }
-                
-=======
-          var selectedData = [];
-
-          // Loop through the selected rows and collect data
-          aSelectedItems.forEach(function (oItem) {
-            var oBindingContext = oItem.getBindingContext();
-            var oData = oBindingContext.getObject();  // Get the data object of the row
-
-                // Get the Input control for Picking Quantity
-                var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
-
-                // Get the value entered in the Input field
-                var sPickingQty = oInput.getValue();
 
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
@@ -246,11 +198,10 @@ sap.ui.define(
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
               pickingQuantity: sPickingQty
-
             });
             try {
 
-              var oProductExistStatus = that.productExists(oModel, dummy.Productno_sapProductno)
+              var oProductExistStatus = await that.productExists(oModel, dummy.Productno_sapProductno)
               if (oProductExistStatus) {
                 console.log("exixts")
                 oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
@@ -283,7 +234,6 @@ sap.ui.define(
 
       },
 
-
       onPressGenericTilePress: function () {
 
         var oWizard = this.byId("idWizardIn_simulate");
@@ -300,31 +250,31 @@ sap.ui.define(
         console.log(product)
         return new Promise((resolve, reject) => {
 
-            oModel.read("/SelectedProduct", {
-                // filters: [
-                //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
- 
- 
-                // ],
-                success: function (oData) {
-                  console.log(oData.results)
-                        var oProduct1 = oData.results.filter(checkProduct)
-                        function checkProduct(v) {
-                            console.log(v)
-                            return v.Productno_sapProductno === product ;
-                        }
-                        console.log(oProduct1)
-                        console.log(oProduct1.length)
-                        resolve(oProduct1.length > 0);
-                       
-                   
-                },
-                error: function () {
-                    reject(
-                        "An error occurred while checking username existence."
-                    );
-                }
-            })
+          oModel.read("/SelectedProduct", {
+            // filters: [
+            //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+
+
+            // ],
+            success: function (oData) {
+              console.log(oData.results)
+              var oProduct1 = oData.results.filter(checkProduct)
+              function checkProduct(v) {
+                console.log(v)
+                return v.Productno_sapProductno === product;
+              }
+              console.log(oProduct1)
+              console.log(oProduct1.length)
+              resolve(oProduct1.length > 0);
+
+
+            },
+            error: function () {
+              reject(
+                "An error occurred while checking username existence."
+              );
+            }
+          })
 
         })
       },
@@ -1457,24 +1407,24 @@ sap.ui.define(
 
 
 
-  //     onPressGenericTilePress: function (oEvent) {
-  //       debugger;
+      //     onPressGenericTilePress: function (oEvent) {
+      //       debugger;
 
-  //       const oTile = oEvent.getSource();
-  //       const header = oTile.getHeader();
-        
-  // // // Move to the next step in the wizar
-  // // const oWizard = this.byId("idProcesstWizard_changeQueue");
-  // // oWizard.nextStep();
-  
-  //       // Reinitialize the 3D scene
-  //       this._init3DScene();
+      //       const oTile = oEvent.getSource();
+      //       const header = oTile.getHeader();
+
+      // // // Move to the next step in the wizar
+      // // const oWizard = this.byId("idProcesstWizard_changeQueue");
+      // // oWizard.nextStep();
+
+      //       // Reinitialize the 3D scene
+      //       this._init3DScene();
 
 
-  //       // Fetch dimensions based on truck type
-  //       const oModel = this.getOwnerComponent().getModel("ModelV2");
-  //       const sPath = "/TruckTypes";
-  //       const oFilter = new Filter("truckType", FilterOperator.EQ, header);
+      //       // Fetch dimensions based on truck type
+      //       const oModel = this.getOwnerComponent().getModel("ModelV2");
+      //       const sPath = "/TruckTypes";
+      //       const oFilter = new Filter("truckType", FilterOperator.EQ, header);
 
 
       onPressGenericTilePress: function (oEvent) {
@@ -1482,11 +1432,11 @@ sap.ui.define(
 
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
-        
-  // // Move to the next step in the wizar
-  // const oWizard = this.byId("idProcesstWizard_changeQueue");
-  // oWizard.nextStep();
-  
+
+        // // Move to the next step in the wizar
+        // const oWizard = this.byId("idProcesstWizard_changeQueue");
+        // oWizard.nextStep();
+
         // Reinitialize the 3D scene
         this._init3DScene();
 
@@ -1742,56 +1692,56 @@ sap.ui.define(
         this._animate();
       },
 
-     _createContainer: function (height, length, width) {
-  // Remove any existing container
-  if (this.container) {
-      this.scene.remove(this.container);
-      this.container.geometry.dispose();
-      this.container.material.dispose();
-  }
- 
-  // Create geometry for the container
-  const geometry = new THREE.BoxGeometry(length, height, width);
- 
-  // Create a material with transparency and metallic properties
-  const material = new THREE.MeshPhysicalMaterial({
-      color: 0x007BFF, // Blue color
-      metalness: 0.8, // Metallic effect
-      roughness: 0.4, // Smooth metallic surface
-      opacity: 0.5, // Transparent effect
-      transparent: true, // Enable transparency
-      side: THREE.DoubleSide // Render both sides
-  });
- 
-  // Create the container mesh
-  this.container = new THREE.Mesh(geometry, material);
-  this.container.castShadow = true;
-  this.container.receiveShadow = true;
- 
-  // Position the container at the origin
-  this.container.position.set(0, height / 2, 0);
- 
-  // Add the container to the scene
-  this.scene.add(this.container);
- 
-  console.log("Container created with dimensions:", { height, length, width });
- 
- 
-  var oTable = this.getView().byId("idAddProductsTableIn_simulate");
-   
-    // Fetch all selected items from the table
-    var aSelectedItems = oTable.getSelectedItems();
- 
-    // Extract objects bound to each selected item
-    var aSelectedData = aSelectedItems.map(function(oItem) {
-        return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
-    });
-   
-    // Log the array of selected objects
-    console.log("Selected Items Data as Objects:", aSelectedData);
-    this._createProducts(aSelectedData, height, length, width);
- 
-},
+      _createContainer: function (height, length, width) {
+        // Remove any existing container
+        if (this.container) {
+          this.scene.remove(this.container);
+          this.container.geometry.dispose();
+          this.container.material.dispose();
+        }
+
+        // Create geometry for the container
+        const geometry = new THREE.BoxGeometry(length, height, width);
+
+        // Create a material with transparency and metallic properties
+        const material = new THREE.MeshPhysicalMaterial({
+          color: 0x007BFF, // Blue color
+          metalness: 0.8, // Metallic effect
+          roughness: 0.4, // Smooth metallic surface
+          opacity: 0.5, // Transparent effect
+          transparent: true, // Enable transparency
+          side: THREE.DoubleSide // Render both sides
+        });
+
+        // Create the container mesh
+        this.container = new THREE.Mesh(geometry, material);
+        this.container.castShadow = true;
+        this.container.receiveShadow = true;
+
+        // Position the container at the origin
+        this.container.position.set(0, height / 2, 0);
+
+        // Add the container to the scene
+        this.scene.add(this.container);
+
+        console.log("Container created with dimensions:", { height, length, width });
+
+
+        var oTable = this.getView().byId("idAddProductsTableIn_simulate");
+
+        // Fetch all selected items from the table
+        var aSelectedItems = oTable.getSelectedItems();
+
+        // Extract objects bound to each selected item
+        var aSelectedData = aSelectedItems.map(function (oItem) {
+          return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+        });
+
+        // Log the array of selected objects
+        console.log("Selected Items Data as Objects:", aSelectedData);
+        this._createProducts(aSelectedData, height, length, width);
+
+      },
 
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -1830,305 +1780,305 @@ sap.ui.define(
           evt.getSource().setValueStateText("Please enter a valid number.");
         } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
       },
-         /**validations */
+      /**validations */
 
-         onStringLiveChange: function (evt) {
-          var inputValue = evt.getParameter("value");
-          var regex = /^[A-Za-z\s]+$/; // Regular expression for String numbers  
-          if (!regex.test(inputValue)) {
-            evt.getSource().setValueState(sap.ui.core.ValueState.Error);
-            evt.getSource().setValueStateText("Please enter Characters only");
-          } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
-        },
-        /**validations */
+      onStringLiveChange: function (evt) {
+        var inputValue = evt.getParameter("value");
+        var regex = /^[A-Za-z\s]+$/; // Regular expression for String numbers  
+        if (!regex.test(inputValue)) {
+          evt.getSource().setValueState(sap.ui.core.ValueState.Error);
+          evt.getSource().setValueStateText("Please enter Characters only");
+        } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
+      },
+      /**validations */
 
-        onLiveChangeVehType: function (evt) {
-          var inputValue = evt.getParameter("value");
-          const regex = /^\d+FT$/;
-          if (!regex.test(inputValue)) {
-            evt.getSource().setValueState(sap.ui.core.ValueState.Error);
-            evt.getSource().setValueStateText("Please enter exactly 2 digits followed by 'FT' (e.g., 13FT)");
-          } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
-        },
-
-
-onPressAddProductInSimulate:async function() {
-  if (!this.oValueDialog) {
-    this.oValueDialog = await this.loadFragment("ValueHelp");
-  }
-  this.oValueDialog.open();
-},
-onValueHelpWithSuggestionsCancelPress: function () {
-  this._oVHDWithSuggestions.close();
-},
-onPressTile: function (oEvent) {
-  var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
-  var oObjectImage = {
-      Box: [
-          "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
-      ],
-      Bigbags: [
-          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
-      ],
-      Sacks: [
-        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
-        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
-        "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
-      ],
-      Barrels: [
-          "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
-      ],
-      Roll: [
-          "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
-      ],
-      Pipes: [
-         "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
-          "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
-      ],
-      Bulk: [
-          // Add URLs for Bulk images if needed
-      ]
-  };
-
-  // Check if there are images for the clicked tile
-  if (oObjectImage[sHeader]) {
-      var aImages = oObjectImage[sHeader];
-      
-      this.byId("idImageInStack").setSrc(aImages[0]);
-      this.byId("idImage3InStack").setSrc(aImages[1]);
-      this.byId("idImage43InStack").setSrc(aImages[2]);
-      
-      // Show the image display section
-      this.byId("imageDisplayHBox").setVisible(true);
-  }
-},
-
-onPressAddButtonValueHelp:function(){
-  var oTable = this.byId("idAssignedQueueTable_changeQueue");
-			var aSelectedItems = oTable.getSelectedItems();
-},
+      onLiveChangeVehType: function (evt) {
+        var inputValue = evt.getParameter("value");
+        const regex = /^\d+FT$/;
+        if (!regex.test(inputValue)) {
+          evt.getSource().setValueState(sap.ui.core.ValueState.Error);
+          evt.getSource().setValueStateText("Please enter exactly 2 digits followed by 'FT' (e.g., 13FT)");
+        } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
+      },
 
 
-onPressBigBagsTile:function(){
-  var oModel1 = new JSONModel({
+      onPressAddProductInSimulate: async function () {
+        if (!this.oValueDialog) {
+          this.oValueDialog = await this.loadFragment("ValueHelp");
+        }
+        this.oValueDialog.open();
+      },
+      onValueHelpWithSuggestionsCancelPress: function () {
+        this._oVHDWithSuggestions.close();
+      },
+      onPressTile: function (oEvent) {
+        var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
+        var oObjectImage = {
+          Box: [
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
+          ],
+          Bigbags: [
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
+          ],
+          Sacks: [
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
+          ],
+          Barrels: [
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
+          ],
+          Roll: [
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+          ],
+          Pipes: [
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+          ],
+          Bulk: [
+            // Add URLs for Bulk images if needed
+          ]
+        };
 
-    //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
-    //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
-    //  newImageUrl2 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg", // Update with your logic
-    
-});
-this.getView().byId("idVbox4InStack").setModel(oModel1,"oimage");
- 
-    var oModel = this.getView().byId("idVbox4InStack").getModel();
-    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-    // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-//     oModel.setProperty("/imageUrl", newImageUrl);
-// /this.getView()by.setModel(oJsonModelVeh, "VehModel");
-const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
-console.log(oPayload);
-},
-      
-_init3DScene: function () {
-  // If the scene and renderer exist, clear them
-  if (this.scene) {
-      while (this.scene.children.length > 0) {
-          this.scene.remove(this.scene.children[0]);
-      }
-  } else {
-      this.scene = new THREE.Scene();
-      this.scene.background = new THREE.Color(0xFFA500); // Orange background
-  }
+        // Check if there are images for the clicked tile
+        if (oObjectImage[sHeader]) {
+          var aImages = oObjectImage[sHeader];
 
-  // If the renderer exists, dispose of its DOM element
-  if (this.renderer) {
-      this.renderer.domElement.remove();
-      this.renderer.dispose();
-  }
+          this.byId("idImageInStack").setSrc(aImages[0]);
+          this.byId("idImage3InStack").setSrc(aImages[1]);
+          this.byId("idImage43InStack").setSrc(aImages[2]);
 
-  // Set up the renderer and append it to the canvas container
-  this.renderer = new THREE.WebGLRenderer({ alpha: true });
-  const canvasContainer = document.getElementById("threejsCanvas");
-  if (!canvasContainer) {
-      console.error("Canvas container not found");
-      return;
-  }
-  this.renderer.setSize(800, 600); // Increase canvas size
-  this.renderer.outputEncoding = THREE.sRGBEncoding;
-  this.renderer.shadowMap.enabled = true;
-  canvasContainer.appendChild(this.renderer.domElement);
+          // Show the image display section
+          this.byId("imageDisplayHBox").setVisible(true);
+        }
+      },
 
-  // Set up the camera with increased initial zoom
-  this.camera = new THREE.PerspectiveCamera(40, 1000 / 700, 0.1, 1000); // Reduced FOV to make objects appear larger
-  this.camera.position.set(10, 10, 20); // Position closer to the scene for larger appearance
-  // Set up orbit controls
-  this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-  this.controls.enableDamping = true;
-
-  // Add lighting
-  this._addLighting();
-
-  // Start the animation loop
-  this._animate();
-},
-
-_createContainer: function (height, length, width) {
-  // Remove any existing container
-  if (this.container) {
-      this.scene.remove(this.container);
-      this.container.geometry.dispose();
-      this.container.material.dispose();
-  }
-
-  // Create geometry for the container
-  const geometry = new THREE.BoxGeometry(length, height, width);
-
-  // Create a material with transparency and metallic properties
-  const material = new THREE.MeshPhysicalMaterial({
-      color: 0x007BFF, // Blue color
-      metalness: 0.8, // Metallic effect
-      roughness: 0.4, // Smooth metallic surface
-      opacity: 0.5, // Transparent effect
-      transparent: true, // Enable transparency
-      side: THREE.DoubleSide // Render both sides
-  });
-
-  // Create the container mesh
-  this.container = new THREE.Mesh(geometry, material);
-  this.container.castShadow = true;
-  this.container.receiveShadow = true;
-
-  // Position the container at the origin
-  this.container.position.set(0, height / 2, 0);
-
-  // Add the container to the scene
-  this.scene.add(this.container);
-
-  console.log("Container created with dimensions:", { height, length, width });
+      onPressAddButtonValueHelp: function () {
+        var oTable = this.byId("idAssignedQueueTable_changeQueue");
+        var aSelectedItems = oTable.getSelectedItems();
+      },
 
 
-  var oTable = this.getView().byId("idAddProductsTableIn_simulate");
-    
-    // Fetch all selected items from the table
-    var aSelectedItems = oTable.getSelectedItems();
+      onPressBigBagsTile: function () {
+        var oModel1 = new JSONModel({
 
-    // Extract objects bound to each selected item
-    var aSelectedData = aSelectedItems.map(function(oItem) {
-        return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
-    });
-    
-    // Log the array of selected objects
-    console.log("Selected Items Data as Objects:", aSelectedData);
-    this._createProducts(aSelectedData, height, length, width);
-  
-},
-_createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-  let currentX = -containerLength / 2; // Start at one corner of the container
-  let currentY = 0; // Start at the base
-  let currentZ = -containerWidth / 2; // Start at one edge along the Z-axis
+          //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
+          //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
+          //  newImageUrl2 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg", // Update with your logic
 
-  selectedProducts.forEach(product => {
-      const SelectedQuantity = parseInt(product.SelectedQuantity); // Get the quantity of products
-      const productLength = parseFloat(product.Productno.length);
-      const productHeight = parseFloat(product.Productno.height);
-      const productWidth = parseFloat(product.Productno.width);
+        });
+        this.getView().byId("idVbox4InStack").setModel(oModel1, "oimage");
 
-      for (let i = 0; i < SelectedQuantity; i++) {
-          // Check if the product fits in the container
-          if (
+        var oModel = this.getView().byId("idVbox4InStack").getModel();
+        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
+        //     oModel.setProperty("/imageUrl", newImageUrl);
+        // /this.getView()by.setModel(oJsonModelVeh, "VehModel");
+        const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
+        console.log(oPayload);
+      },
+
+      _init3DScene: function () {
+        // If the scene and renderer exist, clear them
+        if (this.scene) {
+          while (this.scene.children.length > 0) {
+            this.scene.remove(this.scene.children[0]);
+          }
+        } else {
+          this.scene = new THREE.Scene();
+          this.scene.background = new THREE.Color(0xFFA500); // Orange background
+        }
+
+        // If the renderer exists, dispose of its DOM element
+        if (this.renderer) {
+          this.renderer.domElement.remove();
+          this.renderer.dispose();
+        }
+
+        // Set up the renderer and append it to the canvas container
+        this.renderer = new THREE.WebGLRenderer({ alpha: true });
+        const canvasContainer = document.getElementById("threejsCanvas");
+        if (!canvasContainer) {
+          console.error("Canvas container not found");
+          return;
+        }
+        this.renderer.setSize(800, 600); // Increase canvas size
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.shadowMap.enabled = true;
+        canvasContainer.appendChild(this.renderer.domElement);
+
+        // Set up the camera with increased initial zoom
+        this.camera = new THREE.PerspectiveCamera(40, 1000 / 700, 0.1, 1000); // Reduced FOV to make objects appear larger
+        this.camera.position.set(10, 10, 20); // Position closer to the scene for larger appearance
+        // Set up orbit controls
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+
+        // Add lighting
+        this._addLighting();
+
+        // Start the animation loop
+        this._animate();
+      },
+
+      _createContainer: function (height, length, width) {
+        // Remove any existing container
+        if (this.container) {
+          this.scene.remove(this.container);
+          this.container.geometry.dispose();
+          this.container.material.dispose();
+        }
+
+        // Create geometry for the container
+        const geometry = new THREE.BoxGeometry(length, height, width);
+
+        // Create a material with transparency and metallic properties
+        const material = new THREE.MeshPhysicalMaterial({
+          color: 0x007BFF, // Blue color
+          metalness: 0.8, // Metallic effect
+          roughness: 0.4, // Smooth metallic surface
+          opacity: 0.5, // Transparent effect
+          transparent: true, // Enable transparency
+          side: THREE.DoubleSide // Render both sides
+        });
+
+        // Create the container mesh
+        this.container = new THREE.Mesh(geometry, material);
+        this.container.castShadow = true;
+        this.container.receiveShadow = true;
+
+        // Position the container at the origin
+        this.container.position.set(0, height / 2, 0);
+
+        // Add the container to the scene
+        this.scene.add(this.container);
+
+        console.log("Container created with dimensions:", { height, length, width });
+
+
+        var oTable = this.getView().byId("idAddProductsTableIn_simulate");
+
+        // Fetch all selected items from the table
+        var aSelectedItems = oTable.getSelectedItems();
+
+        // Extract objects bound to each selected item
+        var aSelectedData = aSelectedItems.map(function (oItem) {
+          return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+        });
+
+        // Log the array of selected objects
+        console.log("Selected Items Data as Objects:", aSelectedData);
+        this._createProducts(aSelectedData, height, length, width);
+
+      },
+      _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+        let currentX = -containerLength / 2; // Start at one corner of the container
+        let currentY = 0; // Start at the base
+        let currentZ = -containerWidth / 2; // Start at one edge along the Z-axis
+
+        selectedProducts.forEach(product => {
+          const SelectedQuantity = parseInt(product.SelectedQuantity); // Get the quantity of products
+          const productLength = parseFloat(product.Productno.length);
+          const productHeight = parseFloat(product.Productno.height);
+          const productWidth = parseFloat(product.Productno.width);
+
+          for (let i = 0; i < SelectedQuantity; i++) {
+            // Check if the product fits in the container
+            if (
               currentY + productHeight > containerHeight ||
               currentX + productLength > containerLength / 2 ||
               currentZ + productWidth > containerWidth / 2
-          ) {
+            ) {
               console.warn("Product does not fit in the container, skipping:", product);
               return;
-          }
+            }
 
-          // Create geometry and material for the product
-          const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-          const productMaterial = new THREE.MeshStandardMaterial({
+            // Create geometry and material for the product
+            const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+            const productMaterial = new THREE.MeshStandardMaterial({
               color: 0x00FF00, // Green color for products
               metalness: 0.5,
               roughness: 0.5
-          });
+            });
 
-          // Create the product mesh
-          const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-          productMesh.castShadow = true;
-          productMesh.receiveShadow = true;
+            // Create the product mesh
+            const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+            productMesh.castShadow = true;
+            productMesh.receiveShadow = true;
 
-          // Dynamically adjust product positions based on container dimensions
-          productMesh.position.set(
+            // Dynamically adjust product positions based on container dimensions
+            productMesh.position.set(
               currentX + productLength / 2, // Center the product along the X-axis
               currentY + productHeight / 2, // Stack on top of other products
               currentZ + productWidth / 2 // Center the product along the Z-axis
-          );
+            );
 
-          // Add the product to the scene
-          this.scene.add(productMesh);
+            // Add the product to the scene
+            this.scene.add(productMesh);
 
-          // Update positions for the next product
-          currentX += productLength;
+            // Update positions for the next product
+            currentX += productLength;
 
-          // Check if we need to move to the next row (Z-axis)
-          if (currentX + productLength > containerLength / 2) {
+            // Check if we need to move to the next row (Z-axis)
+            if (currentX + productLength > containerLength / 2) {
               currentX = -containerLength / 2; // Reset X to the start
               currentZ += productWidth;
 
               // Check if we need to stack products (Y-axis)
               if (currentZ + productWidth > containerWidth / 2) {
-                  currentZ = -containerWidth / 2; // Reset Z to the start
-                  currentY += productHeight;
+                currentZ = -containerWidth / 2; // Reset Z to the start
+                currentY += productHeight;
 
-                  // Stop placement if we exceed the container's height
-                  if (currentY + productHeight > containerHeight) {
-                      console.warn("Container is full, cannot place more products.");
-                      return;
-                  }
+                // Stop placement if we exceed the container's height
+                if (currentY + productHeight > containerHeight) {
+                  console.warn("Container is full, cannot place more products.");
+                  return;
+                }
               }
+            }
           }
+        });
+
+        console.log("Products dynamically positioned based on container size.");
+      },
+
+
+      _addLighting: function () {
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        this.scene.add(ambientLight);
+
+        const lightPositions = [
+          { x: 50, y: 50, z: 50 },
+          { x: -50, y: 50, z: 50 },
+          { x: 50, y: 50, z: -50 },
+          { x: -50, y: 50, z: -50 }
+        ];
+
+        lightPositions.forEach((pos) => {
+          const light = new THREE.DirectionalLight(0xffffff, 0.5);
+          light.position.set(pos.x, pos.y, pos.z);
+          this.scene.add(light);
+        });
+      },
+
+      _animate: function () {
+        const animate = () => {
+          requestAnimationFrame(animate);
+          this.controls.update();
+          this.renderer.render(this.scene, this.camera);
+        };
+        animate();
       }
-  });
-
-  console.log("Products dynamically positioned based on container size.");
-},
-
-
-_addLighting: function () {
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-  this.scene.add(ambientLight);
-
-  const lightPositions = [
-      { x: 50, y: 50, z: 50 },
-      { x: -50, y: 50, z: 50 },
-      { x: 50, y: 50, z: -50 },
-      { x: -50, y: 50, z: -50 }
-  ];
-
-  lightPositions.forEach((pos) => {
-      const light = new THREE.DirectionalLight(0xffffff, 0.5);
-      light.position.set(pos.x, pos.y, pos.z);
-      this.scene.add(light);
-  });
-},
-
-_animate: function () {
-  const animate = () => {
-      requestAnimationFrame(animate);
-      this.controls.update();
-      this.renderer.render(this.scene, this.camera);
-  };
-  animate();
-}
 
     });
   });
