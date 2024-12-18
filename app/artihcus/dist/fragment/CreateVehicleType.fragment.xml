@@ -9,7 +9,7 @@
         draggable="true"
         contentWidth="20%"
         contentHeight="30%"
-        title="Create Vehicle"
+        title="Create New Vehicle Type"
     >
         <beginButton>
             <Button
@@ -142,7 +142,6 @@
                     id="idCapacityInput"
                     value="{VehModel>/capacity}"
                 />
-<<<<<<< HEAD:app/artihcus/dist/fragment/CreateVehicleType.fragment.xml
 
                 <Label
                     id="idFreezedLabel"
@@ -165,8 +164,6 @@
                     
                     value="{VehModel>/freezed}"
                 /> -->
-=======
->>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e:app/artihcus/dist/fragment/CreateInAddEquipment.fragment.xml
             </form:SimpleForm>
         </content>
     </Dialog>

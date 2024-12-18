@@ -14,14 +14,14 @@
     >
         <beginButton>
             <Button
-                id="tfs"
+                id="idCancelBtnIn_StackDialog"
                 text="cancel"
                 press="onCancelInStackDialog"
             />
         </beginButton>
         <content>
             <form:SimpleForm
-                id="idSidgnUpFortrm_CS"
+                id="idSimpleFormIn_StackDialog"
                 editable="true"
                 layout="ResponsiveGridLayout"
                 labelSpanXL="4"
@@ -36,191 +36,161 @@
                 columnsL="2"
                 columnsM="1"
             >
-                <VBox
-                    id="VboxIdStacktiles"
-                    height="150%"
-                    width="150%"
-                >
-                    <Text
-                        id="idCargoText"
-                        text="Select Cargo Type"
-                        class="textSimulate"
-                    />
-                    <HBox id="idStackTiles">
-                        <GenericTile
-                            id="generictile"
+       <VBox
+    id="VboxIdStacktiles"
+    height="150%"
+    width="150%">
+    
+    <Text
+        id="idCargoTextIn_StackDialog"
+        text="Select Cargo Type"
+        class="textSimulate" />
+    
+    <HBox id="idHboxStackTilesIn_StackDialog">
+        <!-- Define your tiles here -->
+        <GenericTile
+                            id="generictileIn_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Box"
                             width="100px"
-                          
-                        >
-                            <TileContent id="idTileContent">
+                         press="onPressTile">
+                        
+                            <TileContent id="idTileContentIn_StackDialog">
                                 <ImageContent
-                                    id="idImageContent"
+                                    id="idImageContent1In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/box.svg"
                                 />
                             </TileContent>
                         </GenericTile>
-
+ 
                         <GenericTile
-                            id="generictile1"
+                            id="generictile1In_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Bigbags"
                             width="100px"
-                            press="onPressBigBagsTile"
-                        >
-                            <TileContent id="idTileContent1">
+                            press="onPressTile">
+                        
+                            <TileContent id="idTileContent1In_StackDialog">
                                 <ImageContent
-                                    id="idImageContent1"
+                                    id="idImageContent2In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/bigbags.svg"
                                 />
                             </TileContent>
                         </GenericTile>
-
+ 
                         <GenericTile
-                            id="generictile2"
+                            id="generictile2In_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Sacks"
                             width="100px"
-                          
-                        >
-                            <TileContent id="idTileContent2">
+                                     press="onPressTile">
+                         
+                        
+                            <TileContent id="idTileContent2In_StackDialog">
                                 <ImageContent
-                                    id="idImageContent2"
+                                    id="idImageContent3In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/sacks.svg?"
                                 />
                             </TileContent>
                         </GenericTile>
-
+ 
                         <GenericTile
-                            id="generictile3"
+                            id="generictile3In_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Barrels"
                             width="100px"
+                                     press="onPressTile">
                          
-                        >
-                            <TileContent id="idTileContent3">
+                        
+                            <TileContent id="idTileContent3In_StackDialog">
                                 <ImageContent
-                                    id="idImageContent3"
+                                    id="idImageContent34In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/barrels.svg"
                                 />
                             </TileContent>
                         </GenericTile>
-
+ 
                         <GenericTile
-                            id="generictile16"
+                            id="generictile16In_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Roll"
                             width="100px"
-                           
-                        >
-                            <TileContent id="idTileContent16">
+                           press="onPressTile">
+                        
+                            <TileContent id="idTileContent16In_StackDialog">
                                 <ImageContent
-                                    id="idImageContent16"
+                                    id="idImageContent16In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/pipes.svg"
                                 />
                             </TileContent>
                         </GenericTile>
-
+ 
                         <GenericTile
-                            id="generictile168"
+                            id="generictile5In_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Pipes"
                             width="100px"
-                         
+                         press="onPressTile">
                        
-                        >
-                            <TileContent id="idTileContent166">
+                       
+                            <TileContent id="idTileContent5In_StackDialog">
                                 <ImageContent
-                                    id="idImageContent168"
+                                    id="idImageContent5In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/rolls.svg"
                                 />
                             </TileContent>
                         </GenericTile>
-
+ 
                         <GenericTile
-                            id="generictile8"
+                            id="generictile8In_StackDialog"
                             class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
                             header="Bulk"
                             width="100px"
                            
-                            press="press"
-                        >
-                            <TileContent id="idTileContent6">
+                           press="onPressTile">
+                        
+                            <TileContent id="idTileContent6In_StackDialog">
                                 <ImageContent
-                                    id="idImageContent11"
+                                    id="idImageContent11In_StackDialog"
                                     src="https://www.searates.com/design/images/apps/load-calculator/bulk.svg"
                                 />
                             </TileContent>
                         </GenericTile>
-                    </HBox>
-                    <Text
-                        id="idSelectStack"
-                        text="Stuffing Settings"
-                          class="textSimulate"
-                    />
-                     <VBox id="idVbox4InStack" >
-                    <HBox id="idHbox2InStack">
-                        <Image
-                            id="idImageInStack"
-                            src="{oimage>/newImageUrl}"
-                        />
-                        <!-- https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg -->
-                        <VBox id="idVBoxInStack">
-                            <CheckBox
-                                id="idCheckbox1"
-                                text="Layers Count"
-                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
-                            />
+        <!-- Add other tiles similarly -->
+    </HBox>
 
-                            <Input
-                                id="idInputCheckbox"
-                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
-                            />
-                        </VBox>
-                    </HBox>
-                    <HBox id="idHbox3InStack">
-   
-                        <Image
-                            id="idImage3InStack"
-                            src="{oimage>/newImageUrl1}"
-                        />
-                        <!-- src="https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg" -->
-                        <VBox id="idVBoxInStack4">
-                            <CheckBox
-                                id="idCheckbox41"
-                                text="Height"
-                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
-                            />
-                            <Input
-                                id="idInputCheckbo4x"
-                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
-                                value="mm"
-                            />
-                        </VBox>
-                    </HBox>
-                   
-                    <HBox id="idHbox4InStack">
-                        <Image
-                            id="idImage43InStack"
-                            src="{oimage>/newImageUrl2}"
-                        />
-                        <!-- https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg -->
-                        <VBox id="idVBoxInStack46">
-                            <CheckBox
-                                id="idCheckbox461"
-                                text="Mass"
-                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
-                            />
-                            <Input
-                                id="idInputCheckbo64x"
-                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
-                                value="Kg"
-                            />
-                        </VBox>
-                    </HBox>
-                    </VBox>
-                </VBox>
+    <Text
+        id="idStuffingSettingsTextIn_StackDialog"
+        text="Stuffing Settings"
+        class="textSimulate" />
+
+    <!-- Image Display Section -->
+    <VBox id="imageDisplayHBox" visible="false">
+        <HBox id="idHbox2InStack">
+            <Image id="idImageInStack" width="100%" />
+            <VBox id="idVBoxInStack" class="sapUiLargeMarginBegin sapUiMediumMarginTop" >
+                <CheckBox id="idCheckbox1" text="Layers Count" />
+                <Input id="idInputCheckboxIn_StackDialog" />
+            </VBox>
+        </HBox>
+        
+        <HBox id="idHbox3InStack">
+            <Image id="idImage3InStack" width="100%"/>
+            <VBox id="idVBoxInStack4" class="sapUiLargeMarginBegin sapUiMediumMarginTop">
+                <CheckBox id="idCheckbox41" text="Height" />
+                <Input id="idInputCheckbo4xIn_StackDialog" value="mm" />
+            </VBox>
+        </HBox>
+
+        <HBox id="idHbox4InStack">
+            <Image id="idImage43InStack" width="100%" />
+            <VBox id="idVBoxInStack46" class="sapUiLargeMarginBegin sapUiMediumMarginTop">
+                <CheckBox id="idCheckbox461" text="Mass" />
+                <Input id="idInputCheckbo64xIn_StackDialog" value="Kg" />
+            </VBox>
+        </HBox>
+    </VBox>
+</VBox>
             </form:SimpleForm>
         </content>
     </Dialog>

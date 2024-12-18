@@ -64,11 +64,7 @@ sap.ui.define(
 
             _init3DScene: function () {
                 this.scene = new THREE.Scene();
-<<<<<<< HEAD
      
-=======
-                this.scene.background = new THREE.Color(0x808080);
->>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(20, 15, 30);
 
@@ -217,18 +213,12 @@ sap.ui.define(
 
             _addTransparentContainer: function (truckScene) {
                 const containerDimensions = { width: 2.13, height: 2.13, length: 4.27 };
-<<<<<<< HEAD
 
-=======
-            
-                // Create geometry for the container
->>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
                 const containerGeometry = new THREE.BoxGeometry(
                     containerDimensions.length,
                     containerDimensions.height,
                     containerDimensions.width
                 );
-<<<<<<< HEAD
 
                 const containerMaterial = new THREE.MeshBasicMaterial({
                     color: 0x00ff00,
@@ -243,53 +233,10 @@ sap.ui.define(
                
 
                 console.log("Transparent container with truck-style wheels added.");
-=======
-            
-                // Define a transparent material
-                const transparentMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x00ff00,       // Green
-                    opacity: 0.5,          // Semi-transparent
-                    transparent: true,     // Enables transparency
-                });
-            
-                // Define an opaque material for the base, visible from both sides
-                const opaqueMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x808080,       // Green
-                    transparent: false,    // Fully opaque
-                    side: THREE.DoubleSide // Make it visible from both sides
-                });
-            
-                // Assign materials to each face (6 sides: +X, -X, +Y, -Y, +Z, -Z)
-                const materials = [
-                    transparentMaterial, // Right face (+X)
-                    transparentMaterial, // Left face (-X)
-                    transparentMaterial, // Top face (+Y)
-                    opaqueMaterial,      // Bottom face (-Y, base, double-sided)
-                    transparentMaterial, // Front face (+Z)
-                    transparentMaterial, // Back face (-Z)
-                ];
-            
-                // Create the mesh with geometry and materials
-                const container = new THREE.Mesh(containerGeometry, materials);
-            
-                // Position and rotate the container
-                container.position.set(0.1, 2.05, -3.6); // Position (X, Y, Z)
-                container.rotation.y = -1.6;            // Rotate around Y-axis
-            
-                // Add the container to the scene
-                this.scene.add(container);
-            
-                console.log("Transparent container with a non-transparent double-sided base added.");
->>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
             },
-            
+
            
 
-<<<<<<< HEAD
-           
-
-=======
->>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
             _animate: function () {
                 const animate = () => {
                     requestAnimationFrame(animate);

@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 ID,sapProductno,EANUPC,length,width,height,volume,vuom,muom,uom,mCategory,description,weight,wuom,quantity,layers,mass,layersHeight
-=======
-sapProductno,length,width,height,volume,vuom,muom,uom,mCategory,description,EANUPC,weight,wuom
->>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
