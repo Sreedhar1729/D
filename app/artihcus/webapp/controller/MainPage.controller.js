@@ -35,6 +35,7 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+        this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
           "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
@@ -113,6 +114,21 @@ sap.ui.define(
           "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
           "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
         }
+
+        function checkRange(num) {
+          if (num < 14) {
+            return 14;  // If the number is below 14, return 14
+          } else if (num >= 14 && num <= 16) {
+            return 14;  // If the number is between 14 and 16 (inclusive), return 14
+          } else if (num >= 17 && num <= 21) {
+            return 17;  // If the number is between 17 and 21 (inclusive), return 17
+          } else if (num >= 22 && num <= 31) {
+            return 22;  // If the number is between 22 and 31 (inclusive), return 22
+          } else if (num >= 32) {
+            return 32;  // If the number is 32 or above, return 32
+          }
+          return num; // If it doesn't fit any condition (although all cases are covered)
+        }
         try {
           const oSuccessData = await this.readData(oModel, oPath, [])
           oSuccessData.results.forEach(
@@ -168,7 +184,6 @@ sap.ui.define(
                 
                
               }
-
             }
           )
 
@@ -247,16 +262,6 @@ sap.ui.define(
         }
 
       },
-
-      onPressGenericTilePress: function () {
-
-        var oWizard = this.byId("idWizardIn_simulate");
-        var oCurrentStep = oWizard.getCurrentStep();
-
-        oWizard.nextStep();
-
-      },
-
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
       },
@@ -279,6 +284,8 @@ sap.ui.define(
               console.log(oProduct1)
               console.log(oProduct1.length)
               resolve(oProduct1.length > 0);
+
+
             },
             error: function () {
               reject(
@@ -648,6 +655,7 @@ sap.ui.define(
           MessageBox.warning("Please Enter all Values");
           return;
         }
+        //oPayload.truckType=`${oPayload.truckType}FT`
         const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
@@ -1411,24 +1419,6 @@ sap.ui.define(
       /*  ****************************************************************************Simulation code**************************************************************************** */
 
 
-      //     onPressGenericTilePress: function (oEvent) {
-      //       debugger;
-
-      //       const oTile = oEvent.getSource();
-      //       const header = oTile.getHeader();
-
-      // // // Move to the next step in the wizar
-      // // const oWizard = this.byId("idProcesstWizard_changeQueue");
-      // // oWizard.nextStep();
-
-      //       // Reinitialize the 3D scene
-      //       this._init3DScene();
-
-
-      //       // Fetch dimensions based on truck type
-      //       const oModel = this.getOwnerComponent().getModel("ModelV2");
-      //       const sPath = "/TruckTypes";
-      //       const oFilter = new Filter("truckType", FilterOperator.EQ, header);
 
 
       onPressGenericTilePress: function (oEvent) {
@@ -1437,13 +1427,12 @@ sap.ui.define(
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
 
-        // // Move to the next step in the wizar
-        // const oWizard = this.byId("idProcesstWizard_changeQueue");
-        // oWizard.nextStep();
+        // Move to the next step in the wizar
+        const oWizard = this.byId("idProcesstWizard_changeQueue");
+        oWizard.nextStep();
 
         // Reinitialize the 3D scene
         this._init3DScene();
-
 
         // Fetch dimensions based on truck type
         const oModel = this.getOwnerComponent().getModel("ModelV2");
@@ -1669,331 +1658,7 @@ sap.ui.define(
         this.scene.add(this.container);
 
         console.log("Container created with dimensions:", { height, length, width });
-
-        var oTable = this.getView().byId("idAddProductsTableIn_simulate");
-
-        // Fetch all selected items from the table
-        var aSelectedItems = oTable.getSelectedItems();
-
-        // Extract objects bound to each selected item
-        var aSelectedData = aSelectedItems.map(function (oItem) {
-          return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
-        });
-
-        // Log the array of selected objects
-        console.log("Selected Items Data as Objects:", aSelectedData);
-        this._createProducts(aSelectedData, height, length, width);
       },
-
-      _addLighting: function () {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        this.scene.add(ambientLight);
-
-        const lightPositions = [
-          { x: 50, y: 50, z: 50 },
-          { x: -50, y: 50, z: 50 },
-          { x: 50, y: 50, z: -50 },
-          { x: -50, y: 50, z: -50 }
-        ];
-
-        lightPositions.forEach((pos) => {
-          const light = new THREE.DirectionalLight(0xffffff, 0.5);
-          light.position.set(pos.x, pos.y, pos.z);
-          this.scene.add(light);
-        });
-      },
-
-      _animate: function () {
-        const animate = () => {
-          requestAnimationFrame(animate);
-          this.controls.update();
-          this.renderer.render(this.scene, this.camera);
-        };
-        animate();
-      },
-
-      /**validations */
-
-      onFloatLiveChange: function (evt) {
-        var inputValue = evt.getParameter("value");
-        var regex = /^-?\d+(\.\d+)?$/; // Regular expression for floating-point numbers  
-        if (!regex.test(inputValue)) {
-          evt.getSource().setValueState(sap.ui.core.ValueState.Error);
-          evt.getSource().setValueStateText("Please enter a valid number.");
-        } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
-      },
-      /**validations */
-
-      onStringLiveChange: function (evt) {
-        var inputValue = evt.getParameter("value");
-        var regex = /^[A-Za-z\s]+$/; // Regular expression for String numbers  
-        if (!regex.test(inputValue)) {
-          evt.getSource().setValueState(sap.ui.core.ValueState.Error);
-          evt.getSource().setValueStateText("Please enter Characters only");
-        } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
-      },
-      /**validations */
-
-      onLiveChangeVehType: function (evt) {
-        var inputValue = evt.getParameter("value");
-        const regex = /^\d+FT$/;
-        if (!regex.test(inputValue)) {
-          evt.getSource().setValueState(sap.ui.core.ValueState.Error);
-          evt.getSource().setValueStateText("Please enter exactly 2 digits followed by 'FT' (e.g., 13FT)");
-        } else { evt.getSource().setValueState(sap.ui.core.ValueState.None); }
-      },
-
-
-      onPressAddProductInSimulate: async function () {
-        if (!this.oValueDialog) {
-          this.oValueDialog = await this.loadFragment("ValueHelp");
-        }
-        this.oValueDialog.open();
-      },
-      onValueHelpWithSuggestionsCancelPress: function () {
-        this._oVHDWithSuggestions.close();
-      },
-      onPressTile: function (oEvent) {
-        var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
-        var oObjectImage = {
-          Box: [
-            "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
-          ],
-          Bigbags: [
-            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
-          ],
-          Sacks: [
-            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
-            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
-            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
-          ],
-          Barrels: [
-            "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
-          ],
-          Roll: [
-            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
-          ],
-          Pipes: [
-            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
-            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
-          ],
-          Bulk: [
-            // Add URLs for Bulk images if needed
-          ]
-        };
-
-        // Check if there are images for the clicked tile
-        if (oObjectImage[sHeader]) {
-          var aImages = oObjectImage[sHeader];
-
-          this.byId("idImageInStack").setSrc(aImages[0]);
-          this.byId("idImage3InStack").setSrc(aImages[1]);
-          this.byId("idImage43InStack").setSrc(aImages[2]);
-
-          // Show the image display section
-          this.byId("imageDisplayHBox").setVisible(true);
-        }
-      },
-
-      onPressAddButtonValueHelp: function () {
-        var oTable = this.byId("idAssignedQueueTable_changeQueue");
-        var aSelectedItems = oTable.getSelectedItems();
-      },
-
-
-      onPressBigBagsTile: function () {
-        var oModel1 = new JSONModel({
-
-          //  newImageUrl : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg", 
-          //  newImageUrl1 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg", 
-          //  newImageUrl2 : "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg", // Update with your logic
-
-        });
-        this.getView().byId("idVbox4InStack").setModel(oModel1, "oimage");
-
-        var oModel = this.getView().byId("idVbox4InStack").getModel();
-        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-        // var newImageUrl = "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"; // Update with your logic
-        //     oModel.setProperty("/imageUrl", newImageUrl);
-        // /this.getView()by.setModel(oJsonModelVeh, "VehModel");
-        const oPayload = this.getView().byId("idVbox4InStack").getModel("oimage").getProperty("/");
-        console.log(oPayload);
-      },
-
-      _init3DScene: function () {
-        // If the scene and renderer exist, clear them
-        if (this.scene) {
-          while (this.scene.children.length > 0) {
-            this.scene.remove(this.scene.children[0]);
-          }
-        } else {
-          this.scene = new THREE.Scene();
-          this.scene.background = new THREE.Color(0xFFA500); // Orange background
-        }
-
-        // If the renderer exists, dispose of its DOM element
-        if (this.renderer) {
-          this.renderer.domElement.remove();
-          this.renderer.dispose();
-        }
-
-        // Set up the renderer and append it to the canvas container
-        this.renderer = new THREE.WebGLRenderer({ alpha: true });
-        const canvasContainer = document.getElementById("threejsCanvas");
-        if (!canvasContainer) {
-          console.error("Canvas container not found");
-          return;
-        }
-        this.renderer.setSize(800, 600); // Increase canvas size
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
-        this.renderer.shadowMap.enabled = true;
-        canvasContainer.appendChild(this.renderer.domElement);
-
-        // Set up the camera with increased initial zoom
-        this.camera = new THREE.PerspectiveCamera(40, 1000 / 700, 0.1, 1000); // Reduced FOV to make objects appear larger
-        this.camera.position.set(10, 10, 20); // Position closer to the scene for larger appearance
-        // Set up orbit controls
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-
-        // Add lighting
-        this._addLighting();
-
-        // Start the animation loop
-        this._animate();
-      },
-
-      _createContainer: function (height, length, width) {
-        // Remove any existing container
-        if (this.container) {
-          this.scene.remove(this.container);
-          this.container.geometry.dispose();
-          this.container.material.dispose();
-        }
-
-        // Create geometry for the container
-        const geometry = new THREE.BoxGeometry(length, height, width);
-
-        // Create a material with transparency and metallic properties
-        const material = new THREE.MeshPhysicalMaterial({
-          color: 0x007BFF, // Blue color
-          metalness: 0.8, // Metallic effect
-          roughness: 0.4, // Smooth metallic surface
-          opacity: 0.5, // Transparent effect
-          transparent: true, // Enable transparency
-          side: THREE.DoubleSide // Render both sides
-        });
-
-        // Create the container mesh
-        this.container = new THREE.Mesh(geometry, material);
-        this.container.castShadow = true;
-        this.container.receiveShadow = true;
-
-        // Position the container at the origin
-        this.container.position.set(0, height / 2, 0);
-
-        // Add the container to the scene
-        this.scene.add(this.container);
-
-        console.log("Container created with dimensions:", { height, length, width });
-
-
-        var oTable = this.getView().byId("idAddProductsTableIn_simulate");
-
-        // Fetch all selected items from the table
-        var aSelectedItems = oTable.getSelectedItems();
-
-        // Extract objects bound to each selected item
-        var aSelectedData = aSelectedItems.map(function (oItem) {
-          return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
-        });
-
-        // Log the array of selected objects
-        console.log("Selected Items Data as Objects:", aSelectedData);
-        this._createProducts(aSelectedData, height, length, width);
-
-      },
-      _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-        let currentX = -containerLength / 2; // Start at one corner of the container
-        let currentY = 0; // Start at the base
-        let currentZ = -containerWidth / 2; // Start at one edge along the Z-axis
-
-        selectedProducts.forEach(product => {
-          const SelectedQuantity = parseInt(product.SelectedQuantity); // Get the quantity of products
-          const productLength = parseFloat(product.Productno.length);
-          const productHeight = parseFloat(product.Productno.height);
-          const productWidth = parseFloat(product.Productno.width);
-
-          for (let i = 0; i < SelectedQuantity; i++) {
-            // Check if the product fits in the container
-            if (
-              currentY + productHeight > containerHeight ||
-              currentX + productLength > containerLength / 2 ||
-              currentZ + productWidth > containerWidth / 2
-            ) {
-              console.warn("Product does not fit in the container, skipping:", product);
-              return;
-            }
-
-            // Create geometry and material for the product
-            const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-            const productMaterial = new THREE.MeshStandardMaterial({
-              color: 0x00FF00, // Green color for products
-              metalness: 0.5,
-              roughness: 0.5
-            });
-
-            // Create the product mesh
-            const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-            productMesh.castShadow = true;
-            productMesh.receiveShadow = true;
-
-            // Dynamically adjust product positions based on container dimensions
-            productMesh.position.set(
-              currentX + productLength / 2, // Center the product along the X-axis
-              currentY + productHeight / 2, // Stack on top of other products
-              currentZ + productWidth / 2 // Center the product along the Z-axis
-            );
-
-            // Add the product to the scene
-            this.scene.add(productMesh);
-
-            // Update positions for the next product
-            currentX += productLength;
-
-            // Check if we need to move to the next row (Z-axis)
-            if (currentX + productLength > containerLength / 2) {
-              currentX = -containerLength / 2; // Reset X to the start
-              currentZ += productWidth;
-
-              // Check if we need to stack products (Y-axis)
-              if (currentZ + productWidth > containerWidth / 2) {
-                currentZ = -containerWidth / 2; // Reset Z to the start
-                currentY += productHeight;
-
-                // Stop placement if we exceed the container's height
-                if (currentY + productHeight > containerHeight) {
-                  console.warn("Container is full, cannot place more products.");
-                  return;
-                }
-              }
-            }
-          }
-        });
-
-        console.log("Products dynamically positioned based on container size.");
-      },
-
 
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
