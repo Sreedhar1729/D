@@ -344,9 +344,10 @@
                             <!-- sample -->
                             <Image
                                 id="idImageProductGif"
-                                width="120%"
-                                height="100%"
-                                src="Image/productInBox.gif"
+                                width="70%"
+                                height="70%"
+                                src="Image/supplyChain.gif"
+                                class="sapUiLargeMarginBegin"
                             />
 
                             <!-- ghjk -->

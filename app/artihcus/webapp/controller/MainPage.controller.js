@@ -510,24 +510,8 @@ sap.ui.define(
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
-        // Check if oPayload is empty
-        if (
-          !oPayload.sapProductno ||
-          !oPayload.EANUPC ||
-          !oPayload.length ||
-          !oPayload.width ||
-          !oPayload.height ||
-          !oPayload.mCategory ||
-          !oPayload.description ||
-          !oPayload.weight ||
-          !oPayload.quantity
-        ) {
-          // console.log("Please Enter All Values");
-          MessageBox.information("Please Enter All Values");
-          return;
-        }
 
-        // Validation Logic
+        // Validation
         const validationErrors = [];
         const validateField = (fieldId, value, regex, errorMessage) => {
           const oField = oView.byId(fieldId);
@@ -540,19 +524,27 @@ sap.ui.define(
           }
         };
 
-        validateField("idDesvbncriptionInput_InitialView", oPayload.EANUPC, null, "Please enter EANUPC");
-        validateField("idDescriptionInput_InitialView", oPayload.sapProductno, null, "Enter SAP product number");
-        validateField("idInstanceNumberInput_InitialView", oPayload.length, /^\d+$/, "Length should be numeric");
-        validateField("idClientInput_InitialView", oPayload.width, /^\d+$/, "Width should be numeric");
-        validateField("idApplicationServerInput_InitialView", oPayload.height, /^\d+$/, "Height should be numeric");
-        validateField("idSystemIdInput_InitialView", oPayload.mCategory, null, "Enter category");
-        validateField("idInputDes_InitialView", oPayload.description, null, "Enter description");
-        validateField("idWeightinput_InitialView", oPayload.weight, /^\d+$/, "Weight should be numeric");
-        validateField("idApplicationServerInput_MainPage", oPayload.quantity, /^\d+$/, "Quantity should be numeric");
+        const aUserInputs = [
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
+          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
+          { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
+          { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be numeric" },
+          { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be numeric" },
+          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
+          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
+        ]
 
+        aUserInputs.forEach(async input => {
+          validateField(input.Id, input.value, input.regex, input.message)
+        })
 
+        if (validationErrors.length > 0) {
+          MessageBox.information("Please enter correct data");
+          return;
+        }
 
-        
         // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idselectuom").getSelectedKey();
         if (oSelectedItem === 'Select') {
@@ -562,7 +554,7 @@ sap.ui.define(
         oPayload.uom = oSelectedItem;
         //get the selected item
         var oSelectedItem1 = this.byId("uomSelect").getSelectedKey()
-        if (oSelectedItem1 === '') {
+        if (oSelectedItem1 === 'Select') {
           MessageBox.error("Please Select UOM!!");
           return;
         }
@@ -572,14 +564,15 @@ sap.ui.define(
         var oVolume;
 
         if (oPayload.uom === 'CM') {
-          // If UOM is in meters, calculate normally
-          oVolume = String((oPayload.length) / 100) * String((oPayload.width) / 100) * String((oPayload.height) / 100);
-          oPayload.volume = String(oVolume.toFixed(7));
-        } else {
           // If UOM is in centimeters, convert to meters before calculating
-          oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-          oPayload.volume = String((Math.round(oVolume)));
+          oVolume = (oPayload.length / 100) * (oPayload.width / 100) * (oPayload.height / 100);
+          oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
+        } else {
+          // If UOM is in meters, calculate normally in cubic meters
+          oVolume = oPayload.length * oPayload.width * oPayload.height;
+          oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
         }
+
         try {
           await this.createData(oModel, oPayload, oPath);
           this.getView().byId("ProductsTable").getBinding("items").refresh();
@@ -593,8 +586,9 @@ sap.ui.define(
           console.error(error);
           if (error.statusCode === "400") {
             MessageBox.information("Product Number and EANUPC Should be unique enter different values")
+          } else {
+            MessageToast.show("Facing technical issue");
           }
-          MessageToast.show("Facing technical issue");
         }
       },
 
