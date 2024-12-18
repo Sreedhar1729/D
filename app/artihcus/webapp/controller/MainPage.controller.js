@@ -32,18 +32,18 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
-       this.oObject={
-        "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
-        "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
-        "17FT":"https://www.searates.com/design/images/apps/load-calculator/40st.svg",
-        "17FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-        "22FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-        "22FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-        "32FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-        "32FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-       }
-       let link = this.oObject["14ft"];
-console.log(link);
+        this.oObject = {
+          "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+          "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+          "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+          "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+        }
+        let link = this.oObject["14ft"];
+        console.log(link);
         // Initialize your JSON model
         const oJsonModel1 = new sap.ui.model.json.JSONModel({ products: [] });
         this.getView().setModel(oJsonModel1, "oJsonModelProd");
@@ -100,30 +100,30 @@ console.log(link);
         var that=this;
         const oModel = this.getOwnerComponent().getModel("ModelV2"),
           oPath = "/TruckTypes";
-          var oObject={
-            "14FT":"https://www.searates.com/design/images/apps/load-calculator/20st.svg",
-            "14FTF":"https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
-            "17FT":"https://www.searates.com/design/images/apps/load-calculator/40st.svg",
-            "17FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-            "22FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-            "22FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-            "32FT":"https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-            "32FTF":"https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-           }
+        var oObject = {
+          "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+          "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+          "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+          "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+          "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+          "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+        }
         try {
           const oSuccessData = await this.readData(oModel, oPath, [])
           oSuccessData.results.forEach(
-            function(item){
-              if(item.freezed){
-                var oId=item.truckType+"_f"
-                var oImage=oObject[`${item.truckType}F`]
+            function (item) {
+              if (item.freezed) {
+                var oId = item.truckType + "_f"
+                var oImage = oObject[`${item.truckType}F`]
               }
-              else{
-                var oId=item.truckType
-                var oImage=oObject[`${item.truckType}`]
+              else {
+                var oId = item.truckType
+                var oImage = oObject[`${item.truckType}`]
               }
               var oGenericTile = new GenericTile({
-                id:`id_generictile_${oId}`,
+                id: `id_generictile_${oId}`,
                 class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
                 header: `${item.truckType}`,   // The tile's header
                 width: "150px",    // The tile's width
@@ -174,7 +174,7 @@ console.log(link);
             var selectedData = [];
 
             // Loop through the selected rows and collect data
-            aSelectedItems.forEach(function (oItem) {
+            aSelectedItems.forEach(async function (oItem) {
                 var oBindingContext = oItem.getBindingContext();
                 var oData = oBindingContext.getObject();  // Get the data object of the row
 
@@ -197,7 +197,7 @@ console.log(link);
                 });
                 try{
                   
-                  var oProductExistStatus =  that.productExists(oModel, dummy.Productno_sapProductno)
+                  var oProductExistStatus =await  that.productExists(oModel, dummy.Productno_sapProductno)
                   if(oProductExistStatus){
                     console.log("exixts")
                     oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
@@ -218,7 +218,56 @@ console.log(link);
                   MessageToast.show(error)
                 }
                 
+=======
+          var selectedData = [];
+
+          // Loop through the selected rows and collect data
+          aSelectedItems.forEach(function (oItem) {
+            var oBindingContext = oItem.getBindingContext();
+            var oData = oBindingContext.getObject();  // Get the data object of the row
+
+                // Get the Input control for Picking Quantity
+                var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+
+                // Get the value entered in the Input field
+                var sPickingQty = oInput.getValue();
+
+            // Add the relevant data along with the entered Picking Quantity
+            var dummy = {
+              Productno_sapProductno: oData.sapProductno,
+              SelectedQuantity: sPickingQty
+            };
+            selectedData.push({
+              product: oData.sapProductno,
+              description: oData.description,
+              actualQuantity: oData.quantity, // Replace with the correct field name from the data
+              pickingQuantity: sPickingQty
+
             });
+            try {
+
+              var oProductExistStatus = that.productExists(oModel, dummy.Productno_sapProductno)
+              if (oProductExistStatus) {
+                console.log("exixts")
+                oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
+                  success: function () {
+
+                  }.bind(this),
+                  error: function (oError) {
+                    sap.m.MessageBox.error("Failed " + oError.message);
+                  }.bind(this)
+                });
+                return
+              }
+              that.createData(oModel, dummy, "/SelectedProduct")
+
+            }
+            catch (error) {
+              console.log(error)
+              MessageToast.show(error)
+            }
+
+          });
 
             // Do something with the selected data, e.g., display it
             MessageToast.show("Selected Products: " + JSON.stringify(selectedData));
@@ -624,7 +673,7 @@ console.log(link);
           MessageBox.warning("Please Enter all Values");
           return;
         }
-        const oFreezeVal = oFreeze === 'Yes'?true:false;
+        const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
@@ -1392,22 +1441,21 @@ onNextPressInSeconsSrInAddVehicleType:function(){
 onPressGenericTilePress: function (oEvent) {
   debugger;
 
-  const oTile = oEvent.getSource();
-  const header = oTile.getHeader();
-
+        const oTile = oEvent.getSource();
+        const header = oTile.getHeader();
+        
   // // Move to the next step in the wizar
   // const oWizard = this.byId("idProcesstWizard_changeQueue");
   // oWizard.nextStep();
   
+        // Reinitialize the 3D scene
+        this._init3DScene();
 
 
-  // Reinitialize the 3D scene
-  this._init3DScene();
-  
-// Fetch dimensions based on truck type
-  const oModel = this.getOwnerComponent().getModel("ModelV2");
-  const sPath = "/TruckTypes";
-  const oFilter = new Filter("truckType", FilterOperator.EQ, header);
+        // Fetch dimensions based on truck type
+        const oModel = this.getOwnerComponent().getModel("ModelV2");
+        const sPath = "/TruckTypes";
+        const oFilter = new Filter("truckType", FilterOperator.EQ, header);
 
   oModel.read(sPath, {
       filters: [oFilter],
