@@ -33,7 +33,7 @@
             class="header backgroundColour"
         >
             <Image
-                id="idArtihcusIn_Mainpage"
+                id="idArthcusIn_Mainpage"
                 height="1.5rem"
                 class="sapUiTinyMarginBegin"
                 src="https://artihcus.com/assets/img/AG-logo.png"
@@ -43,7 +43,7 @@
                 text="Capacity Management"
                 wrapping="false"
                 class="TitleMain"
-                id="idTitleInMainPage"
+                id="parkinglotallotment"
             >
                 <layoutData>
                     <OverflowToolbarLayoutData
@@ -53,6 +53,22 @@
                 </layoutData>
             </Title>
 
+<<<<<<< HEAD
+=======
+            <!-- <Text
+                text="By Artihcus Global"
+                wrapping="false"
+                id="secondTitle"
+            >
+                <layoutData>
+                    <OverflowToolbarLayoutData
+                        id="_IDGenOverflowToolbarLayoutData1"
+                        priority="Disappear"
+                    />
+                </layoutData>
+            </Text> -->
+
+>>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
             <ToolbarSpacer
                 id="_IDGenToolbarSpacer"
                 width="1.125rem"
@@ -69,7 +85,7 @@
             </ToolbarSpacer>
 
             <Avatar
-                id="idGenAvatarIn_MainPage"
+                id="_IDGenAvatar"
                 src="test-resources/sap/tnt/images/Woman_avatar_01.png"
                 displaySize="S"
                 press="onAvatarPressed"
@@ -323,13 +339,35 @@
                                                         key="G"
                                                         text="Grams"
                                                     />
+<<<<<<< HEAD
 
+=======
+                                                    <!-- <core:Item
+                                                    id="_IDGenItem4"
+                                                    key="LB"
+                                                    text="Pounds"
+                                                />
+                                                <core:Item
+                                                    id="_IDGenItem5"
+                                                    key="OZ"
+                                                    text="Ounces"
+                                                /> -->
+>>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
                                                     <!-- Add more UOM options as needed -->
                                                 </items>
                                             </Select>
                                         </HBox>
                                     </HBox>
 
+<<<<<<< HEAD
+=======
+                                    <!-- <HBox
+                                        id="iDgenhboxcontainer_InitialView"
+                                        class=""
+                                        justifyContent="Center"
+                                        width="85%"
+                                    > -->
+>>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
                                     <Label id="idEmptyLabel" />
                                     <Button
                                         id="idconnectsapcancelButton_InitialView"
@@ -343,7 +381,7 @@
                             </form:SimpleForm>
                             <!-- sample -->
                             <Image
-                                id="idImageProductGif"
+                                id="rtyu"
                                 width="120%"
                                 height="100%"
                                 src="Image/productInBox.gif"
@@ -375,7 +413,7 @@
                         >
                             <Title
                                 id="Titzxdfglfghe1455896_AHUOBQ"
-                                text="Truck Details"
+                                text="Adding New vehicle:"
                             />
                             <ToolbarSpacer id="IDGevbnnTfghjoolbar345_AHUOBQ" />
                             <SearchField
@@ -763,24 +801,24 @@
                         icon="Image/SimulateIconTabBar.gif"
                         text="Simulate"
                         iconColor="Marker"
-                        class="iconTabBar backgroundColour sapMITBItem sapMITBFilterIcon sapMITBSelected sapMITBFilterCritical"
+                        class=" backgroundColour sapMITBItem sapMITBFilterIcon sapMITBSelected sapMITBFilterCritical"
                         interactionMode="Auto"
                     >
                         <Wizard
-                            id="idWizardIn_simulate"
+                            id="idProcesstWizard_changeQueue"
                             class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
                             complete="completedHandler"
                             height="auto"
                             showNextButton="false"
                         >
                             <WizardStep
-                                id="idWizardAddProductIn_simulate"
+                                id="idProcessAreaWizard_changeQueue"
                                 nextStep="ProcessGroupStep"
                                 title="Add products for simulate"
                                 icon="sap-icon://add-product"
                             >
                                 <Table
-                                    id="idAddProductsTableIn_simulate"
+                                    id="myTable"
                                     mode="MultiSelect"
                                     width="80%"
                                     growing="true"
@@ -806,7 +844,7 @@
 			width="60%"
 			>
 			<suggestionColumns>
-				<Column id="idColu">
+				<Column>
 					<Label text="Product Code"/>
 				</Column>
 				<Column>
@@ -1021,11 +1059,27 @@
                                 <!--  -->
 
                                 <!-- tiles VBox -->
+<<<<<<< HEAD
                                 <VBox
                                     id="VboxIdtiles"
                                     height="150%"
                                 >
                                     <HBox id="idVBoxInSelectVehicleType" />
+=======
+                                  <VBox id="VboxIdtiles"
+                                  >
+                                  
+
+                                <FlexBox wrap="Wrap"
+                                    id="idVBoxInSelectVehicleType"
+                                
+
+
+                                >
+
+                                 
+                                </FlexBox>
+>>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
                                 </VBox>
 
                                 <Button
@@ -1039,6 +1093,10 @@
                                 id="idProcessQueueStep_changeQueue"
                                 title="Simulated Result"
                                 icon="sap-icon://collections-management"
+<<<<<<< HEAD
+=======
+                            
+>>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
                             >
                                 <VBox
                                     id="idVBoxInVehicleType1"

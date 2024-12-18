@@ -251,6 +251,7 @@ height: 125%;
 .addingcolor{
     font-weight: bolder;
     font-size: medium;
+<<<<<<< HEAD
 }
 
 /* start of required truck CSS */
@@ -288,3 +289,6 @@ width:auto;
     aspect-ratio: auto; /* Set aspect ratio */
 }
 
+=======
+}
+>>>>>>> 85e8d7d18b33587cc78e9e671c82285acd30657e
