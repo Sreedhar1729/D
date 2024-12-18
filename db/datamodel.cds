@@ -23,6 +23,7 @@ define entity Materials {
         layers        : String;
         mass          : String;
         layersHeight      : String;
+        selectedProduct:Association  to SelectedProduct on selectedProduct.Productno=$self
 }
  
 /**Defining Vehicle Entity */

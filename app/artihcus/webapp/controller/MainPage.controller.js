@@ -1,3 +1,5 @@
+
+
 sap.ui.define(
   [
     "./BaseController",
@@ -35,6 +37,7 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+        this.ogenerictitesIdarray=[]
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
           "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
@@ -94,12 +97,84 @@ sap.ui.define(
 
 
       },
-      _createGenericTile: async function () {
+      // _createGenericTile: async function () {
 
+      //   console.log("Called")
+      //   // Get the container where the tile will be placed
+      //   var oTileContainer = this.byId("idVBoxInSelectVehicleType");
+      //   //getting model
+      //   var that = this;
+      //   const oModel = this.getOwnerComponent().getModel("ModelV2"),
+      //     oPath = "/TruckTypes";
+      //   var oObject = {
+      //     "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+      //     "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+      //     "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+      //     "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+      //   }
+      //   try {
+      //     const oSuccessData = await this.readData(oModel, oPath, [])
+      //     oSuccessData.results.forEach(
+      //       function (item) {
+      //         if (item.freezed) {
+      //           var oId = item.truckType + "_f"
+      //           var oImage = oObject[`${item.truckType}F`]
+      //         }
+      //         else {
+      //           var oId = item.truckType
+      //           var oImage = oObject[`${item.truckType}`]
+      //         }
+      //         var oGenericTile = new GenericTile({
+      //           id: `id_generictile_${oId}`,
+      //           class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+      //           header: `${item.truckType}`,   // The tile's header
+      //           width: "150px",    // The tile's width
+
+      //           press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+      //         });
+
+      //         // Create the TileContent control
+      //         var oTileContent = new TileContent({
+      //           id: `id_idTileContent_${oId}`
+      //         });
+
+      //         // Create the ImageContent inside the TileContent
+      //         var oImageContent = new ImageContent({
+      //           id: `id_idImageContentN_${oId}`,
+      //           src: `${oImage}`
+      //         });
+
+      //         // Add the ImageContent to the TileContent
+      //         oTileContent.setContent(oImageContent);
+
+      //         // Add the TileContent to the GenericTile
+      //         oGenericTile.addTileContent(oTileContent);
+
+      //         // Now, add the GenericTile to the container
+      //         oTileContainer.addItem(oGenericTile);
+      //         oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+      //       }
+      //     )
+
+      //   } catch (error) {
+      //     console.log(error)
+      //     MessageToast.show(error)
+      //   }
+
+      //   // Create the GenericTile control dynamically
+
+      // },
+
+      _createGenericTile: async function () {
+ 
         console.log("Called")
-        // Get the container where the tile will be placed
-        var oTileContainer = this.byId("idVBoxInSelectVehicleType");
-        //getting model
+ 
+        var oTileContainer = this.getView().byId("idVBoxInSelectVehicleType");
+ 
         var that = this;
         const oModel = this.getOwnerComponent().getModel("ModelV2"),
           oPath = "/TruckTypes";
@@ -113,60 +188,159 @@ sap.ui.define(
           "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
           "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
         }
+ 
+        function checkRange(num) {
+          if (num < 14) {
+            return 14;  // If the number is below 14, return 14
+          } else if (num >= 14 && num <= 16) {
+            return 14;  // If the number is between 14 and 16 (inclusive), return 14
+          } else if (num >= 17 && num <= 21) {
+            return 17;  // If the number is between 17 and 21 (inclusive), return 17
+          } else if (num >= 22 && num <= 31) {
+            return 22;  // If the number is between 22 and 31 (inclusive), return 22
+          } else if (num >= 32) {
+            return 32;  // If the number is 32 or above, return 32
+          }
+          return num; // If it doesn't fit any condition (although all cases are covered)
+        }
         try {
           const oSuccessData = await this.readData(oModel, oPath, [])
           oSuccessData.results.forEach(
             function (item) {
+              let alphanumeric = item.truckType;
+              let numbers = alphanumeric.match(/\d+/g);  // This will find all sequences of digits
+ 
+              // Join them back together if you want the number as a single string
+              let result = parseInt(numbers.join(""));  // "123456"
+              let otructype = checkRange(result);
+              console.log(result);
               if (item.freezed) {
                 var oId = item.truckType + "_f"
-                var oImage = oObject[`${item.truckType}F`]
+                var oImage = oObject[`${otructype}FTF`]
               }
               else {
                 var oId = item.truckType
-                var oImage = oObject[`${item.truckType}`]
+                var oImage = oObject[`${otructype}FT`]
               }
-              var oGenericTile = new GenericTile({
-                id: `id_generictile_${oId}`,
-                class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
-                header: `${item.truckType}`,   // The tile's header
-                width: "150px",    // The tile's width
-
-                press: that.onPressGenericTilePress.bind(that)  // Event handler for press
-              });
-
-              // Create the TileContent control
-              var oTileContent = new TileContent({
-                id: `id_idTileContent_${oId}`
-              });
-
-              // Create the ImageContent inside the TileContent
-              var oImageContent = new ImageContent({
-                id: `id_idImageContentN_${oId}`,
-                src: `${oImage}`
-              });
-
-              // Add the ImageContent to the TileContent
-              oTileContent.setContent(oImageContent);
-
-              // Add the TileContent to the GenericTile
-              oGenericTile.addTileContent(oTileContent);
-
-              // Now, add the GenericTile to the container
-              oTileContainer.addItem(oGenericTile);
-              oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+              if (!(that.ogenerictitesIdarray.includes(oId))) {
+ 
+ 
+                that.ogenerictitesIdarray.push(oId)
+                var oGenericTile = new GenericTile({
+                  id: `id_generictile_${oId}`,
+                  // class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+                  header: `${item.truckType}`,   // The tile's header
+                  width: "150px",    // The tile's width
+ 
+                  press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+                });
+                oGenericTile.addStyleClass("sapUiSmallMarginEnd sapUiTinyMarginTop")
+                // Create the TileContent control
+                var oTileContent = new TileContent({
+                  id: `id_idTileContent_${oId}`
+                });
+ 
+                // Create the ImageContent inside the TileContent
+                var oImageContent = new ImageContent({
+                  id: `id_idImageContentN_${oId}`,
+                  src: `${oImage}`
+                });
+ 
+                // Add the ImageContent to the TileContent
+                oTileContent.setContent(oImageContent);
+ 
+                // Add the TileContent to the GenericTile
+                oGenericTile.addTileContent(oTileContent);
+ 
+                // Now, add the GenericTile to the container
+                oTileContainer.addItem(oGenericTile);
+ 
+               
+               
+              }
             }
           )
-
+ 
         } catch (error) {
           console.log(error)
           MessageToast.show(error)
         }
-
+ 
         // Create the GenericTile control dynamically
-
+ 
       },
+    //   onPickingQuantityLiveChange: function(oEvent) {
+    //     var oInput = oEvent.getSource();
+    //     var oBindingContext = oInput.getBindingContext();
+    //     var selectedQuantity = parseFloat(oInput.getValue());  // Picking Quantity
+    //     var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
+    
+    //     // Validate: Picking Quantity should not be greater than Actual Quantity
+    //     if (selectedQuantity > actualQuantity) {
+    //         // Set error state on the input field
+    //         oInput.setValueState(sap.ui.core.ValueState.Error);
+    //         oInput.setValueStateText("Picking Quantity cannot be greater than Actual Quantity.");
+    //     } else {
+    //         // Clear error state
+    //         oInput.setValueState(sap.ui.core.ValueState.None);
+    //         oInput.setValueStateText("");
+    //     }
+    // },
+  //   onPickingQuantityLiveChange: function(oEvent) {
+  //     var oInput = oEvent.getSource();
+  //     var oBindingContext = oInput.getBindingContext();
+  //     var selectedQuantity = parseFloat(oInput.getValue());  // Picking Quantity
+  //     var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
+  
+  //     // Validate: Picking Quantity should not be greater than Actual Quantity
+  //     if (selectedQuantity > actualQuantity) {
+  //         // Set error state on the input field
+  //         oInput.setValueState(sap.ui.core.ValueState.Error);
+  //         oInput.setValueStateText("Picking Quantity cannot be greater than Actual Quantity.");
+  //     } else {
+  //         // Clear error state
+  //         oInput.setValueState(sap.ui.core.ValueState.None);
+  //         oInput.setValueStateText("");
+  //     }
+  // },
+  
+  onAddPress: function () {
+    var oTable = this.byId("idTableAddProduct");
+    var aSelectedItems = oTable.getSelectedItems();
+      let count=0;
+    var oModel = this.getOwnerComponent().getModel("ModelV2");
+    if (aSelectedItems.length > 0) {
+      var selectedData = [];
 
-      onAddPress: function () {
+      // Loop through the selected rows and collect data
+      aSelectedItems.forEach(function (oItem) {
+        var oBindingContext = oItem.getBindingContext();
+        var oData = oBindingContext.getObject();  // Get the data object of the row
+
+        // Get the Input control for Picking Quantity
+        var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+
+        // Get the value entered in the Input field
+        var sPickingQty = oInput.getValue();
+        var actualQuantity = oData.quantity;
+        if(parseInt(sPickingQty)>parseInt(actualQuantity) || sPickingQty==0 || parseInt(sPickingQty)<0){
+          count=count+1;
+        }
+      })
+      if(count>0){
+        MessageToast.show("Make the corrections")
+      }
+      else{
+        this.onAddPress1()
+      }
+    }else{
+      MessageToast.show("Please select atleast one product" );
+    }
+  
+   
+  },
+
+      onAddPress1: function () {
         debugger
         var oTable = this.byId("idTableAddProduct");
         var that = this;
@@ -180,6 +354,7 @@ sap.ui.define(
           return color;
         })();
         var aSelectedItems = oTable.getSelectedItems();
+        
         var oModel = this.getOwnerComponent().getModel("ModelV2")
         // Check if there are selected items
         if (aSelectedItems.length > 0) {
@@ -195,12 +370,25 @@ sap.ui.define(
 
             // Get the value entered in the Input field
             var sPickingQty = oInput.getValue();
+            var actualQuantity = oData.quantity;
+
+            // Validate if Picking Quantity is greater than Actual Quantity
+            // if (parseFloat(sPickingQty) > parseFloat(actualQuantity)) {
+            //     // Set error state and flag as invalid
+            //     oInput.setValueState(sap.ui.core.ValueState.Error);
+            //     oInput.setValueStateText("Picking Quantity cannot be greater than Actual Quantity.");
+            //     isValid = false;  // Set the validation flag to false
+            // } else {
+            //     // Clear error state if validation passes
+            //     oInput.setValueState(sap.ui.core.ValueState.None);
+            //     oInput.setValueStateText("");
+            // }
 
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
               Productno_sapProductno: oData.sapProductno,
               SelectedQuantity: sPickingQty
-          
+
             };
             var dummy2 = {
               Productno_sapProductno: oData.sapProductno,
@@ -249,7 +437,8 @@ sap.ui.define(
 
       },
 
-
+    
+    
       onPressGenericTilePress: function () {
 
         var oWizard = this.byId("idWizardIn_simulate");
@@ -265,34 +454,34 @@ sap.ui.define(
       productExists: async function (oModel, product) {
         console.log(product)
         return new Promise((resolve, reject) => {
-            oModel.read("/SelectedProduct", {
-                // filters: [
-                //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
- 
- 
-                // ],
-                success: function (oData) {
-                  console.log(oData.results)
-                        var oProduct1 = oData.results.filter(checkProduct)
-                        function checkProduct(v) {
-                            console.log(v)
-                            return v.Productno_sapProductno === product ;
-                        }
-                        console.log(oProduct1)
-                        console.log(oProduct1.length)
-                        resolve(oProduct1.length > 0);
-                       
-                   
-                },
-                error: function () {
-                    reject(
-                        "An error occurred while checking username existence."
-                    );
-                }
-            })
+          oModel.read("/SelectedProduct", {
+            // filters: [
+            //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+
+
+            // ],
+            success: function (oData) {
+              console.log(oData.results)
+              var oProduct1 = oData.results.filter(checkProduct)
+              function checkProduct(v) {
+                console.log(v)
+                return v.Productno_sapProductno === product;
+              }
+              console.log(oProduct1)
+              console.log(oProduct1.length)
+              resolve(oProduct1.length > 0);
+
+
+            },
+            error: function () {
+              reject(
+                "An error occurred while checking username existence."
+              );
+            }
+          })
         })
-    },
- 
+      },
+
 
 
       // Define your press handler
@@ -1421,13 +1610,13 @@ sap.ui.define(
 
       onPressGenericTilePress: function (oEvent) {
         debugger;
+        var oWizard = this.byId("idWizardIn_simulate");
+        var oCurrentStep = oWizard.getCurrentStep();
 
+        oWizard.nextStep();
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
 
-        // // Move to the next step in the wizar
-        // const oWizard = this.byId("idProcesstWizard_changeQueue");
-        // oWizard.nextStep();
 
 
 
@@ -1459,9 +1648,7 @@ sap.ui.define(
         });
       },
 
-      onPressAddProductInSimulate: function () {
-        // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
-      },
+    
       onPressAddProductInSimulate: async function () {
         debugger
 
@@ -1469,94 +1656,10 @@ sap.ui.define(
           this.oValueDialog = await this.loadFragment("ValueHelp");
         }
         this.oValueDialog.open();
+        
 
 
-        // this._oBasicSearchFieldWithSuggestions = new SearchField();
 
-        // Fragment.load({
-        //   name: `com.app.artihcus.fragment.ValueHelp`
-        // }).then(function(oDialogSuggestions) {
-        //   var oFilterBar = oDialogSuggestions.getFilterBar(), oColumnProductCode, oColumnProductName;
-        //   this._oVHDWithSuggestions = oDialogSuggestions;
-
-        //   this.getView().addDependent(oDialogSuggestions);
-
-        //   // Set key fields for filtering in the Define Conditions Tab
-        //   oDialogSuggestions.setRangeKeyFields([{
-        //     label: "Product Code",
-        //     key: "ProductCode",
-        //     type: "string",
-        //     typeInstance: new TypeString({}, {
-        //       maxLength: 7
-        //     })
-        //   }]);
-
-        //   // Set Basic Search for FilterBar
-        //   oFilterBar.setFilterBarExpanded(false);
-        //   oFilterBar.setBasicSearch(this._oBasicSearchFieldWithSuggestions);
-
-        //   // Trigger filter bar search when the basic search is fired
-        //   this._oBasicSearchFieldWithSuggestions.attachSearch(function() {
-        //     oFilterBar.search();
-        //   });
-
-        //   oDialogSuggestions.getTableAsync().then(function (oTable) {
-
-        //     //oTable.setModel(this.oProductsModel);
-
-        //     //For Desktop and tabled the default table is sap.ui.table.Table
-        //     if (oTable.bindRows) {
-        //       // Bind rows to the ODataModel and add columns
-        //       // oTable.bindAggregation("rows", {
-        //       //   path: "/ZSALESREPORTSuggestions",
-        //       //   events: {
-        //       //     dataReceived: function() {
-        //       //       oDialogSuggestions.update();
-        //       //     }
-        //       //   }
-        //       // });
-        //       oColumnProductCode = new UIColumn({label: new Label({text: "Product Code"}), template: new Text({wrapping: false, text: "{ProductCode}"})});
-        //       oColumnProductCode.data({
-        //         fieldName: "ProductCode"
-        //       });
-        //       oTable.addColumn(oColumnProductCode);
-
-        //       oColumnProductName = new UIColumn({label: new Label({text: "Quantity"}), template: new Text({wrapping: false, text: "{Quantity}"})});
-        //       oColumnProductName.data({
-        //         fieldName: "Quantity"
-        //       });
-        //       oTable.addColumn(oColumnProductName);
-
-        //       // oColumnDis = new UIColumn({label: new Label({text: "Dis"}), template: new Text({wrapping: false, text: "{Dis}"})});
-        //       // oColumnDis.data({
-        //       //   fieldName: ""
-        //       // });
-        //       // oTable.addColumn(oColumnQuantity);
-        //     }
-
-        //     //For Mobile the default table is sap.m.Table
-        //     // if (oTable.bindItems) {
-        //     //   // Bind items to the ODataModel and add columns
-        //     //   oTable.bindAggregation("items", {
-        //     //     path: "/ZSALESREPORTSuggestions",
-        //     //     template: new ColumnListItem({
-        //     //       cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
-        //     //     }),
-        //     //     events: {
-        //     //       dataReceived: function() {
-        //     //         oDialogSuggestions.update();
-        //     //       }
-        //     //     }
-        //     //   });
-        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Code"})}));
-        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Name"})}));
-        //     // }
-        //     oDialogSuggestions.update();
-        //   }.bind(this));
-
-        //  // oDialogSuggestions.setTokens(this._oMultiInputWithSuggestions.getTokens());
-        //   oDialogSuggestions.open();
-        // }.bind(this));
       },
       onValueHelpWithSuggestionsCancelPress: function () {
         this._oVHDWithSuggestions.close();
@@ -1690,52 +1793,52 @@ sap.ui.define(
       _createContainer: function (height, length, width) {
         // Remove any existing container
         if (this.container) {
-            this.scene.remove(this.container);
-            this.container.geometry.dispose();
-            this.container.material.dispose();
+          this.scene.remove(this.container);
+          this.container.geometry.dispose();
+          this.container.material.dispose();
         }
-      
+
         // Create geometry for the container
         const geometry = new THREE.BoxGeometry(length, height, width);
-      
+
         // Create a material with transparency and metallic properties
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0x007BFF, // Blue color
-            metalness: 0.8, // Metallic effect
-            roughness: 0.4, // Smooth metallic surface
-            opacity: 0.5, // Transparent effect
-            transparent: true, // Enable transparency
-            side: THREE.DoubleSide // Render both sides
+          color: 0x007BFF, // Blue color
+          metalness: 0.8, // Metallic effect
+          roughness: 0.4, // Smooth metallic surface
+          opacity: 0.5, // Transparent effect
+          transparent: true, // Enable transparency
+          side: THREE.DoubleSide // Render both sides
         });
-      
+
         // Create the container mesh
         this.container = new THREE.Mesh(geometry, material);
         this.container.castShadow = true;
         this.container.receiveShadow = true;
-      
+
         // Position the container at the origin
         this.container.position.set(0, height / 2, 0);
-      
+
         // Add the container to the scene
         this.scene.add(this.container);
-      
+
         console.log("Container created with dimensions:", { height, length, width });
-      
-      
+
+
         var oTable = this.getView().byId("idAddProductsTableIn_simulate");
-          
-          // Fetch all selected items from the table
-          var aSelectedItems = oTable.getSelectedItems();
-      
-          // Extract objects bound to each selected item
-          var aSelectedData = aSelectedItems.map(function(oItem) {
-              return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
-          });
-          
-          // Log the array of selected objects
-          console.log("Selected Items Data as Objects:", aSelectedData);
-          this._createProducts(aSelectedData, height, length, width);
-        
+
+        // Fetch all selected items from the table
+        var aSelectedItems = oTable.getSelectedItems();
+
+        // Extract objects bound to each selected item
+        var aSelectedData = aSelectedItems.map(function (oItem) {
+          return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+        });
+
+        // Log the array of selected objects
+        console.log("Selected Items Data as Objects:", aSelectedData);
+        this._createProducts(aSelectedData, height, length, width);
+
       },
 
       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
@@ -1743,6 +1846,7 @@ sap.ui.define(
         let currentZ = -containerWidth / 2; // Z starting point
         let positionMap = []; // Track positions and dimensions of placed products
     
+        // Function to check the maximum height of products in the overlapping range
         const getOverlapHeight = (newXStart, newXEnd, newZStart, newZEnd) => {
             let maxHeight = 0;
     
@@ -1788,7 +1892,7 @@ sap.ui.define(
                         return;
                     }
     
-                    // Place the product
+                    // Create the main product geometry
                     const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
                     const productMaterial = new THREE.MeshStandardMaterial({
                         color: new THREE.Color(productColor),
@@ -1806,9 +1910,27 @@ sap.ui.define(
                         currentZ + productWidth / 2  // Centered Z
                     );
     
+                    // Add the product to the scene
                     this.scene.add(productMesh);
     
-                    // Update position map
+                    // Create a thin border using edges (lines) around the product
+                    const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+                    const edgesMaterial = new THREE.LineBasicMaterial({
+                        color: 0x000000,  // Black border
+                        linewidth: 1      // Thin line thickness
+                    });
+    
+                    const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                    edges.position.set(
+                        currentX + productLength / 2, // Centered X
+                        newY + productHeight / 2,    // Stack on top of overlapping height
+                        currentZ + productWidth / 2  // Centered Z
+                    );
+    
+                    // Add the border (lines) around the product
+                    this.scene.add(edges);
+    
+                    // Update position map for product placement
                     positionMap.push({
                         xStart: newXStart,
                         xEnd: newXEnd,
@@ -1836,22 +1958,26 @@ sap.ui.define(
             }
         });
     
-        console.log("All products placed successfully without gaps.");
+        console.log("All products placed successfully with thin borders.");
     },
     
-    
-    
-     
-    
-    
 
-    
-    
-    
-    
-    
-      
-      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
       _addLighting: function () {

@@ -101,8 +101,9 @@
                                             text="{quantity}"
                                         />
 										 <Input
+                                          liveChange="onPickingQuantityLiveChange"
 											id="idTableColumnListTextPickingQty"
-                                            value=""
+                                            value="{selectedProduct/SelectedQuantity}"
                                         />
                                       
                                     </cells>
