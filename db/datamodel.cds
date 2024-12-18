@@ -43,4 +43,5 @@ define entity SelectedProduct {
        key Productno     : Association to Materials;
         Truckdetails     : Association to TruckTypes;
         SelectedQuantity : String;
+        color: String;
 }

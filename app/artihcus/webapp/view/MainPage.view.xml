@@ -1023,7 +1023,7 @@
                                                 />
                                                  <Text
                                                     id="_IDGenTextert11"
-                                                    text="Color"
+                                                    text="{color}"
                                                 />
                                                  <Button
                                                     id="_IDGenTextert12"
