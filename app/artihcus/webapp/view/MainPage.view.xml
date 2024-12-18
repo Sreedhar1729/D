@@ -33,7 +33,7 @@
             class="header backgroundColour"
         >
             <Image
-                id="idArtihcusIn_Mainpage"
+                id="idArthcusIn_Mainpage"
                 height="1.5rem"
                 class="sapUiTinyMarginBegin"
                 src="https://artihcus.com/assets/img/AG-logo.png"
@@ -43,7 +43,7 @@
                 text="Capacity Management"
                 wrapping="false"
                 class="TitleMain"
-                id="idTitleInMainPage"
+                id="parkinglotallotment"
             >
                 <layoutData>
                     <OverflowToolbarLayoutData
@@ -53,7 +53,18 @@
                 </layoutData>
             </Title>
 
-           
+            <!-- <Text
+                text="By Artihcus Global"
+                wrapping="false"
+                id="secondTitle"
+            >
+                <layoutData>
+                    <OverflowToolbarLayoutData
+                        id="_IDGenOverflowToolbarLayoutData1"
+                        priority="Disappear"
+                    />
+                </layoutData>
+            </Text> -->
 
             <ToolbarSpacer
                 id="_IDGenToolbarSpacer"
@@ -71,7 +82,7 @@
             </ToolbarSpacer>
 
             <Avatar
-                id="idGenAvatarIn_MainPage"
+                id="_IDGenAvatar"
                 src="test-resources/sap/tnt/images/Woman_avatar_01.png"
                 displaySize="S"
                 press="onAvatarPressed"
@@ -164,7 +175,6 @@
                                             class="customInput"
                                             width="100%"
                                             maxLength="200"
-                                            liveChange="onStringLiveChange"
                                         />
                                     </HBox>
 
@@ -181,7 +191,6 @@
                                             placeholder="Material Category"
                                             width="100%"
                                             liveChange="ongetSAPPress"
-                                            
                                         />
                                     </HBox>
 
@@ -198,7 +207,6 @@
                                             placeholder="Enter Length"
                                             maxLength="5"
                                             width="100%"
-                                            liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -216,7 +224,6 @@
                                             maxLength="5"
                                             width="100%"
                                             editable="true"
-                                              liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -236,7 +243,6 @@
                                             class="customInput"
                                             width="100%"
                                             maxLength="200"
-                                              liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -256,7 +262,6 @@
                                             class="customInput"
                                             width="100%"
                                             maxLength="200"
-                                              liveChange="onFloatLiveChange"
                                         />
                                     </HBox>
 
@@ -341,14 +346,28 @@
                                                         key="G"
                                                         text="Grams"
                                                     />
-                                                    
+                                                    <!-- <core:Item
+                                                    id="_IDGenItem4"
+                                                    key="LB"
+                                                    text="Pounds"
+                                                />
+                                                <core:Item
+                                                    id="_IDGenItem5"
+                                                    key="OZ"
+                                                    text="Ounces"
+                                                /> -->
                                                     <!-- Add more UOM options as needed -->
                                                 </items>
                                             </ComboBox>
                                         </HBox>
                                     </HBox>
 
-                                   
+                                    <!-- <HBox
+                                        id="iDgenhboxcontainer_InitialView"
+                                        class=""
+                                        justifyContent="Center"
+                                        width="85%"
+                                    > -->
                                     <Label id="idEmptyLabel" />
                                     <Button
                                         id="idconnectsapcancelButton_InitialView"
@@ -362,7 +381,7 @@
                             </form:SimpleForm>
                             <!-- sample -->
                             <Image
-                                id="idImageProductGif"
+                                id="rtyu"
                                 width="120%"
                                 height="100%"
                                 src="Image/productInBox.gif"
@@ -394,7 +413,7 @@
                         >
                             <Title
                                 id="Titzxdfglfghe1455896_AHUOBQ"
-                                text="Truck Details"
+                                text="Adding New vehicle:"
                             />
                             <ToolbarSpacer id="IDGevbnnTfghjoolbar345_AHUOBQ" />
                             <SearchField
@@ -808,20 +827,20 @@
                         interactionMode="Auto"
                     >
                         <Wizard
-                            id="idWizardIn_simulate"
+                            id="idProcesstWizard_changeQueue"
                             class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
                             complete="completedHandler"
                             height="auto"
                             showNextButton="false"
                         >
                             <WizardStep
-                                id="idWizardAddProductIn_simulate"
+                                id="idProcessAreaWizard_changeQueue"
                                 nextStep="ProcessGroupStep"
                                 title="Add products for simulate"
                                 icon="sap-icon://add-product"
                             >
                                 <Table
-                                    id="idAddProductsTableIn_simulate"
+                                    id="myTable"
                                     mode="MultiSelect"
                                     width="80%"
                                     growing="true"
@@ -850,7 +869,7 @@
 			width="60%"
 			>
 			<suggestionColumns>
-				<Column id="idColu">
+				<Column>
 					<Label text="Product Code"/>
 				</Column>
 				<Column>
@@ -1095,7 +1114,7 @@
                                 id="idProcessQueueStep_changeQueue"
                                 title="Simulated Result"
                                 icon="sap-icon://collections-management"
-                                
+                            
                             >
                             <VBox id="idVBoxInVehicleType1" wrap="Wrap" alignContent="Stretch" alignItems="Stretch">
                             <HBox id="idHBoxInVehicleType1"  justifyContent="Start" alignItems="Stretch" wrap="Wrap" fitContainer="true" class="sapUiResponsoiveMargin">
