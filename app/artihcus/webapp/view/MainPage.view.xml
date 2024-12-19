@@ -53,8 +53,6 @@
                 </layoutData>
             </Title>
 
-           
-
             <ToolbarSpacer
                 id="_IDGenToolbarSpacer"
                 width="1.125rem"
@@ -235,9 +233,7 @@
                                         />
                                     </HBox>
 
-                                    <HBox
-                                        id="idhboxApplicationServer_MainPage"
-                                    >
+                                    <HBox id="idhboxApplicationServer_MainPage">
                                         <Label
                                             id="idLableApplicationServer_MainPage"
                                             text="Quantity:"
@@ -253,7 +249,6 @@
                                             maxLength="200"
                                         />
                                     </HBox>
-
 
                                     <HBox id="idhboxService_InitialView">
                                         <Label
@@ -335,14 +330,13 @@
                                                         key="G"
                                                         text="Grams"
                                                     />
-                                                    
+
                                                     <!-- Add more UOM options as needed -->
                                                 </items>
                                             </ComboBox>
                                         </HBox>
                                     </HBox>
 
-                                   
                                     <Label id="idEmptyLabel" />
                                     <Button
                                         id="idconnectsapcancelButton_InitialView"
@@ -438,10 +432,9 @@
                             class="backgroundColour"
                             width="85%"
                         >
-                            <columns >
+                            <columns>
                                 <Column
                                     id="_IcvbnmvbnDGenC"
-                                 
                                     class="backgroundColour"
                                 >
                                     <!-- Set specific widths -->
@@ -450,64 +443,43 @@
                                         text="TruckType"
                                     />
                                 </Column>
-                                <Column
-                                    id="_IcfgvbgbnmhnDGenC"
-                                       
-                                >
+                                <Column id="_IcfgvbgbnmhnDGenC">
                                     <Text
                                         id="_IvbhcfvghDcvbvbnnGe1"
                                         text="Length (M)"
                                     />
                                 </Column>
-                                <Column
-                                    id="_IcvbgbnmhnDGenC"
-                                      
-                                >
+                                <Column id="_IcvbgbnmhnDGenC">
                                     <Text
                                         id="_IvbhDcvbvbnnGe1"
                                         text="Width (M)"
                                     />
                                 </Column>
-                                <Column
-                                    id="_IDvbnvgbnmGenCo"
-                                        
-                                >
+                                <Column id="_IDvbnvgbnmGenCo">
                                     <Text
                                         id="_IDvghjbnmGen"
                                         text="Height (M)"
                                     />
                                 </Column>
-                                <Column
-                                    id="_IDvbnmvbnmGenCrtyuo"
-                                         
-                                >
+                                <Column id="_IDvbnmvbnmGenCrtyuo">
                                     <Text
                                         id="_IDvbnmvbnGecvn"
                                         text="Volume (m³)"
                                     />
                                 </Column>
-                                <Column
-                                    id="_IvbnDGbnmenCcvbnmo"
-                                      
-                                >
+                                <Column id="_IvbnDGbnmenCcvbnmo">
                                     <Text
                                         id="_IvbnmDwedfGenxcvj"
                                         text="Capacity (KG)"
                                     />
                                 </Column>
-                                <Column
-                                    id="_IvbnDbnmvbnGenCo"
-                                      
-                                >
+                                <Column id="_IvbnDbnmvbnGenCo">
                                     <Text
                                         id="_IcvbnmDbvbnmnGen"
                                         text="TruckWeight"
                                     />
                                 </Column>
-                                  <Column
-                                    id="_IvbnDbnmvbnGenCoFre"
-                                  
-                                >
+                                <Column id="_IvbnDbnmvbnGenCoFre">
                                     <Text
                                         id="_IcvbnmDbvbnmnGenfre"
                                         text="Freezed"
@@ -552,7 +524,7 @@
                                             id="_IDsvbdfvG10"
                                             text="{truckWeight}"
                                         />
-                                            <Text
+                                        <Text
                                             id="_IDsvbdfvG11"
                                             text="{freezed}"
                                         />
@@ -687,7 +659,7 @@
                                         text="Material Category"
                                     />
                                 </Column>
-                                 <Column id="_IDGenCcvbnmo0">
+                                <Column id="_IDGenCcvbnmo0">
                                     <Text
                                         id="_IDGenxcvjhj"
                                         text="Quantity"
@@ -755,7 +727,7 @@
                                             id="_Iext8"
                                             text="{mCategory}"
                                         />
-                                         <Text
+                                        <Text
                                             id="_Iext89"
                                             text="{quantity}"
                                         />
@@ -823,62 +795,17 @@
                                     items="{/SelectedProduct}"
                                     backgroundDesign="Transparent"
                                     growingThreshold="100"
-                                   
                                     class="backgroundColour"
                                 >
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
-                                        
-                                         
-                                         <!-- <HBox id="idHBoxInAddSimulate" visible="true">
-                                        <Label
-                                            id="idLabvbnbhnjkleDescription_InitialView"
-                                            text="Product"
-                                            width="125px"
-                                            class="sapUiTinyMarginTop overlayLabel"
-                                        />
-                                       	<MultiInput
-			id="multiInputWithSuggestions"
-			valueHelpRequest=".onValueHelpWithSuggestionsRequested"
-			width="60%"
-			>
-			<suggestionColumns>
-				<Column id="idColu">
-					<Label text="Product Code"/>
-				</Column>
-				<Column>
-					<Label text="Product Name"/>
-				</Column>
-			</suggestionColumns>
-			<suggestionRows>
-				<ColumnListItem>
-					<Label text="{ProductCode}" />
-					<Label text="{ProductName}" />
-				</ColumnListItem>
-			</suggestionRows>
-		</MultiInput>
-                                            <Label
-                                            id="idLableSystemId_InitialView"
-                                            text="Quantity"
-                                            width="125px"
-                                            class="sapUiTinyMarginTop overlayLabel"
-                                        />
-                                      
-                                        <Input
-                                            id="idSystemvghjdfghkIdIhjnput_InitialView"
-                                            value=""
-                                            placeholder=""
-                                            maxLength="3"
-                                            width="100px"
-                                        />
-                                    </HBox> -->
-                                    <Button id="idAddButtonInProductSimulate"
-                                        icon="sap-icon://add"
-                                        text="Add Product"
-                                        press="onPressAddProductInSimulate"
-                                        
-                                         />
+                                            <Button
+                                                id="idAddButtonInProductSimulate"
+                                                icon="sap-icon://add"
+                                                text="Add Product"
+                                                press="onPressAddProductInSimulate"
+                                            />
                                             <ToolbarSpacer id="as" />
 
                                             <u:FileUploader
@@ -893,17 +820,11 @@
                                                 style="Emphasized"
                                                 change="onUpload"
                                             />
-                                            <u:FileUploader
-                                                id="FileImportId"
-                                                sameFilenameAllowed="true"
-                                                iconOnly="false"
-                                                buttonOnly="true"
-                                                fileType="XLSX,xlsx"
-                                                icon="sap-icon://download"
-                                                iconFirst="true"
-                                                buttonText="Download"
-                                                style="Emphasized"
-                                                change="onImport"
+                                            <Button
+                                                id="idDownloadBtnIn_Simulate"
+                                                press="onDownloadPressInSimulate"
+                                                tooltip="Print"
+                                                class="line-md--download-outline-loop"
                                             />
                                             <u:FileUploader
                                                 id="EditId"
@@ -969,13 +890,13 @@
                                                 text="Height"
                                             />
                                         </Column>
-                                         <Column id="_IDGenCbnolumn8">
+                                        <Column id="_IDGenCbnolumn8">
                                             <Text
                                                 id="_IDGesdhjfnText8"
                                                 text="Colour"
                                             />
                                         </Column>
-                                          <Column id="_IDGenCbnolumn9">
+                                        <Column id="_IDGenCbnolumn9">
                                             <Text
                                                 id="_IDGesdhjfnText9"
                                                 text="Stack"
@@ -1021,15 +942,15 @@
                                                     id="_IDGenTextert10"
                                                     text="{Productno/height}"
                                                 />
-                                                 <Text
+                                                <Text
                                                     id="_IDGenTextert11"
                                                     text="{color}"
                                                 />
-                                                 <Button
+                                                <Button
                                                     id="_IDGenTextert12"
                                                     text=""
                                                     icon="sap-icon://action-settings"
-                                                press="onPressStackBtn"
+                                                    press="onPressStackBtn"
                                                 />
                                             </cells>
                                         </ColumnListItem>
@@ -1049,31 +970,21 @@
                                 title="Add Vehicle Type"
                                 nextStep="SimulateSetupStep"
                                 icon="sap-icon://inventory"
-                              
                             >
                                 <Toolbar id="rfty">
                                     <OverflowToolbar id="idUserfghsInfoHeade">
-                                  
                                         <ToolbarSpacer id="afghs" />
-
                                     </OverflowToolbar>
                                 </Toolbar>
 
                                 <!--  -->
-                               
 
                                 <!-- tiles VBox -->
-                                  <VBox id="VboxIdtiles"
-                                  height="150%">
-                                  
-
-                                <HBox
-                                    id="idVBoxInSelectVehicleType"
-                            
+                                <VBox
+                                    id="VboxIdtiles"
+                                    height="150%"
                                 >
-
-                                 
-                                </HBox>
+                                    <HBox id="idVBoxInSelectVehicleType" />
                                 </VBox>
 
                                 <Button
@@ -1083,67 +994,132 @@
                                 />
                             </WizardStep>
                             <!-- Queue wizard -->
-                        <WizardStep
+                            <WizardStep
                                 id="idProcessQueueStep_changeQueue"
                                 title="Simulated Result"
                                 icon="sap-icon://collections-management"
-                                
                             >
-                            <VBox id="idVBoxInVehicleType1" wrap="Wrap" alignContent="Stretch" alignItems="Stretch">
-                            <HBox id="idHBoxInVehicleType1"  justifyContent="Start" alignItems="Stretch" wrap="Wrap" fitContainer="true" class="sapUiResponsoiveMargin">
-                            <HBox id="idHBoxInVehicleType3"  alignContent="Start" alignItems="Start" justifyContent="Start">
-                            <core:HTML
-                id="threeContainer"
-                content="&lt;div id=&quot;threejsCanvas&quot; style=&quot;width: 5%; height: 5px;&quot;&gt;&lt;/div&gt;"
-                xmlns:core="sap.ui.core"
-            />
-                            </HBox>
-                               <!-- <Label id="idLabel1EmptyLabel" width="70%" ></Label> -->
-                               <HBox id="idHBoxInVehicleType5"  alignContent="Center" alignItems="Center" justifyContent="Center" class="sapUiLargeMarginBegin">
-                              <form:SimpleForm
-                                id="idGenSimpleForm1"
-                                layout="ResponsiveGridLayout"
-                                backgroundDesign="Transparent"
-                                class="sapUiLargeMarginBegin"
-                            >
-                            <Text id="idTextInSimulate"  class="sapUiLargeMarginBegin textSimulate" text="Simulated Result" />
-                              <HBox  id="idHBoxInVehicleType4" >
-                               
-                              <Text id="idTesxtInSimlate" class="sapUiLargeMarginBegin" text="Total Quantity:" />
-                              <Text id="idTesxtInSimlate11" class="sapUiTinyMarginBegin" text="" />
-                              </HBox>
-                              <Label id="idLabel1" width="10px" ></Label>
-                              <HBox  id="idHBoxInVehicleType51" >
-                              <Text id="idTesxtInSimlate14" text="Total Volume:" class="sapUiLargeMarginBegin" />
-                              <Text id="idTesxtInSimlate13" class="sapUiTinyMarginBegin" text="" />
-                              </HBox>
-                                <Label id="idLabel12" width="10px" ></Label>
-                              <HBox  id="idHBoxInVehicleType61" >
-                              <Text id="idTesxtInSimlate45" text="Total Weight:" class="sapUiLargeMarginBegin" />
-                              <Text id="idTesxtInSimlatee06" class="sapUiTinyMarginBegin" text="" />
-                              </HBox>
-                                 <Label id="idLabel3Sample" width="10px" ></Label>
-                              <HBox  id="idHBoxInVehicleTypeSample61" >
-                              <Text id="idTesxtInSimlate145" text="Remaing Capacity:" class="sapUiLargeMarginBegin" />
-                              <Text id="idTesxtInSimlateer06" class="sapUiTinyMarginBegin" text="" />
-                              </HBox>
-                               </form:SimpleForm>
-                               </HBox>
-                            </HBox>
-                           
-                            <HBox id="idHBoxInVehicleType2">
-                           
-                            
-                            </HBox>
-                           
-                             </VBox>
-                              
+                                <VBox
+                                    id="idVBoxInVehicleType1"
+                                    wrap="Wrap"
+                                    alignContent="Stretch"
+                                    alignItems="Stretch"
+                                >
+                                    <HBox
+                                        id="idHBoxInVehicleType1"
+                                        justifyContent="Start"
+                                        alignItems="Stretch"
+                                        wrap="Wrap"
+                                        fitContainer="true"
+                                        class="sapUiResponsoiveMargin"
+                                    >
+                                        <HBox
+                                            id="idHBoxInVehicleType3"
+                                            alignContent="Start"
+                                            alignItems="Start"
+                                            justifyContent="Start"
+                                        >
+                                            <core:HTML
+                                                id="threeContainer"
+                                                content="&lt;div id=&quot;threejsCanvas&quot; style=&quot;width: 5%; height: 5px;&quot;&gt;&lt;/div&gt;"
+                                                xmlns:core="sap.ui.core"
+                                            />
+                                        </HBox>
+                                        <!-- <Label id="idLabel1EmptyLabel" width="70%" ></Label> -->
+                                        <HBox
+                                            id="idHBoxInVehicleType5"
+                                            alignContent="Center"
+                                            alignItems="Center"
+                                            justifyContent="Center"
+                                            class="sapUiLargeMarginBegin"
+                                        >
+                                            <form:SimpleForm
+                                                id="idGenSimpleForm1"
+                                                layout="ResponsiveGridLayout"
+                                                backgroundDesign="Transparent"
+                                                class="sapUiLargeMarginBegin"
+                                            >
+                                                <Text
+                                                    id="idTextInSimulate"
+                                                    class="sapUiLargeMarginBegin textSimulate"
+                                                    text="Simulated Result"
+                                                />
+                                                <HBox id="idHBoxInVehicleType4">
+                                                    <Text
+                                                        id="idTesxtInSimlate"
+                                                        class="sapUiLargeMarginBegin"
+                                                        text="Total Quantity:"
+                                                    />
+                                                    <Text
+                                                        id="idTesxtInSimlate11"
+                                                        class="sapUiTinyMarginBegin"
+                                                        text=""
+                                                    />
+                                                </HBox>
+                                                <Label
+                                                    id="idLabel1"
+                                                    width="10px"
+                                                />
+                                                <HBox
+                                                    id="idHBoxInVehicleType51"
+                                                >
+                                                    <Text
+                                                        id="idTesxtInSimlate14"
+                                                        text="Total Volume:"
+                                                        class="sapUiLargeMarginBegin"
+                                                    />
+                                                    <Text
+                                                        id="idTesxtInSimlate13"
+                                                        class="sapUiTinyMarginBegin"
+                                                        text=""
+                                                    />
+                                                </HBox>
+                                                <Label
+                                                    id="idLabel12"
+                                                    width="10px"
+                                                />
+                                                <HBox
+                                                    id="idHBoxInVehicleType61"
+                                                >
+                                                    <Text
+                                                        id="idTesxtInSimlate45"
+                                                        text="Total Weight:"
+                                                        class="sapUiLargeMarginBegin"
+                                                    />
+                                                    <Text
+                                                        id="idTesxtInSimlatee06"
+                                                        class="sapUiTinyMarginBegin"
+                                                        text=""
+                                                    />
+                                                </HBox>
+                                                <Label
+                                                    id="idLabel3Sample"
+                                                    width="10px"
+                                                />
+                                                <HBox
+                                                    id="idHBoxInVehicleTypeSample61"
+                                                >
+                                                    <Text
+                                                        id="idTesxtInSimlate145"
+                                                        text="Remaing Capacity:"
+                                                        class="sapUiLargeMarginBegin"
+                                                    />
+                                                    <Text
+                                                        id="idTesxtInSimlateer06"
+                                                        class="sapUiTinyMarginBegin"
+                                                        text=""
+                                                    />
+                                                </HBox>
+                                            </form:SimpleForm>
+                                        </HBox>
+                                    </HBox>
+
+                                    <HBox id="idHBoxInVehicleType2" />
+                                </VBox>
                             </WizardStep>
                         </Wizard>
                     </IconTabFilter>
-                   
-                    </items>
-               
+                </items>
             </IconTabBar>
         </content>
     </Page>

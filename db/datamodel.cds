@@ -22,7 +22,7 @@ define entity Materials {
         quantity      : String;
         layers        : String;
         mass          : String;
-        layersHeight      : String;
+        layersHeight  : String;
         selectedProduct:Association  to SelectedProduct on selectedProduct.Productno=$self
 }
  
