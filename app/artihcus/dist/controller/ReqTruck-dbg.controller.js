@@ -64,7 +64,7 @@ sap.ui.define(
 
             _init3DScene: function () {
                 this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x808080);
+     
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(20, 15, 30);
 
@@ -131,10 +131,10 @@ sap.ui.define(
             _loadBackSideModel: function () {
                 const loader = new THREE.ColladaLoader();
                 loader.load(
-                    "models/truckBackSide2.dae",
+                    "models/truckBackSide.dae",
                     (collada) => {
                         this._processModelTextures(collada.scene);
-                        collada.scene.position.set(0, -0.3, -1);
+                        collada.scene.position.set(0, -0.2, -2);
                         collada.scene.scale.set(0.6, 0.6, 0.6);
                         this.scene.add(collada.scene);
                         console.log("Truck backside model loaded successfully.");
@@ -213,51 +213,28 @@ sap.ui.define(
 
             _addTransparentContainer: function (truckScene) {
                 const containerDimensions = { width: 2.13, height: 2.13, length: 4.27 };
-            
-                // Create geometry for the container
+
                 const containerGeometry = new THREE.BoxGeometry(
-                    containerDimensions.length,  // Length (Z-axis)
-                    containerDimensions.height,  // Height (Y-axis)
-                    containerDimensions.width    // Width (X-axis)
+                    containerDimensions.length,
+                    containerDimensions.height,
+                    containerDimensions.width
                 );
-            
-                // Define a transparent material
-                const transparentMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x00ff00,       // Green
-                    opacity: 0.5,          // Semi-transparent
-                    transparent: true,     // Enables transparency
+
+                const containerMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00ff00,
+                    opacity: 0.5,
+                    transparent: true
                 });
-            
-                // Define an opaque material for the base, visible from both sides
-                const opaqueMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x808080,       // Green
-                    transparent: false,    // Fully opaque
-                    side: THREE.DoubleSide // Make it visible from both sides
-                });
-            
-                // Assign materials to each face (6 sides: +X, -X, +Y, -Y, +Z, -Z)
-                const materials = [
-                    transparentMaterial, // Right face (+X)
-                    transparentMaterial, // Left face (-X)
-                    transparentMaterial, // Top face (+Y)
-                    opaqueMaterial,      // Bottom face (-Y, base, double-sided)
-                    transparentMaterial, // Front face (+Z)
-                    transparentMaterial, // Back face (-Z)
-                ];
-            
-                // Create the mesh with geometry and materials
-                const container = new THREE.Mesh(containerGeometry, materials);
-            
-                // Position and rotate the container
-                container.position.set(0.1, 2.05, -3.6); // Position (X, Y, Z)
-                container.rotation.y = -1.6;            // Rotate around Y-axis
-            
-                // Add the container to the scene
+
+                const container = new THREE.Mesh(containerGeometry, containerMaterial);
+                container.position.set(0.1, 2.05, -3.6);
+                container.rotation.y = -1.6 ;
                 this.scene.add(container);
-            
-                console.log("Transparent container with a non-transparent double-sided base added.");
+               
+
+                console.log("Transparent container with truck-style wheels added.");
             },
-            
+
            
 
             _animate: function () {

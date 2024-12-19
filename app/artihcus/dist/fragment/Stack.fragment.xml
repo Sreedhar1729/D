@@ -1,0 +1,227 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idStackDialog"
+        resizable="false"
+        draggable="false"
+        title="Stack"
+        class="sapMPopover sapMIBar sapMHeader-CTX widthDialog"
+        beginButton="True"
+    >
+        <beginButton>
+            <Button
+                id="tfs"
+                text="cancel"
+                press="onCancelInStackDialog"
+            />
+        </beginButton>
+        <content>
+            <form:SimpleForm
+                id="idSidgnUpFortrm_CS"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="4"
+                labelSpanL="4"
+                labelSpanM="4"
+                labelSpanS="12"
+                emptySpanXL="1"
+                emptySpanL="1"
+                emptySpanM="1"
+                emptySpanS="0"
+                columnsXL="2"
+                columnsL="2"
+                columnsM="1"
+            >
+                <VBox
+                    id="VboxIdStacktiles"
+                    height="150%"
+                    width="150%"
+                >
+                    <Text
+                        id="idCargoText"
+                        text="Select Cargo Type"
+                        class="textSimulate"
+                    />
+                    <HBox id="idStackTiles">
+                        <GenericTile
+                            id="generictile"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Box"
+                            width="100px"
+                          
+                        >
+                            <TileContent id="idTileContent">
+                                <ImageContent
+                                    id="idImageContent"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/box.svg"
+                                />
+                            </TileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            id="generictile1"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Bigbags"
+                            width="100px"
+                            press="onPressBigBagsTile"
+                        >
+                            <TileContent id="idTileContent1">
+                                <ImageContent
+                                    id="idImageContent1"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/bigbags.svg"
+                                />
+                            </TileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            id="generictile2"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Sacks"
+                            width="100px"
+                          
+                        >
+                            <TileContent id="idTileContent2">
+                                <ImageContent
+                                    id="idImageContent2"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/sacks.svg?"
+                                />
+                            </TileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            id="generictile3"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Barrels"
+                            width="100px"
+                         
+                        >
+                            <TileContent id="idTileContent3">
+                                <ImageContent
+                                    id="idImageContent3"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/barrels.svg"
+                                />
+                            </TileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            id="generictile16"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Roll"
+                            width="100px"
+                           
+                        >
+                            <TileContent id="idTileContent16">
+                                <ImageContent
+                                    id="idImageContent16"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/pipes.svg"
+                                />
+                            </TileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            id="generictile168"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Pipes"
+                            width="100px"
+                         
+                       
+                        >
+                            <TileContent id="idTileContent166">
+                                <ImageContent
+                                    id="idImageContent168"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/rolls.svg"
+                                />
+                            </TileContent>
+                        </GenericTile>
+
+                        <GenericTile
+                            id="generictile8"
+                            class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout"
+                            header="Bulk"
+                            width="100px"
+                           
+                            press="press"
+                        >
+                            <TileContent id="idTileContent6">
+                                <ImageContent
+                                    id="idImageContent11"
+                                    src="https://www.searates.com/design/images/apps/load-calculator/bulk.svg"
+                                />
+                            </TileContent>
+                        </GenericTile>
+                    </HBox>
+                    <Text
+                        id="idSelectStack"
+                        text="Stuffing Settings"
+                          class="textSimulate"
+                    />
+                     <VBox id="idVbox4InStack" >
+                    <HBox id="idHbox2InStack">
+                        <Image
+                            id="idImageInStack"
+                            src="{oimage>/newImageUrl}"
+                        />
+                        <!-- https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg -->
+                        <VBox id="idVBoxInStack">
+                            <CheckBox
+                                id="idCheckbox1"
+                                text="Layers Count"
+                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
+                            />
+
+                            <Input
+                                id="idInputCheckbox"
+                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
+                            />
+                        </VBox>
+                    </HBox>
+                    <HBox id="idHbox3InStack">
+   
+                        <Image
+                            id="idImage3InStack"
+                            src="{oimage>/newImageUrl1}"
+                        />
+                        <!-- src="https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg" -->
+                        <VBox id="idVBoxInStack4">
+                            <CheckBox
+                                id="idCheckbox41"
+                                text="Height"
+                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
+                            />
+                            <Input
+                                id="idInputCheckbo4x"
+                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
+                                value="mm"
+                            />
+                        </VBox>
+                    </HBox>
+                   
+                    <HBox id="idHbox4InStack">
+                        <Image
+                            id="idImage43InStack"
+                            src="{oimage>/newImageUrl2}"
+                        />
+                        <!-- https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg -->
+                        <VBox id="idVBoxInStack46">
+                            <CheckBox
+                                id="idCheckbox461"
+                                text="Mass"
+                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
+                            />
+                            <Input
+                                id="idInputCheckbo64x"
+                                class="sapUiTinyMarginTop sapUiLargeMarginBegin"
+                                value="Kg"
+                            />
+                        </VBox>
+                    </HBox>
+                    </VBox>
+                </VBox>
+            </form:SimpleForm>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>

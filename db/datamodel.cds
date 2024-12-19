@@ -22,6 +22,7 @@ define entity Materials {
         layers        : String;
         mass          : String;
         layars_height : string;
+        selectedProduct:Association  to SelectedProduct on selectedProduct.Productno=$self
 
 }
 

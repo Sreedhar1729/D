@@ -1,13 +1,16 @@
 sap.ui.define([
     "./BaseController",
     "sap/m/MessageToast",
-    "sap/ui/core/UIComponent"
+    "sap/m/MessageBox",
+    "sap/ui/core/UIComponent",
+
 ],
-    function (Controller, MessageToast, UIComponent) {
+    function (Controller, MessageToast, MessageBox, UIComponent) {
         "use strict";
 
     return Controller.extend("com.app.artihcus.controller.Home", {
         onInit() {
+            MessageBox.information("Hey there Developement in progress")
         },
         onLogin: async function () {
             // MessageToast.show("Login button clicked");
