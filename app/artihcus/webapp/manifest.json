@@ -32,7 +32,6 @@
           "odataVersion": "2.0"
         }
       }
-
     }
   },
   "sap.ui": {
@@ -74,9 +73,9 @@
       "oJsonModelProd": {
         "type": "sap.ui.model.json.JSONModel",
         "settings": {
-            "data": {}
+          "data": {}
         }
-    },
+      },
       "": {
         "dataSource": "mainService",
         "preload": true,
@@ -92,7 +91,8 @@
         "settings": {
           "operationMode": "Server",
           "autoExpandSelect": true,
-          "earlyRequests": true
+          "earlyRequests": true,
+          "defaultBindingMode": "OneWay"
         }
       }
     },
@@ -127,7 +127,8 @@
           "target": [
             "TargetMainPage"
           ]
-        },  {
+        },
+        {
           "name": "ReqTruck",
           "pattern": "ReqTruck",
           "target": [
