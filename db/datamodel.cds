@@ -31,12 +31,13 @@ define entity Materials {
         layers       : String;
         mass         : String;
         layersHeight : String;
+        SelectedQuantity:String;
 }
 
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
-    key freezed     : Boolean;
+        freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
@@ -51,5 +52,4 @@ define entity TruckTypes {
 define entity SelectedProduct {
     key Productno        : Association to Materials;
         Truckdetails     : Association to TruckTypes;
-        SelectedQuantity : String;
 }

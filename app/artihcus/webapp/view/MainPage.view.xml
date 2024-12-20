@@ -381,8 +381,8 @@
                             <ToolbarSpacer id="IDGevbnnTfghjoolbar345_AHUOBQ" />
                             <SearchField
                                 id="idSearchFieldcvbnvhjBinnumberTable_AHUOBQ"
-                                liveChange="onLiveBinNumberTAble"
-                                placeholder="Search Anything..."
+                                liveChange="onVehicleSearch"
+                                placeholder="Truck type, Capacity"
                                 width="25%"
                             />
 
@@ -418,7 +418,7 @@
                         <Table
                             id="idTruckTypeTable"
                             growing="true"
-                            noDataText="No Vehicle Types Available"
+                            noDataText="No vehicle types available"
                             backgroundDesign="Transparent"
                             selectionChange="onRow"
                             items="{/TruckTypes}"

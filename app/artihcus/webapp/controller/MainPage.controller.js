@@ -525,15 +525,15 @@ sap.ui.define(
         };
 
         const aUserInputs = [
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
-          { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
-          { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be numeric" },
-          { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be numeric" },
-          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
-          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
+          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
+          { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be a numeric value" },
+          { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be a numeric value" },
+          { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be a numeric value" },
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be a numeric value" },
+          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be a numeric value" }
         ]
 
         aUserInputs.forEach(async input => {
@@ -541,21 +541,23 @@ sap.ui.define(
         })
 
         if (validationErrors.length > 0) {
-          MessageBox.information("Please enter correct data");
-          return;
+          for (const errMsg of validationErrors) {
+            MessageBox.information(errMsg);
+            return true;
+          }
         }
 
         // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idselectuom").getSelectedKey();
         if (oSelectedItem === 'Select') {
-          MessageBox.error("Please Select UOM!!");
+          MessageBox.error("Please Select UOM !");
           return;
         }
         oPayload.uom = oSelectedItem;
         //get the selected item
         var oSelectedItem1 = this.byId("uomSelect").getSelectedKey()
         if (oSelectedItem1 === 'Select') {
-          MessageBox.error("Please Select UOM!!");
+          MessageBox.error("Please Select UOM for weight..!");
           return;
         }
         oPayload.muom = 'PC';
@@ -717,12 +719,16 @@ sap.ui.define(
 
       /**Editing vehical types */
       onEdit: async function () {
-        var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItem();
-        if (!oSelectedItem) {
-          MessageBox.information("Please select at least one Row for edit!");
+        var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItems();
+        if (oSelectedItem.length === 0) {
+          MessageBox.information("Please select one record");
           return;
         }
-        const oData = oSelectedItem.getBindingContext().getObject();
+        if (oSelectedItem.length > 1) {
+          MessageBox.information("Please select only one record");
+          return;
+        }
+        const oData = oSelectedItem[0].getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
         this.byId("editTruckTypeInput").setValue(oData.truckType);
         this.byId("editLengthInput").setValue(oData.length);
@@ -730,10 +736,15 @@ sap.ui.define(
         this.byId("editHeightInput").setValue(oData.height);
         this.byId("editTruckWeightInput").setValue(oData.truckWeight);
         this.byId("editCapacityInput").setValue(oData.capacity);
+        if (oData.freezed === true) {
+          this.byId("idselect_EDIT").setSelectedKey("Yes");
+        } else {
+          this.byId("idselect_EDIT").setSelectedKey("No");
+        }
       },
 
       /**Updading Edited Values */
-      onSave: async function () {
+      onSaveModifiedVehicleData: async function () {
         const updatedData = {
           truckType: this.byId("editTruckTypeInput").getValue(),
           length: this.byId("editLengthInput").getValue(),
@@ -1088,12 +1099,37 @@ sap.ui.define(
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
         sQuery = sQuery.toUpperCase();
-        if (sQuery && sQuery.length > 1) {
+        if (sQuery && sQuery.length > 0) {
           aFilter.push(new Filter("sapProductno", FilterOperator.EQ, sQuery));
         }
         var oTable = this.byId("ProductsTable");
         var oBinding = oTable.getBinding("items");
         oBinding.filter(aFilter);
+      },
+
+      /**Filtering Vehicles */
+      onVehicleSearch: function (oEvent) {
+        let aFilter = [];
+        let sQuery = oEvent.getParameter("newValue");
+        sQuery = sQuery.replace(/\s+/g, '');
+        sQuery = sQuery.toUpperCase();
+
+        if (sQuery && sQuery.length > 0) {
+          // Create individual filters for each field using "Contains"
+          let truckTypeFilter = new Filter("truckType", FilterOperator.Contains, sQuery),
+            capacityFilter = new Filter("capacity", FilterOperator.Contains, sQuery);
+          // freezedFilter = new Filter("freezed", FilterOperator.Contains, sQuery);
+
+          // Combine filters with OR logic, so that the query matches any of the fields
+          aFilter.push(new Filter({
+            filters: [capacityFilter, truckTypeFilter],
+            and: false
+          }));
+        }
+
+        // Apply the combined filter to the table's binding
+        var oTableBinding = this.byId("idTruckTypeTable").getBinding("items");
+        oTableBinding.filter(aFilter);
       },
 
       /**For creating n number of products at a time */

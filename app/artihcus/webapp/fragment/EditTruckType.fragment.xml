@@ -7,15 +7,15 @@
         id="idEditInssAddEquipmentDialog"
         resizable="true"
         draggable="true"
-        contentWidth="20%"
-        contentHeight="30%"
+        contentWidth="45%"
+        contentHeight="36%"
         title="Edit Vehicle"
     >
         <beginButton>
             <Button
                 id="idCreatessvgbhdfgjkButton"
                 text="Save"
-                press="onSave"
+                press="onSaveModifiedVehicleData"
                 type="Success"
             />
         </beginButton>
@@ -79,7 +79,7 @@
                 />
                 <Input
                     id="editHeightInput"
-                    value=" "
+                    value=""
                 />
 
                 <!-- <Label id="_IDGenLabel5" text="Unit of Measurement (UOM)" />
@@ -115,10 +115,26 @@
                     id="_IDGenLabel9"
                     text="Freezed"
                 />
-                <Input
-                    id="editFreezedInput"
-                    value=" "
-                />
+                <Select
+                    id="idselect_EDIT"
+                    width="174px"
+                >
+                    <core:Item
+                        id="ids0"
+                        key="Select"
+                        text="Select"
+                    />
+                    <core:Item
+                        id="idsel1"
+                        key="Yes"
+                        text="Yes"
+                    />
+                    <core:Item
+                        id="idItem2"
+                        key="No"
+                        text="No"
+                    />
+                </Select>
             </form:SimpleForm>
         </content>
     </Dialog>

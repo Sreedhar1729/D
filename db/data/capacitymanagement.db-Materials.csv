@@ -1,1 +1,6 @@
-ID,sapProductno,EANUPC,length,width,height,volume,vuom,muom,uom,mCategory,description,weight,wuom,quantity,layers,mass,layersHeight
+ID,sapProductno,EANUPC,length,width,height,volume,vuom,muom,uom,mCategory,description,weight,wuom,quantity,layers,mass,layersHeight,SelectedQuantity
+001,P12345,1234567890123,30,20,10,6000,cm,kg,kg,Electronics,Smartphone,200,kg,500,5,1000,15,50
+002,P67890,9876543210987,50,30,20,30000,cm,kg,kg,Furniture,Office Chair,800,kg,300,3,2400,18,30
+003,P24680,1357924680135,40,25,15,15000,cm,kg,kg,Appliances,Microwave Oven,1200,kg,200,4,4800,12,25
+004,P11223,1928374650098,60,40,25,60000,cm,kg,kg,Furniture,Wooden Desk,1500,kg,100,2,3000,25,10
+005,P33456,5678901234567,80,50,30,120000,cm,kg,kg,Sports,Treadmill,5000,kg,150,4,20000,30,20
