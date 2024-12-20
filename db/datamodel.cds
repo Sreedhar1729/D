@@ -55,8 +55,9 @@ define entity TruckTypes {
         tuom        : String;
 }
  
-define entity SelectedProduct {
-    key Productno        : Association to Materials;
+define entity SelectedProduct  {
+       key ID        : UUID;
+        Productno        : Association to Materials;
         SelectedQuantity : String;
 }
  
