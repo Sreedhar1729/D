@@ -263,29 +263,16 @@
                                         >
                                             <core:Item
                                                 id="idselit0"
-                                                key=""
-                                                text=""
+                                                key="Select"
+                                                text="Select"
                                             />
-                                            <core:Item
-                                                id="idselit"
-                                                key="PC"
-                                                text="PC"
-                                            />
-                                            <core:Item
-                                                id="idselit1"
-                                                key="KG"
-                                                text="KG"
-                                            />
+
                                             <core:Item
                                                 id="idselit2"
                                                 key="M"
                                                 text="M"
                                             />
-                                            <core:Item
-                                                id="idselit3"
-                                                key="L"
-                                                text="L"
-                                            />
+
                                             <core:Item
                                                 id="idselit4"
                                                 key="CM"
@@ -315,11 +302,15 @@
                                                 placeholder="Enter Weight"
                                                 width="70px"
                                             />
-                                            <ComboBox
+                                            <Select
                                                 id="uomSelect"
-                                                width="50%"
                                             >
                                                 <items>
+                                                    <core:Item
+                                                        id="_IDGenIt"
+                                                        key="Select"
+                                                        text="Select"
+                                                    />
                                                     <core:Item
                                                         id="_IDGenItem1"
                                                         key="KG"
@@ -333,7 +324,7 @@
 
                                                     <!-- Add more UOM options as needed -->
                                                 </items>
-                                            </ComboBox>
+                                            </Select>
                                         </HBox>
                                     </HBox>
 
@@ -800,6 +791,49 @@
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
+
+                                            <!-- <HBox id="idHBoxInAddSimulate" visible="true">
+                                        <Label
+                                            id="idLabvbnbhnjkleDescription_InitialView"
+                                            text="Product"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop overlayLabel"
+                                        />
+                                       	<MultiInput
+			id="multiInputWithSuggestions"
+			valueHelpRequest=".onValueHelpWithSuggestionsRequested"
+			width="60%"
+			>
+			<suggestionColumns>
+				<Column id="idColu">
+					<Label text="Product Code"/>
+				</Column>
+				<Column>
+					<Label text="Product Name"/>
+				</Column>
+			</suggestionColumns>
+			<suggestionRows>
+				<ColumnListItem>
+					<Label text="{ProductCode}" />
+					<Label text="{ProductName}" />
+				</ColumnListItem>
+			</suggestionRows>
+		</MultiInput>
+                                            <Label
+                                            id="idLableSystemId_InitialView"
+                                            text="Quantity"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop overlayLabel"
+                                        />
+                                      
+                                        <Input
+                                            id="idSystemvghjdfghkIdIhjnput_InitialView"
+                                            value=""
+                                            placeholder=""
+                                            maxLength="3"
+                                            width="100px"
+                                        />
+                                    </HBox> -->
                                             <Button
                                                 id="idAddButtonInProductSimulate"
                                                 icon="sap-icon://add"
@@ -912,7 +946,7 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5"
-                                                    text="{Productno_sapProductno}"
+                                                    text="{Productno/sapProductno}"
                                                 />
                                                 <Text
                                                     id="_IDGenText6"
@@ -920,7 +954,7 @@
                                                 />
                                                 <Text
                                                     id="_IDGenText8"
-                                                    text="{SelectedQuantity}"
+                                                    text="{Productno/SelectedQuantity}"
                                                 />
                                                 <Text
                                                     id="_IDGenText9"
