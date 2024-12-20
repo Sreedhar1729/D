@@ -3,156 +3,163 @@ ID: dell
 description: A simple CAP project.
 version: 1.0.0
 modules:
-  - name: dell-srv
-    type: nodejs
-    path: gen/srv
-    requires:
-      - name: uaa_dell
-      - name: dell-db
-    provides:
-      - name: srv-api
-        properties:
-          srv-url: ${default-url}
+- name: dell-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: uaa_dell
+  - name: dell-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+- name: dell-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: dell-destination-service
     parameters:
-      buildpack: nodejs_buildpack
-      readiness-health-check-http-endpoint: /health
-      readiness-health-check-type: http
-    build-parameters:
-      builder: npm
-  - name: dell-destination-content
-    type: com.sap.application.content
-    requires:
-      - name: dell-destination-service
-        parameters:
-          content-target: true
-      - name: dell_html_repo_host
-        parameters:
-          service-key:
-            name: dell_html_repo_host-key
-      - name: uaa_dell
-        parameters:
-          service-key:
-            name: uaa_dell-key
+      content-target: true
+  - name: dell_html_repo_host
     parameters:
-      content:
+      service-key:
+        name: dell_html_repo_host-key
+  - name: uaa_dell
+    parameters:
+      service-key:
+        name: uaa_dell-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: dell_dell_html_repo_host
+          ServiceInstanceName: dell-html5-app-host-service
+          ServiceKeyName: dell_html_repo_host-key
+          sap.cloud.service: dell
+        - Authentication: OAuth2UserTokenExchange
+          Name: dell_uaa_dell
+          ServiceInstanceName: dell-xsuaa-service
+          ServiceKeyName: uaa_dell-key
+          sap.cloud.service: dell
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: dell-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: dell_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - comappartihcus.zip
+      name: comappartihcus
+      target-path: resources/
+- name: comappartihcus
+  type: html5
+  path: app/artihcus
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: dell-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: dell-db
+    properties:
+      TARGET_CONTAINER: ~{hdi-container-name}
+  parameters:
+    buildpack: nodejs_buildpack
+- name: dell
+  type: approuter.nodejs
+  path: app/router
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      forwardAuthToken: true
+      name: srv-api
+      url: ~{srv-url}
+  - name: uaa_dell
+  parameters:
+    disk-quota: 256M
+    keep-existing-routes: true
+    memory: 256M
+resources:
+- name: dell-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
         instance:
           destinations:
-            - Name: dell_dell_html_repo_host
-              ServiceInstanceName: dell-html5-app-host-service
-              ServiceKeyName: dell_html_repo_host-key
-              sap.cloud.service: dell
-            - Authentication: OAuth2UserTokenExchange
-              Name: dell_uaa_dell
-              ServiceInstanceName: dell-xsuaa-service
-              ServiceKeyName: uaa_dell-key
-              sap.cloud.service: dell
-          existing_destinations_policy: ignore
-    build-parameters:
-      no-source: true
-  - name: dell-app-content
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: dell_html_repo_host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - comappartihcus.zip
-          name: comappartihcus
-          target-path: resources/
-  - name: comappartihcus
-    type: html5
-    path: app/artihcus
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms:
-        []
-
-  - name: dell-db-deployer
-    type: hdb
-    path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
-    requires:
-      - name: dell-db
-
-  - name: dell
-    type: approuter.nodejs
-    path: app/router
-    parameters:
-      keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
-      - name: uaa_dell
-resources:
-  - name: dell-destination-service
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-        init_data:
-          instance:
-            destinations:
-              - Authentication: NoAuthentication
-                Name: ui5
-                ProxyType: Internet
-                Type: HTTP
-                URL: https://ui5.sap.com
-              - Authentication: NoAuthentication
-                HTML5.DynamicDestination: true
-                HTML5.ForwardAuthToken: true
-                Name: dell-srv-api
-                ProxyType: Internet
-                Type: HTTP
-                URL: ~{srv-api/srv-url}
-            existing_destinations_policy: update
-        version: 1.0.0
-      service: destination
-      service-name: dell-destination-service
-      service-plan: lite
-    requires:
-      - name: srv-api
-  - name: dell_html_repo_host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-name: dell-html5-app-host-service
-      service-plan: app-host
-  - name: uaa_dell
-    type: org.cloudfoundry.managed-service
-    parameters:
-      path: ./xs-security.json
-      service: xsuaa
-      service-name: dell-xsuaa-service
-      service-plan: application
-      config:
-        xsappname: dell-${org}-${space}
-        tenant-mode: dedicated
-  - name: dell-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: dell-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: dell-destination-service
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: dell_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: dell-html5-app-host-service
+    service-plan: app-host
+- name: uaa_dell
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: dell-${org}-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: dell-xsuaa-service
+    service-plan: application
+- name: dell-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-container-name: ${service-name}
+- name: cross-container-service-1
+  type: org.cloudfoundry.existing-service
+  parameters:
+    service-name: ""
+  properties:
+    the-service-name: ${service-name}
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npm ci
-        - npx cds build --production
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production

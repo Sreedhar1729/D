@@ -54,9 +54,10 @@ define entity TruckTypes {
         capacity    : String;
         tuom        : String;
 }
- 
 define entity SelectedProduct {
-    key Productno        : Association to Materials;
+    
+       key Productno     : Association to Materials;
+        Truckdetails     : Association to TruckTypes;
         SelectedQuantity : String;
 }
  

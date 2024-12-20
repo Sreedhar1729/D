@@ -1,7 +1,7 @@
 sap.ui.define(
   [
     "./BaseController",
-    'sap/ui/core/Fragment', 
+    'sap/ui/core/Fragment',
     'sap/ui/model/Filter',
     "sap/ui/model/FilterOperator",
     "sap/m/IconTabBar",
@@ -183,43 +183,69 @@ sap.ui.define(
           "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
           "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
         }
+
+        function checkRange(num) {
+          if (num < 14) {
+            return 14;  // If the number is below 14, return 14
+          } else if (num >= 14 && num <= 16) {
+            return 14;  // If the number is between 14 and 16 (inclusive), return 14
+          } else if (num >= 17 && num <= 21) {
+            return 17;  // If the number is between 17 and 21 (inclusive), return 17
+          } else if (num >= 22 && num <= 31) {
+            return 22;  // If the number is between 22 and 31 (inclusive), return 22
+          } else if (num >= 32) {
+            return 32;  // If the number is 32 or above, return 32
+          }
+          return num; // If it doesn't fit any condition (although all cases are covered)
+        }
         try {
           const oSuccessData = await this.readData(oModel, oPath, [])
           oSuccessData.results.forEach(
             function (item) {
+              let alphanumeric = item.truckType;
+              let numbers = alphanumeric.match(/\d+/g);  // This will find all sequences of digits
+
+              // Join them back together if you want the number as a single string
+              let result = parseInt(numbers.join(""));  // "123456"
+              let otructype = checkRange(result);
+              console.log(result);
               if (item.freezed) {
                 var oId = item.truckType + "_f"
-                var oImage = oObject[`${item.truckType}F`]
+                var oImage = oObject[`${otructype}FTF`]
               }
               else {
                 var oId = item.truckType
-                var oImage = oObject[`${item.truckType}`]
+                var oImage = oObject[`${otructype}FT`]
               }
-              var oGenericTile = new GenericTile({
-                id: `id_generictile_${oId}`,
-                class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
-                header: `${item.truckType}`,   // The tile's header
-                width: "150px",    // The tile's width
+              if (!(that.ogenerictitesIdarray.includes(oId))) {
 
-                press: that.onPressGenericTilePress.bind(that)  // Event handler for press
-              });
 
-              // Create the TileContent control
-              var oTileContent = new TileContent({
-                id: `id_idTileContent_${oId}`
-              });
+                that.ogenerictitesIdarray.push(oId)
+                var oGenericTile = new GenericTile({
+                  id: `id_generictile_${oId}`,
+                  // class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+                  header: `${item.truckType}`,   // The tile's header
+                  width: "150px",    // The tile's width
 
-              // Create the ImageContent inside the TileContent
-              var oImageContent = new ImageContent({
-                id: `id_idImageContentN_${oId}`,
-                src: `${oImage}`
-              });
+                  press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+                });
+                oGenericTile.addStyleClass("sapUiSmallMarginEnd sapUiTinyMarginTop")
+                // Create the TileContent control
+                var oTileContent = new TileContent({
+                  id: `id_idTileContent_${oId}`
+                });
 
-              // Add the ImageContent to the TileContent
-              oTileContent.setContent(oImageContent);
+                // Create the ImageContent inside the TileContent
+                var oImageContent = new ImageContent({
+                  id: `id_idImageContentN_${oId}`,
+                  src: `${oImage}`
+                });
 
-              // Add the TileContent to the GenericTile
-              oGenericTile.addTileContent(oTileContent);
+                // Add the ImageContent to the TileContent
+                oTileContent.setContent(oImageContent);
+
+                // Add the TileContent to the GenericTile
+                oGenericTile.addTileContent(oTileContent);
 
                 // Now, add the GenericTile to the container
                 oTileContainer.addItem(oGenericTile);
@@ -315,7 +341,7 @@ sap.ui.define(
           var selectedData = [];
 
           // Loop through the selected rows and collect data
-          aSelectedItems.forEach(function (oItem) {
+          aSelectedItems.forEach(async function (oItem) {
             var oBindingContext = oItem.getBindingContext();
             var oData = oBindingContext.getObject();  // Get the data object of the row
 
@@ -348,19 +374,19 @@ sap.ui.define(
             try {
 
               await that.productExists(oModel, dummy.Productno_ID)
-            
+
               if (!(that.flag)) {
                 await that.createData(oModel, dummy2, "/SelectedProduct")
               }
-           
-             await oModel.update("/Materials('" + dummy.Productno_ID + "')",{SelectedQuantity:sPickingQty}, {
-              success: function () {
 
-              }.bind(this),
-              error: function (oError) {
-                sap.m.MessageBox.error("Failed " + oError.message);
-              }.bind(this)
-            });
+              await oModel.update("/Materials('" + dummy.Productno_ID + "')", { SelectedQuantity: sPickingQty }, {
+                success: function () {
+
+                }.bind(this),
+                error: function (oError) {
+                  sap.m.MessageBox.error("Failed " + oError.message);
+                }.bind(this)
+              });
             }
             catch (error) {
               console.log(error)
@@ -396,17 +422,17 @@ sap.ui.define(
       productExists: async function (oModel, sId) {
         console.log(sId)
         const that = this
-       await oModel.read(`/SelectedProduct('${sId}')`,{
-                // filters: [new Filter("Productno_ID", FilterOperator.EQ, sId)],
-                success:function (oData,resp) {
-                  console.log(oData);
-                  that.flag = true;
-                },
-                error:function (error) {
-                  console.error(error.message);
-                  that.flag = false;
-                },
-              })
+        await oModel.read(`/SelectedProduct('${sId}')`, {
+          // filters: [new Filter("Productno_ID", FilterOperator.EQ, sId)],
+          success: function (oData, resp) {
+            console.log(oData);
+            that.flag = true;
+          },
+          error: function (error) {
+            console.error(error.message);
+            that.flag = false;
+          },
+        })
 
         // return new Promise((resolve, reject) => {
         //   oModel.read("/SelectedProduct", {
@@ -627,7 +653,7 @@ sap.ui.define(
       // create fragment in add Eqipment page
       onPressInAddEquipment: async function () {
         if (!this.oCreateInAddEquipmentDialog) {
-          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateVehicleType");
+          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateInAddEquipment");
         }
         this.oCreateInAddEquipmentDialog.open();
       },
@@ -638,7 +664,7 @@ sap.ui.define(
       // edit  fragment in products table
       oOpenProductEdit: async function () {
         if (!this.oEditDialog) {
-          this.oEditDialog = await this.loadFragment("EditProduct");
+          this.oEditDialog = await this.loadFragment("EditDialog");
         }
         this.oEditDialog.open();
       },
@@ -648,7 +674,7 @@ sap.ui.define(
       // edit  fragment in Add equipment table
       onPressEditInAddEquipmentTable: async function () {
         if (!this.oEditInAddEquipment) {
-          this.oEditInAddEquipment = await this.loadFragment("EditTruckType");
+          this.oEditInAddEquipment = await this.loadFragment("EditInAddEquipment");
         }
         this.oEditInAddEquipment.open();
       },
@@ -699,15 +725,15 @@ sap.ui.define(
         };
 
         const aUserInputs = [
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
+          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be numeric" },
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be numeric" },
-          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
-          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
-          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" }
         ]
 
         aUserInputs.forEach(async input => {
@@ -715,8 +741,10 @@ sap.ui.define(
         })
 
         if (validationErrors.length > 0) {
-          MessageBox.information("Please enter correct data");
-          return;
+          for (let error of validationErrors) {
+            MessageBox.information(error);
+            return true;
+          }
         }
 
         // Get the selected item from the event parameters
@@ -766,24 +794,23 @@ sap.ui.define(
         }
       },
 
-      // /**Clearing Properties after creation */
-
-      // ClearingModel: function () {
-      //   const oPayloadModel = this.getView().getModel("ProductModel");
-      //   oPayloadModel.setProperty("/", {
-      //     sapProductno: "",
-      //     length: "",
-      //     width: "",
-      //     height: "",
-      //     volume: "",
-      //     uom: "",
-      //     mCategory: "",
-      //     description: "",
-      //     EANUPC: "",
-      //     weight: "",
-      //     quantity:""
-      //   })
-      // },
+      /**Clearing Properties after creation */
+      ClearingModel: function () {
+        const oPayloadModel = this.getView().getModel("ProductModel");
+        oPayloadModel.setProperty("/", {
+          sapProductno: "",
+          length: "",
+          width: "",
+          height: "",
+          volume: "",
+          uom: "",
+          mCategory: "",
+          description: "",
+          EANUPC: "",
+          weight: "",
+          quantity: ""
+        })
+      },
 
       /**Deleting Products */
       onProductDel: async function () {
@@ -891,16 +918,12 @@ sap.ui.define(
 
       /**Editing vehical types */
       onEdit: async function () {
-        var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItems();
-        if (oSelectedItem.length === 0) {
-          MessageBox.information("Please select one record");
+        var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItem();
+        if (!oSelectedItem) {
+          MessageBox.information("Please select at least one Row for edit!");
           return;
         }
-        if (oSelectedItem.length > 1) {
-          MessageBox.information("Please select only one record");
-          return;
-        }
-        const oData = oSelectedItem[0].getBindingContext().getObject();
+        const oData = oSelectedItem.getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
         this.byId("editTruckTypeInput").setValue(oData.truckType);
         this.byId("editLengthInput").setValue(oData.length);
@@ -908,15 +931,10 @@ sap.ui.define(
         this.byId("editHeightInput").setValue(oData.height);
         this.byId("editTruckWeightInput").setValue(oData.truckWeight);
         this.byId("editCapacityInput").setValue(oData.capacity);
-        if (oData.freezed === true) {
-          this.byId("idselect_EDIT").setSelectedKey("Yes");
-        } else {
-          this.byId("idselect_EDIT").setSelectedKey("No");
-        }
       },
 
       /**Updading Edited Values */
-      onSaveModifiedVehicleData: async function () {
+      onSave: async function () {
         const updatedData = {
           truckType: this.byId("editTruckTypeInput").getValue(),
           length: this.byId("editLengthInput").getValue(),
@@ -1271,37 +1289,12 @@ sap.ui.define(
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
         sQuery = sQuery.toUpperCase();
-        if (sQuery && sQuery.length > 0) {
+        if (sQuery && sQuery.length > 1) {
           aFilter.push(new Filter("sapProductno", FilterOperator.EQ, sQuery));
         }
         var oTable = this.byId("ProductsTable");
         var oBinding = oTable.getBinding("items");
         oBinding.filter(aFilter);
-      },
-
-      /**Filtering Vehicles */
-      onVehicleSearch: function (oEvent) {
-        let aFilter = [];
-        let sQuery = oEvent.getParameter("newValue");
-        sQuery = sQuery.replace(/\s+/g, '');
-        sQuery = sQuery.toUpperCase();
-
-        if (sQuery && sQuery.length > 0) {
-          // Create individual filters for each field using "Contains"
-          let truckTypeFilter = new Filter("truckType", FilterOperator.Contains, sQuery),
-            capacityFilter = new Filter("capacity", FilterOperator.Contains, sQuery);
-          // freezedFilter = new Filter("freezed", FilterOperator.Contains, sQuery);
-
-          // Combine filters with OR logic, so that the query matches any of the fields
-          aFilter.push(new Filter({
-            filters: [capacityFilter, truckTypeFilter],
-            and: false
-          }));
-        }
-
-        // Apply the combined filter to the table's binding
-        var oTableBinding = this.byId("idTruckTypeTable").getBinding("items");
-        oTableBinding.filter(aFilter);
       },
 
       /**For creating n number of products at a time */
@@ -2007,7 +2000,7 @@ sap.ui.define(
       },
       // downloding the products list selected for the simulation
       onDownloadPressInSimulate: function () {
-  
+
         var oTable = this.byId("idAddProductsTableIn_simulate");
         var aItems = oTable.getItems();
         var aData = [];
@@ -2023,7 +2016,7 @@ sap.ui.define(
           "Height",
           "Color",
           "Stack"
-         
+
         ];
         aData.push(aHeaders);
 
@@ -2045,8 +2038,8 @@ sap.ui.define(
         // Generate and download the Excel file
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
-   
 
-  
+
+
     });
   });

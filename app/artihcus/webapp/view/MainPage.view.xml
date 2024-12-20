@@ -390,7 +390,7 @@
                             <Button
                                 id="idBtnxcfvgHUCovbnntentBtn_AHUOBQ"
                                 text="Add"
-                                press="onPressInAddEquipment"
+                                press="onPressInAddEquipment" 
                                 tooltip="Add"
                                 icon="sap-icon://add"
                             />
