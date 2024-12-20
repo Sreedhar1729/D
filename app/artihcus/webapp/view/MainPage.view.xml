@@ -791,6 +791,7 @@
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
+
                                             <!-- <HBox id="idHBoxInAddSimulate" visible="true">
                                         <Label
                                             id="idLabvbnbhnjkleDescription_InitialView"
@@ -853,17 +854,11 @@
                                                 style="Emphasized"
                                                 change="onUpload"
                                             />
-                                            <u:FileUploader
-                                                id="FileImportId"
-                                                sameFilenameAllowed="true"
-                                                iconOnly="false"
-                                                buttonOnly="true"
-                                                fileType="XLSX,xlsx"
-                                                icon="sap-icon://download"
-                                                iconFirst="true"
-                                                buttonText="Download"
-                                                style="Emphasized"
-                                                change="onImport"
+                                            <Button
+                                                id="idDownloadBtnIn_Simulate"
+                                                press="onDownloadPressInSimulate"
+                                                tooltip="Print"
+                                                class="line-md--download-outline-loop"
                                             />
                                             <u:FileUploader
                                                 id="EditId"

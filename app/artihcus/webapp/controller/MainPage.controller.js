@@ -16,17 +16,14 @@ sap.ui.define(
     "sap/m/ImageContent",
     "sap/m/Text",
     'sap/ui/comp/library',
-
     'sap/ui/model/type/String',
     'sap/m/ColumnListItem',
     'sap/m/Label',
     'sap/m/SearchField',
     'sap/m/Token',
-
-
-
     'sap/ui/table/Column',
     'sap/m/Column',
+
 
 
   ],
@@ -1998,6 +1995,49 @@ sap.ui.define(
           this.renderer.render(this.scene, this.camera);
         };
         animate();
-      }
+      },
+      // downloding the products list selected for the simulation
+      onDownloadPressInSimulate: function () {
+  
+        var oTable = this.byId("idAddProductsTableIn_simulate");
+        var aItems = oTable.getItems();
+        var aData = [];
+        // Push column headers as the first row
+        var aHeaders = [
+          "Product",
+          "Description",
+          "Quantity",
+          "Volume",
+          "Weight",
+          "Length",
+          "Width",
+          "Height",
+          "Color",
+          "Stack"
+         
+        ];
+        aData.push(aHeaders);
+
+        // Iterate through table items and collect data
+        aItems.forEach(function (oItem) {
+          var oCells = oItem.getCells();
+          var rowData = [];
+          oCells.forEach(function (oCell) {
+            rowData.push(oCell.getText());
+          });
+          aData.push(rowData);
+        });
+
+        // Prepare Excel workbook
+        var oSheet = XLSX.utils.aoa_to_sheet(aData);
+        var oWorkbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "ProductsListTable");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
+      },
+   
+
+  
     });
   });

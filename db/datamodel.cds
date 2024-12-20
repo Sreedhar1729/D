@@ -15,6 +15,7 @@ type string : String(40);
 }
  
 define entity Materials {
+
     key ID              : UUID;
         sapProductno    : string;
         EAN             : String;
