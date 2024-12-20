@@ -35,7 +35,6 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
-        // test
         this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
@@ -96,6 +95,78 @@ sap.ui.define(
 
 
       },
+      // _createGenericTile: async function () {
+
+      //   console.log("Called")
+      //   // Get the container where the tile will be placed
+      //   var oTileContainer = this.byId("idVBoxInSelectVehicleType");
+      //   //getting model
+      //   var that = this;
+      //   const oModel = this.getOwnerComponent().getModel("ModelV2"),
+      //     oPath = "/TruckTypes";
+      //   var oObject = {
+      //     "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+      //     "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+      //     "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+      //     "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+      //   }
+      //   try {
+      //     const oSuccessData = await this.readData(oModel, oPath, [])
+      //     oSuccessData.results.forEach(
+      //       function (item) {
+      //         if (item.freezed) {
+      //           var oId = item.truckType + "_f"
+      //           var oImage = oObject[`${item.truckType}F`]
+      //         }
+      //         else {
+      //           var oId = item.truckType
+      //           var oImage = oObject[`${item.truckType}`]
+      //         }
+      //         var oGenericTile = new GenericTile({
+      //           id: `id_generictile_${oId}`,
+      //           class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+      //           header: `${item.truckType}`,   // The tile's header
+      //           width: "150px",    // The tile's width
+
+      //           press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+      //         });
+
+      //         // Create the TileContent control
+      //         var oTileContent = new TileContent({
+      //           id: `id_idTileContent_${oId}`
+      //         });
+
+      //         // Create the ImageContent inside the TileContent
+      //         var oImageContent = new ImageContent({
+      //           id: `id_idImageContentN_${oId}`,
+      //           src: `${oImage}`
+      //         });
+
+      //         // Add the ImageContent to the TileContent
+      //         oTileContent.setContent(oImageContent);
+
+      //         // Add the TileContent to the GenericTile
+      //         oGenericTile.addTileContent(oTileContent);
+
+      //         // Now, add the GenericTile to the container
+      //         oTileContainer.addItem(oGenericTile);
+      //         oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+      //       }
+      //     )
+
+      //   } catch (error) {
+      //     console.log(error)
+      //     MessageToast.show(error)
+      //   }
+
+      //   // Create the GenericTile control dynamically
+
+      // },
+
       _createGenericTile: async function () {
 
         console.log("Called")
@@ -182,8 +253,8 @@ sap.ui.define(
                 // Now, add the GenericTile to the container
                 oTileContainer.addItem(oGenericTile);
 
-                
-               
+
+
               }
             }
           )
@@ -196,13 +267,78 @@ sap.ui.define(
         // Create the GenericTile control dynamically
 
       },
+      onlivechangeValue_: function (oEvent) {
+        var oInput = oEvent.getSource();
+        var oBindingContext = oInput.getBindingContext();
+        var selectedQuantity = parseFloat(oInput.getValue());  // Picking Quantity
+        var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
 
-      onAddPress: async function () {
+        // Validate: Picking Quantity should not be greater than Actual Quantity
+        if (selectedQuantity > actualQuantity || selectedQuantity <= 0) {
+          // Set error state on the input field
+          oInput.setValueState(sap.ui.core.ValueState.Error);
+          oInput.setValueStateText("Picking Quantity cannot be greater than Actual Quantity.");
+        } else {
+          // Clear error state
+          oInput.setValueState(sap.ui.core.ValueState.None);
+          oInput.setValueStateText("");
+        }
+      },
+
+
+      onAddPress: function () {
         var oTable = this.byId("idTableAddProduct");
+        var aSelectedItems = oTable.getSelectedItems();
+        let count = 0;
+        var oModel = this.getOwnerComponent().getModel("ModelV2");
+        if (aSelectedItems.length > 0) {
+          var selectedData = [];
+
+          // Loop through the selected rows and collect data
+          aSelectedItems.forEach(function (oItem) {
+            var oBindingContext = oItem.getBindingContext();
+            var oData = oBindingContext.getObject();  // Get the data object of the row
+
+            // Get the Input control for Picking Quantity
+            var oInput = oItem.getCells()[4].mProperties; // Assuming the Input control is the 4th cell (index 3)
+
+            // Get the value entered in the Input field
+            var sPickingQty = oInput.value;
+            var actualQuantity = oData.quantity;
+            if (parseInt(sPickingQty) > parseInt(actualQuantity) || parseInt(sPickingQty) <= 0) {
+              count = count + 1;
+            }
+          })
+          if (count > 0) {
+            MessageToast.show("Please Enter correct data")
+            return
+          }
+          else {
+            this.onAddPress1(aSelectedItems, oModel)
+          }
+        } else {
+          MessageToast.show("Please select atleast one product");
+        }
+
+
+      },
+
+      onAddPress1: function (aSelectedItems, oModel) {
+        debugger
+        // var oTable = this.byId("idTableAddProduct");
         var that = this;
         // Get the selected items (rows) from the table
-        var aSelectedItems = oTable.getSelectedItems();
-        var oModel = this.getOwnerComponent().getModel("ModelV2")
+        const randomHexColor = (function () {
+          const letters = '0123456789ABCDEF';
+          let color = '#';
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        })();
+        // var aSelectedItems = oTable.getSelectedItems();
+
+        // var oModel = this.getOwnerComponent().getModel("ModelV2")
         // Check if there are selected items
         if (aSelectedItems.length > 0) {
           var selectedData = [];
@@ -213,39 +349,47 @@ sap.ui.define(
             var oData = oBindingContext.getObject();  // Get the data object of the row
 
             // Get the Input control for Picking Quantity
-            var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+            var oInput = oItem.getCells()[4].mProperties; // Assuming the Input control is the 4th cell (index 3)
 
             // Get the value entered in the Input field
-            var sPickingQty = oInput.getValue();
+            var sPickingQty = oInput.value;
+            // var actualQuantity = oData.quantity;
+
+
 
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
-              Productno_sapProductno: oData.sapProductno,
-              SelectedQuantity: sPickingQty
+              Productno_ID: oData.ID,
+
+            };
+            var dummy2 = {
+              Productno_ID: oData.ID,
+
+              color: randomHexColor
             };
             selectedData.push({
               product: oData.sapProductno,
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
-              pickingQuantity: sPickingQty
+              pickingQuantity: sPickingQty,
+              color: randomHexColor
             });
             try {
 
-              var oProductExistStatus = await that.productExists(oModel, dummy.Productno_sapProductno)
-              if (oProductExistStatus) {
-                console.log("exixts")
-                oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
-                  success: function () {
-
-                  }.bind(this),
-                  error: function (oError) {
-                    sap.m.MessageBox.error("Failed " + oError.message);
-                  }.bind(this)
-                });
-                return
+              await that.productExists(oModel, dummy.Productno_ID)
+            
+              if (!(that.flag)) {
+                await that.createData(oModel, dummy2, "/SelectedProduct")
               }
-              that.createData(oModel, dummy, "/SelectedProduct")
+           
+             await oModel.update("/Materials('" + dummy.Productno_ID + "')",{SelectedQuantity:sPickingQty}, {
+              success: function () {
 
+              }.bind(this),
+              error: function (oError) {
+                sap.m.MessageBox.error("Failed " + oError.message);
+              }.bind(this)
+            });
             }
             catch (error) {
               console.log(error)
@@ -263,39 +407,66 @@ sap.ui.define(
         }
 
       },
+
+
+
+      onPressGenericTilePress: function () {
+
+        var oWizard = this.byId("idWizardIn_simulate");
+        var oCurrentStep = oWizard.getCurrentStep();
+
+        oWizard.nextStep();
+
+      },
+
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
       },
-      productExists: async function (oModel, product) {
-        console.log(product)
-        return new Promise((resolve, reject) => {
-          oModel.read("/SelectedProduct", {
-            // filters: [
-            //     new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+      productExists: async function (oModel, sId) {
+        console.log(sId)
+        const that = this
+       await oModel.read(`/SelectedProduct('${sId}')`,{
+                // filters: [new Filter("Productno_ID", FilterOperator.EQ, sId)],
+                success:function (oData,resp) {
+                  console.log(oData);
+                  that.flag = true;
+                },
+                error:function (error) {
+                  console.error(error.message);
+                  that.flag = false;
+                },
+              })
+
+        // return new Promise((resolve, reject) => {
+        //   oModel.read("/SelectedProduct", {
+        //     filters: [
+        //         new Filter("Productno_ID", FilterOperator.EQ, sId),
 
 
-            // ],
-            success: function (oData) {
-              console.log(oData.results)
-              var oProduct1 = oData.results.filter(checkProduct)
-              function checkProduct(v) {
-                console.log(v)
-                return v.Productno_sapProductno === product;
-              }
-              console.log(oProduct1)
-              console.log(oProduct1.length)
-              resolve(oProduct1.length > 0);
+        //     ],
+        //     success: function (oData) {
+        //       // console.log(oData.results)
+        //       // var oProduct1 = oData.results.filter(checkProduct)
+        //       // function checkProduct(v) {
+        //       //   console.log(v)
+        //       //   return v.Productno_ID === product;
+        //       // }
+        //       // console.log(oProduct1)
+        //       // console.log(oProduct1.length)
+        //       resolve(oProduct1.length > 0);
 
 
-            },
-            error: function () {
-              reject(
-                "An error occurred while checking username existence."
-              );
-            }
-          })
-        })
+        //     },
+        //     error: function () {
+        //       reject(
+        //         "An error occurred while checking username existence."
+        //       );
+        //     }
+        //   })
+        // })
       },
+
+
 
       // Define your press handler
       // onPressGenericTilePress: function (oEvent) {
@@ -540,60 +711,87 @@ sap.ui.define(
         const oPayloadModel = this.getView().getModel("ProductModel"),
           oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
+          oView = this.getView(),
           oPath = '/Materials';
-        // Check if oPayload is empty
-        if (
-          !oPayload.sapProductno ||
-          !oPayload.length ||
-          !oPayload.width ||
-          !oPayload.height ||
-          !oPayload.mCategory ||
-          !oPayload.description ||
-          !oPayload.weight ||
-          !oPayload.quantity
-        ) {
-          console.log("Please Enter All Values");
-          MessageBox.information("Please Enter All Values");
+
+        // Validation
+        const validationErrors = [];
+        const validateField = (fieldId, value, regex, errorMessage) => {
+          const oField = oView.byId(fieldId);
+          if (!value || (regex && !regex.test(value))) {
+            oField.setValueState("Error");
+            oField.setValueStateText(errorMessage);
+            validationErrors.push(errorMessage);
+          } else {
+            oField.setValueState("None");
+          }
+        };
+
+        const aUserInputs = [
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
+          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
+          { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
+          { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be numeric" },
+          { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be numeric" },
+          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
+          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
+        ]
+
+        aUserInputs.forEach(async input => {
+          validateField(input.Id, input.value, input.regex, input.message)
+        })
+
+        if (validationErrors.length > 0) {
+          MessageBox.information("Please enter correct data");
           return;
         }
+
         // Get the selected item from the event parameters
-        var oSelectedItem = this.byId("idselectuom").getSelectedItem();
-        if (oSelectedItem.getKey() === '') {
+        var oSelectedItem = this.byId("idselectuom").getSelectedKey();
+        if (oSelectedItem === 'Select') {
           MessageBox.error("Please Select UOM!!");
           return;
         }
-        oPayload.uom = oSelectedItem.getKey();
+        oPayload.uom = oSelectedItem;
         //get the selected item
-        var oSelectedItem1 = this.byId("uomSelect").getSelectedItem();
-        if (oSelectedItem1.getKey() === '') {
+        var oSelectedItem1 = this.byId("uomSelect").getSelectedKey()
+        if (oSelectedItem1 === 'Select') {
           MessageBox.error("Please Select UOM!!");
           return;
         }
         oPayload.muom = 'PC';
         oPayload.vuom = "M³";
-        oPayload.wuom = oSelectedItem1 ? oSelectedItem1.getKey() : "";
+        oPayload.wuom = oSelectedItem1 ? oSelectedItem1 : "";
         var oVolume;
 
         if (oPayload.uom === 'CM') {
-          // If UOM is in meters, calculate normally
-          oVolume = String((oPayload.length) / 100) * String((oPayload.width) / 100) * String((oPayload.height) / 100);
-          oPayload.volume = String(oVolume.toFixed(7));
-        } else {
           // If UOM is in centimeters, convert to meters before calculating
-          oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-          oPayload.volume = String((Math.round(oVolume)));
+          oVolume = (oPayload.length / 100) * (oPayload.width / 100) * (oPayload.height / 100);
+          oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
+        } else {
+          // If UOM is in meters, calculate normally in cubic meters
+          oVolume = oPayload.length * oPayload.width * oPayload.height;
+          oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
         }
+
         try {
           await this.createData(oModel, oPayload, oPath);
-          debugger
           this.getView().byId("ProductsTable").getBinding("items").refresh();
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
-          this.ClearingModel(true);
+          this.getView().getModel("ProductModel").setProperty("/", {}) // clear data after successful creation
+          // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
-          MessageToast.show("Error at the time of creation");
+          console.error(error);
+          if (error.statusCode === "400") {
+            MessageBox.information("Product Number and EANUPC Should be unique enter different values")
+          } else {
+            MessageToast.show("Facing technical issue");
+          }
         }
       },
 
@@ -656,7 +854,6 @@ sap.ui.define(
           MessageBox.warning("Please Enter all Values");
           return;
         }
-        //oPayload.truckType=`${oPayload.truckType}FT`
         const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
@@ -940,7 +1137,7 @@ sap.ui.define(
       },
       /** Simulating excel sheet products */
       onClickSimulate: async function () {
-        var oTable = this.byId("myTable");
+        var oTable = this.byId("idAddProductsTableIn_simulate");
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         var aSelectedItems = oTable.getSelectedItems(); // Get selected items
         console.log("Selected Items Count:", aSelectedItems.length);
@@ -1036,10 +1233,10 @@ sap.ui.define(
 
             // this.onLoadRequiredTrucks();
 
-            this.getView().byId("myTable").getBinding("items").refresh();
+            this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("resultModel").refresh();
             this.MoveToNextScreen();
-            this.getView().byId("myTable").getBinding("items").refresh();
+            this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("resultModel").refresh();
           }).catch(error => {
             console.error("Error loading truck details:", error);
@@ -1283,7 +1480,7 @@ sap.ui.define(
       },
       /***Blocking the truck type in simulations */
       Blocking: function () {
-        var oLength = this.byId("myTable").getItems().length;
+        var oLength = this.byId("idAddProductsTableIn_simulate").getItems().length;
         if (oLength > 0) {
           this.byId("parkingLotSelect").setEditable(false);
         }
@@ -1308,7 +1505,7 @@ sap.ui.define(
             console.log("Products set in model:", oTempJSon.getProperty("/products"));
 
             // Refresh the table binding
-            // this.getView().byId("myTable").getBinding("items").refresh();
+            // this.getView().byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
             this.getView().getModel("oJsonModelProd").refresh(true);
           } else {
             console.error("Loaded data is not an array:", products);
@@ -1323,7 +1520,7 @@ sap.ui.define(
         const oTempJSon = this.getView().getModel("oJsonModelProd");
 
         // Get the table and selected items
-        const oTable = this.getView().byId("myTable");
+        const oTable = this.getView().byId("idAddProductsTableIn_simulate");
         const aSelectedItems = oTable.getSelectedItems();
 
         // If there are selected items, remove them
@@ -1380,7 +1577,7 @@ sap.ui.define(
 
         // this.getView().byId("idAddVehicleTypeSrInSimulate_changeQueue").setVisible("true");
 
-        var oWizard = this.byId("idProcesstWizard_changeQueue");
+        var oWizard = this.byId("idWizardIn_simulate");
 
         var oCurrentStep = oWizard.getCurrentStep();
 
@@ -1424,13 +1621,15 @@ sap.ui.define(
 
       onPressGenericTilePress: function (oEvent) {
         debugger;
+        var oWizard = this.byId("idWizardIn_simulate");
+        var oCurrentStep = oWizard.getCurrentStep();
 
+        oWizard.nextStep();
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
 
-        // Move to the next step in the wizar
-        const oWizard = this.byId("idProcesstWizard_changeQueue");
-        oWizard.nextStep();
+
+
 
         // Reinitialize the 3D scene
         this._init3DScene();
@@ -1460,105 +1659,82 @@ sap.ui.define(
         });
       },
 
-      onPressAddProductInSimulate: function () {
-        // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
-      },
+
       onPressAddProductInSimulate: async function () {
+        debugger
+
         if (!this.oValueDialog) {
           this.oValueDialog = await this.loadFragment("ValueHelp");
         }
         this.oValueDialog.open();
 
-        // this._oBasicSearchFieldWithSuggestions = new SearchField();
 
-        // Fragment.load({
-        //   name: `com.app.artihcus.fragment.ValueHelp`
-        // }).then(function(oDialogSuggestions) {
-        //   var oFilterBar = oDialogSuggestions.getFilterBar(), oColumnProductCode, oColumnProductName;
-        //   this._oVHDWithSuggestions = oDialogSuggestions;
 
-        //   this.getView().addDependent(oDialogSuggestions);
 
-        //   // Set key fields for filtering in the Define Conditions Tab
-        //   oDialogSuggestions.setRangeKeyFields([{
-        //     label: "Product Code",
-        //     key: "ProductCode",
-        //     type: "string",
-        //     typeInstance: new TypeString({}, {
-        //       maxLength: 7
-        //     })
-        //   }]);
-
-        //   // Set Basic Search for FilterBar
-        //   oFilterBar.setFilterBarExpanded(false);
-        //   oFilterBar.setBasicSearch(this._oBasicSearchFieldWithSuggestions);
-
-        //   // Trigger filter bar search when the basic search is fired
-        //   this._oBasicSearchFieldWithSuggestions.attachSearch(function() {
-        //     oFilterBar.search();
-        //   });
-
-        //   oDialogSuggestions.getTableAsync().then(function (oTable) {
-
-        //     //oTable.setModel(this.oProductsModel);
-
-        //     //For Desktop and tabled the default table is sap.ui.table.Table
-        //     if (oTable.bindRows) {
-        //       // Bind rows to the ODataModel and add columns
-        //       // oTable.bindAggregation("rows", {
-        //       //   path: "/ZSALESREPORTSuggestions",
-        //       //   events: {
-        //       //     dataReceived: function() {
-        //       //       oDialogSuggestions.update();
-        //       //     }
-        //       //   }
-        //       // });
-        //       oColumnProductCode = new UIColumn({label: new Label({text: "Product Code"}), template: new Text({wrapping: false, text: "{ProductCode}"})});
-        //       oColumnProductCode.data({
-        //         fieldName: "ProductCode"
-        //       });
-        //       oTable.addColumn(oColumnProductCode);
-
-        //       oColumnProductName = new UIColumn({label: new Label({text: "Quantity"}), template: new Text({wrapping: false, text: "{Quantity}"})});
-        //       oColumnProductName.data({
-        //         fieldName: "Quantity"
-        //       });
-        //       oTable.addColumn(oColumnProductName);
-
-        //       // oColumnDis = new UIColumn({label: new Label({text: "Dis"}), template: new Text({wrapping: false, text: "{Dis}"})});
-        //       // oColumnDis.data({
-        //       //   fieldName: ""
-        //       // });
-        //       // oTable.addColumn(oColumnQuantity);
-        //     }
-
-        //     //For Mobile the default table is sap.m.Table
-        //     // if (oTable.bindItems) {
-        //     //   // Bind items to the ODataModel and add columns
-        //     //   oTable.bindAggregation("items", {
-        //     //     path: "/ZSALESREPORTSuggestions",
-        //     //     template: new ColumnListItem({
-        //     //       cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
-        //     //     }),
-        //     //     events: {
-        //     //       dataReceived: function() {
-        //     //         oDialogSuggestions.update();
-        //     //       }
-        //     //     }
-        //     //   });
-        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Code"})}));
-        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Name"})}));
-        //     // }
-        //     oDialogSuggestions.update();
-        //   }.bind(this));
-
-        //  // oDialogSuggestions.setTokens(this._oMultiInputWithSuggestions.getTokens());
-        //   oDialogSuggestions.open();
-        // }.bind(this));
       },
       onValueHelpWithSuggestionsCancelPress: function () {
         this._oVHDWithSuggestions.close();
       },
+      onPressTile: function (oEvent) {
+        var sHeader = oEvent.getSource().getHeader(); // Get the header of the clicked tile
+        var oObjectImage = {
+          Box: [
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/boxes-mass.svg"
+          ],
+          Bigbags: [
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-mass.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/bigbags-height.svg"
+          ],
+          Sacks: [
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-layers.svg?3",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-height.svg?3",
+            "https://www.searates.com/design/images/apps/load-calculator/product-form/sacks-mass.svg?3"
+          ],
+          Barrels: [
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/barrels-mass.svg"
+          ],
+          Roll: [
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+          ],
+          Pipes: [
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-layers.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-height.svg",
+            "https://www.searates.com/design/images/apps/load-calculator/rolls-mass.svg"
+          ],
+          Bulk: [
+            // Add URLs for Bulk images if needed
+          ]
+        };
+
+        // Check if there are images for the clicked tile
+        if (oObjectImage[sHeader]) {
+          var aImages = oObjectImage[sHeader];
+
+          this.byId("idImageInStack").setSrc(aImages[0]);
+          this.byId("idImage3InStack").setSrc(aImages[1]);
+          this.byId("idImage43InStack").setSrc(aImages[2]);
+
+          // Show the image display section
+          this.byId("imageDisplayHBox").setVisible(true);
+        }
+      },
+
+
+
+
+
+      onPressAddButtonValueHelp: function () {
+        var oTable = this.byId("idAssignedQueueTable_changeQueue");
+        var aSelectedItems = oTable.getSelectedItems();
+      },
+
 
       onPressBigBagsTile: function () {
         var oModel1 = new JSONModel({
@@ -1625,7 +1801,6 @@ sap.ui.define(
         // Start the animation loop
         this._animate();
       },
-
       _createContainer: function (height, length, width) {
         // Remove any existing container
         if (this.container) {
@@ -1659,7 +1834,144 @@ sap.ui.define(
         this.scene.add(this.container);
 
         console.log("Container created with dimensions:", { height, length, width });
+
+
+        var oTable = this.getView().byId("idAddProductsTableIn_simulate");
+
+        // Fetch all selected items from the table
+        var aSelectedItems = oTable.getSelectedItems();
+
+        // Extract objects bound to each selected item
+        var aSelectedData = aSelectedItems.map(function (oItem) {
+          return oItem.getBindingContext().getObject(); // Extract the object bound to the selected row
+        });
+
+        // Log the array of selected objects
+        console.log("Selected Items Data as Objects:", aSelectedData);
+        this._createProducts(aSelectedData, height, length, width);
+
       },
+
+      _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+        let currentX = -containerLength / 2; // X starting point
+        let currentZ = -containerWidth / 2; // Z starting point
+        let positionMap = []; // Track positions and dimensions of placed products
+
+        // Function to check the maximum height of products in the overlapping range
+        const getOverlapHeight = (newXStart, newXEnd, newZStart, newZEnd) => {
+          let maxHeight = 0;
+
+          positionMap.forEach(position => {
+            const {
+              xStart, xEnd, zStart, zEnd, yTop
+            } = position;
+
+            // Check if the new product overlaps in X and Z ranges
+            const isOverlappingX = !(newXEnd <= xStart || newXStart >= xEnd);
+            const isOverlappingZ = !(newZEnd <= zStart || newZStart >= zEnd);
+
+            if (isOverlappingX && isOverlappingZ) {
+              maxHeight = Math.max(maxHeight, yTop);
+            }
+          });
+
+          return maxHeight; // Return the max height found in overlapping ranges
+        };
+
+        selectedProducts.forEach(product => {
+          const SelectedQuantity = parseInt(product.SelectedQuantity);
+          const productLength = parseFloat(product.Productno.length);
+          const productHeight = parseFloat(product.Productno.height);
+          const productWidth = parseFloat(product.Productno.width);
+          const productColor = product.color;
+
+          for (let i = 0; i < SelectedQuantity; i++) {
+            let placed = false;
+
+            while (!placed) {
+              const newXStart = currentX;
+              const newXEnd = currentX + productLength;
+              const newZStart = currentZ;
+              const newZEnd = currentZ + productWidth;
+
+              // Get the height of any product below in the overlap range
+              const newY = getOverlapHeight(newXStart, newXEnd, newZStart, newZEnd);
+
+              // Check height limit before placing
+              if (newY + productHeight > containerHeight) {
+                console.warn("Container height limit reached. Cannot place more products.");
+                return;
+              }
+
+              // Create the main product geometry
+              const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+              const productMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(productColor),
+                metalness: 0.5,
+                roughness: 0.5
+              });
+
+              const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+              productMesh.castShadow = true;
+              productMesh.receiveShadow = true;
+
+              productMesh.position.set(
+                currentX + productLength / 2, // Centered X
+                newY + productHeight / 2,    // Stack on top of overlapping height
+                currentZ + productWidth / 2  // Centered Z
+              );
+
+              // Add the product to the scene
+              this.scene.add(productMesh);
+
+              // Create a thin border using edges (lines) around the product
+              const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+              const edgesMaterial = new THREE.LineBasicMaterial({
+                color: 0x000000,  // Black border
+                linewidth: 1      // Thin line thickness
+              });
+
+              const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              edges.position.set(
+                currentX + productLength / 2, // Centered X
+                newY + productHeight / 2,    // Stack on top of overlapping height
+                currentZ + productWidth / 2  // Centered Z
+              );
+
+              // Add the border (lines) around the product
+              this.scene.add(edges);
+
+              // Update position map for product placement
+              positionMap.push({
+                xStart: newXStart,
+                xEnd: newXEnd,
+                zStart: newZStart,
+                zEnd: newZEnd,
+                yTop: newY + productHeight // The new top Y position after placing
+              });
+
+              // Update X position for next product
+              currentX += productLength;
+
+              // Check row boundary
+              if (currentX + productLength > containerLength / 2) {
+                currentX = -containerLength / 2; // Reset X to start
+                currentZ += productWidth;       // Move to next row (Z-axis)
+
+                // Check Z boundary and move up one layer if needed
+                if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2; // Reset Z to start
+                }
+              }
+
+              placed = true; // Mark as placed
+            }
+          }
+        });
+
+        console.log("All products placed successfully with thin borders.");
+      },
+
 
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);

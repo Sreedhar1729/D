@@ -1,0 +1,11 @@
+GET https://localhost:4004//odata/v4/CapSRV/Materials
+###
+
+POST http://localhost:4004/odata/v4/CapSRV/History HTTP/1.1
+Content-Type: application/json
+
+{
+    
+    "productNo": "A123",
+    "truckType": "Pickup"
+}
