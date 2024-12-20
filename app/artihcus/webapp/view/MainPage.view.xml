@@ -270,15 +270,17 @@
                                                 key="Select"
                                                 text="Select"
                                             />
-                                            <core:Item
-                                                id="idselit4"
-                                                key="CM"
-                                                text="CM"
-                                            />
+
                                             <core:Item
                                                 id="idselit2"
                                                 key="M"
                                                 text="M"
+                                            />
+
+                                            <core:Item
+                                                id="idselit4"
+                                                key="CM"
+                                                text="CM"
                                             />
                                         </Select>
                                         <!-- <Input
@@ -309,7 +311,7 @@
                                             >
                                                 <items>
                                                     <core:Item
-                                                        id="_IDGenItem0"
+                                                        id="_IDGenIt"
                                                         key="Select"
                                                         text="Select"
                                                     />
@@ -344,10 +346,9 @@
                             <!-- sample -->
                             <Image
                                 id="idImageProductGif"
-                                width="70%"
-                                height="70%"
-                                src="Image/supplyChain.gif"
-                                class="sapUiLargeMarginBegin"
+                                width="120%"
+                                height="100%"
+                                src="Image/productInBox.gif"
                             />
 
                             <!-- ghjk -->
@@ -794,6 +795,7 @@
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
+
                                             <!-- <HBox id="idHBoxInAddSimulate" visible="true">
                                         <Label
                                             id="idLabvbnbhnjkleDescription_InitialView"
@@ -856,17 +858,11 @@
                                                 style="Emphasized"
                                                 change="onUpload"
                                             />
-                                            <u:FileUploader
-                                                id="FileImportId"
-                                                sameFilenameAllowed="true"
-                                                iconOnly="false"
-                                                buttonOnly="true"
-                                                fileType="XLSX,xlsx"
-                                                icon="sap-icon://download"
-                                                iconFirst="true"
-                                                buttonText="Download"
-                                                style="Emphasized"
-                                                change="onImport"
+                                            <Button
+                                                id="idDownloadBtnIn_Simulate"
+                                                press="onDownloadPressInSimulate"
+                                                tooltip="Print"
+                                                class="line-md--download-outline-loop"
                                             />
                                             <u:FileUploader
                                                 id="EditId"
@@ -954,7 +950,7 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5"
-                                                    text="{Productno_sapProductno}"
+                                                    text="{Productno/sapProductno}"
                                                 />
                                                 <Text
                                                     id="_IDGenText6"
@@ -962,7 +958,7 @@
                                                 />
                                                 <Text
                                                     id="_IDGenText8"
-                                                    text="{SelectedQuantity}"
+                                                    text="{Productno/SelectedQuantity}"
                                                 />
                                                 <Text
                                                     id="_IDGenText9"
@@ -986,7 +982,7 @@
                                                 />
                                                 <Text
                                                     id="_IDGenTextert11"
-                                                    text="Color"
+                                                    text="{color}"
                                                 />
                                                 <Button
                                                     id="_IDGenTextert12"

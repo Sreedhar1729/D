@@ -1,7 +1,7 @@
 sap.ui.define(
   [
     "./BaseController",
-    'sap/ui/core/Fragment',
+    'sap/ui/core/Fragment', 
     'sap/ui/model/Filter',
     "sap/ui/model/FilterOperator",
     "sap/m/IconTabBar",
@@ -16,7 +16,6 @@ sap.ui.define(
     "sap/m/ImageContent",
     "sap/m/Text",
     'sap/ui/comp/library',
-
     'sap/ui/model/type/String',
     'sap/m/ColumnListItem',
     'sap/m/Label',
@@ -26,12 +25,14 @@ sap.ui.define(
     'sap/m/Column',
 
 
+
   ],
   function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent, Tex, library, TypeString, ColumnListItem, Label, SearchField, Token, UIColumn, MColumn) {
     "use strict";
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+        this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
           "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
@@ -91,12 +92,84 @@ sap.ui.define(
 
 
       },
+      // _createGenericTile: async function () {
+
+      //   console.log("Called")
+      //   // Get the container where the tile will be placed
+      //   var oTileContainer = this.byId("idVBoxInSelectVehicleType");
+      //   //getting model
+      //   var that = this;
+      //   const oModel = this.getOwnerComponent().getModel("ModelV2"),
+      //     oPath = "/TruckTypes";
+      //   var oObject = {
+      //     "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+      //     "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+      //     "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+      //     "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+      //   }
+      //   try {
+      //     const oSuccessData = await this.readData(oModel, oPath, [])
+      //     oSuccessData.results.forEach(
+      //       function (item) {
+      //         if (item.freezed) {
+      //           var oId = item.truckType + "_f"
+      //           var oImage = oObject[`${item.truckType}F`]
+      //         }
+      //         else {
+      //           var oId = item.truckType
+      //           var oImage = oObject[`${item.truckType}`]
+      //         }
+      //         var oGenericTile = new GenericTile({
+      //           id: `id_generictile_${oId}`,
+      //           class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+      //           header: `${item.truckType}`,   // The tile's header
+      //           width: "150px",    // The tile's width
+
+      //           press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+      //         });
+
+      //         // Create the TileContent control
+      //         var oTileContent = new TileContent({
+      //           id: `id_idTileContent_${oId}`
+      //         });
+
+      //         // Create the ImageContent inside the TileContent
+      //         var oImageContent = new ImageContent({
+      //           id: `id_idImageContentN_${oId}`,
+      //           src: `${oImage}`
+      //         });
+
+      //         // Add the ImageContent to the TileContent
+      //         oTileContent.setContent(oImageContent);
+
+      //         // Add the TileContent to the GenericTile
+      //         oGenericTile.addTileContent(oTileContent);
+
+      //         // Now, add the GenericTile to the container
+      //         oTileContainer.addItem(oGenericTile);
+      //         oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+      //       }
+      //     )
+
+      //   } catch (error) {
+      //     console.log(error)
+      //     MessageToast.show(error)
+      //   }
+
+      //   // Create the GenericTile control dynamically
+
+      // },
+
       _createGenericTile: async function () {
 
         console.log("Called")
-        // Get the container where the tile will be placed
-        var oTileContainer = this.byId("idVBoxInSelectVehicleType");
-        //getting model
+
+        var oTileContainer = this.getView().byId("idVBoxInSelectVehicleType");
+
         var that = this;
         const oModel = this.getOwnerComponent().getModel("ModelV2"),
           oPath = "/TruckTypes";
@@ -148,9 +221,12 @@ sap.ui.define(
               // Add the TileContent to the GenericTile
               oGenericTile.addTileContent(oTileContent);
 
-              // Now, add the GenericTile to the container
-              oTileContainer.addItem(oGenericTile);
-              oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+                // Now, add the GenericTile to the container
+                oTileContainer.addItem(oGenericTile);
+
+
+
+              }
             }
           )
 
@@ -162,13 +238,78 @@ sap.ui.define(
         // Create the GenericTile control dynamically
 
       },
+      onlivechangeValue_: function (oEvent) {
+        var oInput = oEvent.getSource();
+        var oBindingContext = oInput.getBindingContext();
+        var selectedQuantity = parseFloat(oInput.getValue());  // Picking Quantity
+        var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
+
+        // Validate: Picking Quantity should not be greater than Actual Quantity
+        if (selectedQuantity > actualQuantity || selectedQuantity <= 0) {
+          // Set error state on the input field
+          oInput.setValueState(sap.ui.core.ValueState.Error);
+          oInput.setValueStateText("Picking Quantity cannot be greater than Actual Quantity.");
+        } else {
+          // Clear error state
+          oInput.setValueState(sap.ui.core.ValueState.None);
+          oInput.setValueStateText("");
+        }
+      },
+
 
       onAddPress: function () {
         var oTable = this.byId("idTableAddProduct");
+        var aSelectedItems = oTable.getSelectedItems();
+        let count = 0;
+        var oModel = this.getOwnerComponent().getModel("ModelV2");
+        if (aSelectedItems.length > 0) {
+          var selectedData = [];
+
+          // Loop through the selected rows and collect data
+          aSelectedItems.forEach(function (oItem) {
+            var oBindingContext = oItem.getBindingContext();
+            var oData = oBindingContext.getObject();  // Get the data object of the row
+
+            // Get the Input control for Picking Quantity
+            var oInput = oItem.getCells()[4].mProperties; // Assuming the Input control is the 4th cell (index 3)
+
+            // Get the value entered in the Input field
+            var sPickingQty = oInput.value;
+            var actualQuantity = oData.quantity;
+            if (parseInt(sPickingQty) > parseInt(actualQuantity) || parseInt(sPickingQty) <= 0) {
+              count = count + 1;
+            }
+          })
+          if (count > 0) {
+            MessageToast.show("Please Enter correct data")
+            return
+          }
+          else {
+            this.onAddPress1(aSelectedItems, oModel)
+          }
+        } else {
+          MessageToast.show("Please select atleast one product");
+        }
+
+
+      },
+
+      onAddPress1: function (aSelectedItems, oModel) {
+        debugger
+        // var oTable = this.byId("idTableAddProduct");
         var that = this;
         // Get the selected items (rows) from the table
-        var aSelectedItems = oTable.getSelectedItems();
-        var oModel = this.getOwnerComponent().getModel("ModelV2")
+        const randomHexColor = (function () {
+          const letters = '0123456789ABCDEF';
+          let color = '#';
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        })();
+        // var aSelectedItems = oTable.getSelectedItems();
+
+        // var oModel = this.getOwnerComponent().getModel("ModelV2")
         // Check if there are selected items
         if (aSelectedItems.length > 0) {
           var selectedData = [];
@@ -179,39 +320,47 @@ sap.ui.define(
             var oData = oBindingContext.getObject();  // Get the data object of the row
 
             // Get the Input control for Picking Quantity
-            var oInput = oItem.getCells()[3]; // Assuming the Input control is the 4th cell (index 3)
+            var oInput = oItem.getCells()[4].mProperties; // Assuming the Input control is the 4th cell (index 3)
 
             // Get the value entered in the Input field
-            var sPickingQty = oInput.getValue();
+            var sPickingQty = oInput.value;
+            // var actualQuantity = oData.quantity;
+
+
 
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
-              Productno_sapProductno: oData.sapProductno,
-              SelectedQuantity: sPickingQty
+              Productno_ID: oData.ID,
+
+            };
+            var dummy2 = {
+              Productno_ID: oData.ID,
+
+              color: randomHexColor
             };
             selectedData.push({
               product: oData.sapProductno,
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
-              pickingQuantity: sPickingQty
+              pickingQuantity: sPickingQty,
+              color: randomHexColor
             });
             try {
 
-              var oProductExistStatus = that.productExists(oModel, dummy.Productno_sapProductno)
-              if (oProductExistStatus) {
-                console.log("exixts")
-                oModel.update("/SelectedProduct('" + dummy.Productno_sapProductno + "')", dummy, {
-                  success: function () {
-
-                  }.bind(this),
-                  error: function (oError) {
-                    sap.m.MessageBox.error("Failed " + oError.message);
-                  }.bind(this)
-                });
-                return
+              await that.productExists(oModel, dummy.Productno_ID)
+            
+              if (!(that.flag)) {
+                await that.createData(oModel, dummy2, "/SelectedProduct")
               }
-              that.createData(oModel, dummy, "/SelectedProduct")
+           
+             await oModel.update("/Materials('" + dummy.Productno_ID + "')",{SelectedQuantity:sPickingQty}, {
+              success: function () {
 
+              }.bind(this),
+              error: function (oError) {
+                sap.m.MessageBox.error("Failed " + oError.message);
+              }.bind(this)
+            });
             }
             catch (error) {
               console.log(error)
@@ -231,6 +380,7 @@ sap.ui.define(
       },
 
 
+
       onPressGenericTilePress: function () {
 
         var oWizard = this.byId("idWizardIn_simulate");
@@ -243,26 +393,50 @@ sap.ui.define(
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
       },
-      productExists: async function (oModel, product) {
-        console.log(product)
-        return new Promise((resolve, reject) => {
-          oModel.read("/SelectedProduct", {
-            filters: [
-              new Filter("Productno_sapProductno", FilterOperator.EQ, product),
+      productExists: async function (oModel, sId) {
+        console.log(sId)
+        const that = this
+       await oModel.read(`/SelectedProduct('${sId}')`,{
+                // filters: [new Filter("Productno_ID", FilterOperator.EQ, sId)],
+                success:function (oData,resp) {
+                  console.log(oData);
+                  that.flag = true;
+                },
+                error:function (error) {
+                  console.error(error.message);
+                  that.flag = false;
+                },
+              })
+
+        // return new Promise((resolve, reject) => {
+        //   oModel.read("/SelectedProduct", {
+        //     filters: [
+        //         new Filter("Productno_ID", FilterOperator.EQ, sId),
 
 
-            ],
-            success: function (oData) {
-              resolve(oData);
-            },
-            error: function () {
-              reject(
-                "An error occurred while checking username existence."
-              );
-            }
-          })
-        })
+        //     ],
+        //     success: function (oData) {
+        //       // console.log(oData.results)
+        //       // var oProduct1 = oData.results.filter(checkProduct)
+        //       // function checkProduct(v) {
+        //       //   console.log(v)
+        //       //   return v.Productno_ID === product;
+        //       // }
+        //       // console.log(oProduct1)
+        //       // console.log(oProduct1.length)
+        //       resolve(oProduct1.length > 0);
+
+
+        //     },
+        //     error: function () {
+        //       reject(
+        //         "An error occurred while checking username existence."
+        //       );
+        //     }
+        //   })
+        // })
       },
+
 
 
       // Define your press handler
@@ -525,15 +699,15 @@ sap.ui.define(
         };
 
         const aUserInputs = [
-          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
           { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
-          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
+          { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
+          { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be numeric" },
+          { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be numeric" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
-          { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be a numeric value" },
-          { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be a numeric value" },
-          { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+$/, message: "Height should be a numeric value" },
-          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be a numeric value" },
-          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be a numeric value" }
+          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
         ]
 
         aUserInputs.forEach(async input => {
@@ -541,23 +715,21 @@ sap.ui.define(
         })
 
         if (validationErrors.length > 0) {
-          for (const errMsg of validationErrors) {
-            MessageBox.information(errMsg);
-            return true;
-          }
+          MessageBox.information("Please enter correct data");
+          return;
         }
 
         // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idselectuom").getSelectedKey();
         if (oSelectedItem === 'Select') {
-          MessageBox.error("Please Select UOM !");
+          MessageBox.error("Please Select UOM!!");
           return;
         }
         oPayload.uom = oSelectedItem;
         //get the selected item
         var oSelectedItem1 = this.byId("uomSelect").getSelectedKey()
         if (oSelectedItem1 === 'Select') {
-          MessageBox.error("Please Select UOM for weight..!");
+          MessageBox.error("Please Select UOM!!");
           return;
         }
         oPayload.muom = 'PC';
@@ -1455,13 +1627,13 @@ sap.ui.define(
 
       onPressGenericTilePress: function (oEvent) {
         debugger;
+        var oWizard = this.byId("idWizardIn_simulate");
+        var oCurrentStep = oWizard.getCurrentStep();
 
+        oWizard.nextStep();
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
 
-        // // Move to the next step in the wizar
-        // const oWizard = this.byId("idProcesstWizard_changeQueue");
-        // oWizard.nextStep();
 
 
 
@@ -1493,101 +1665,18 @@ sap.ui.define(
         });
       },
 
-      onPressAddProductInSimulate: function () {
-        // this.getView().byId("idHBoxInAddSimulate").setVisible(true);
-      },
+
       onPressAddProductInSimulate: async function () {
+        debugger
+
         if (!this.oValueDialog) {
           this.oValueDialog = await this.loadFragment("ValueHelp");
         }
         this.oValueDialog.open();
 
-        // this._oBasicSearchFieldWithSuggestions = new SearchField();
 
-        // Fragment.load({
-        //   name: `com.app.artihcus.fragment.ValueHelp`
-        // }).then(function(oDialogSuggestions) {
-        //   var oFilterBar = oDialogSuggestions.getFilterBar(), oColumnProductCode, oColumnProductName;
-        //   this._oVHDWithSuggestions = oDialogSuggestions;
 
-        //   this.getView().addDependent(oDialogSuggestions);
 
-        //   // Set key fields for filtering in the Define Conditions Tab
-        //   oDialogSuggestions.setRangeKeyFields([{
-        //     label: "Product Code",
-        //     key: "ProductCode",
-        //     type: "string",
-        //     typeInstance: new TypeString({}, {
-        //       maxLength: 7
-        //     })
-        //   }]);
-
-        //   // Set Basic Search for FilterBar
-        //   oFilterBar.setFilterBarExpanded(false);
-        //   oFilterBar.setBasicSearch(this._oBasicSearchFieldWithSuggestions);
-
-        //   // Trigger filter bar search when the basic search is fired
-        //   this._oBasicSearchFieldWithSuggestions.attachSearch(function() {
-        //     oFilterBar.search();
-        //   });
-
-        //   oDialogSuggestions.getTableAsync().then(function (oTable) {
-
-        //     //oTable.setModel(this.oProductsModel);
-
-        //     //For Desktop and tabled the default table is sap.ui.table.Table
-        //     if (oTable.bindRows) {
-        //       // Bind rows to the ODataModel and add columns
-        //       // oTable.bindAggregation("rows", {
-        //       //   path: "/ZSALESREPORTSuggestions",
-        //       //   events: {
-        //       //     dataReceived: function() {
-        //       //       oDialogSuggestions.update();
-        //       //     }
-        //       //   }
-        //       // });
-        //       oColumnProductCode = new UIColumn({label: new Label({text: "Product Code"}), template: new Text({wrapping: false, text: "{ProductCode}"})});
-        //       oColumnProductCode.data({
-        //         fieldName: "ProductCode"
-        //       });
-        //       oTable.addColumn(oColumnProductCode);
-
-        //       oColumnProductName = new UIColumn({label: new Label({text: "Quantity"}), template: new Text({wrapping: false, text: "{Quantity}"})});
-        //       oColumnProductName.data({
-        //         fieldName: "Quantity"
-        //       });
-        //       oTable.addColumn(oColumnProductName);
-
-        //       // oColumnDis = new UIColumn({label: new Label({text: "Dis"}), template: new Text({wrapping: false, text: "{Dis}"})});
-        //       // oColumnDis.data({
-        //       //   fieldName: ""
-        //       // });
-        //       // oTable.addColumn(oColumnQuantity);
-        //     }
-
-        //     //For Mobile the default table is sap.m.Table
-        //     // if (oTable.bindItems) {
-        //     //   // Bind items to the ODataModel and add columns
-        //     //   oTable.bindAggregation("items", {
-        //     //     path: "/ZSALESREPORTSuggestions",
-        //     //     template: new ColumnListItem({
-        //     //       cells: [new Label({text: "{ProductCode}"}), new Label({text: "{ProductName}"})]
-        //     //     }),
-        //     //     events: {
-        //     //       dataReceived: function() {
-        //     //         oDialogSuggestions.update();
-        //     //       }
-        //     //     }
-        //     //   });
-        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Code"})}));
-        //     //   oTable.addColumn(new MColumn({header: new Label({text: "Product Name"})}));
-        //     // }
-        //     oDialogSuggestions.update();
-        //   }.bind(this));
-
-        //  // oDialogSuggestions.setTokens(this._oMultiInputWithSuggestions.getTokens());
-        //   oDialogSuggestions.open();
-        // }.bind(this));
       },
       onValueHelpWithSuggestionsCancelPress: function () {
         this._oVHDWithSuggestions.close();
@@ -1718,7 +1807,6 @@ sap.ui.define(
         // Start the animation loop
         this._animate();
       },
-
       _createContainer: function (height, length, width) {
         // Remove any existing container
         if (this.container) {
@@ -1769,75 +1857,125 @@ sap.ui.define(
         this._createProducts(aSelectedData, height, length, width);
 
       },
+
       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-        let currentX = -containerLength / 2; // Start at one corner of the container
-        let currentY = 0; // Start at the base
-        let currentZ = -containerWidth / 2; // Start at one edge along the Z-axis
+        let currentX = -containerLength / 2; // X starting point
+        let currentZ = -containerWidth / 2; // Z starting point
+        let positionMap = []; // Track positions and dimensions of placed products
+
+        // Function to check the maximum height of products in the overlapping range
+        const getOverlapHeight = (newXStart, newXEnd, newZStart, newZEnd) => {
+          let maxHeight = 0;
+
+          positionMap.forEach(position => {
+            const {
+              xStart, xEnd, zStart, zEnd, yTop
+            } = position;
+
+            // Check if the new product overlaps in X and Z ranges
+            const isOverlappingX = !(newXEnd <= xStart || newXStart >= xEnd);
+            const isOverlappingZ = !(newZEnd <= zStart || newZStart >= zEnd);
+
+            if (isOverlappingX && isOverlappingZ) {
+              maxHeight = Math.max(maxHeight, yTop);
+            }
+          });
+
+          return maxHeight; // Return the max height found in overlapping ranges
+        };
 
         selectedProducts.forEach(product => {
-          const SelectedQuantity = parseInt(product.SelectedQuantity); // Get the quantity of products
+          const SelectedQuantity = parseInt(product.SelectedQuantity);
           const productLength = parseFloat(product.Productno.length);
           const productHeight = parseFloat(product.Productno.height);
           const productWidth = parseFloat(product.Productno.width);
+          const productColor = product.color;
 
           for (let i = 0; i < SelectedQuantity; i++) {
-            // Check if the product fits in the container
-            if (
-              currentY + productHeight > containerHeight ||
-              currentX + productLength > containerLength / 2 ||
-              currentZ + productWidth > containerWidth / 2
-            ) {
-              console.warn("Product does not fit in the container, skipping:", product);
-              return;
-            }
+            let placed = false;
 
-            // Create geometry and material for the product
-            const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-            const productMaterial = new THREE.MeshStandardMaterial({
-              color: 0x00FF00, // Green color for products
-              metalness: 0.5,
-              roughness: 0.5
-            });
+            while (!placed) {
+              const newXStart = currentX;
+              const newXEnd = currentX + productLength;
+              const newZStart = currentZ;
+              const newZEnd = currentZ + productWidth;
 
-            // Create the product mesh
-            const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-            productMesh.castShadow = true;
-            productMesh.receiveShadow = true;
+              // Get the height of any product below in the overlap range
+              const newY = getOverlapHeight(newXStart, newXEnd, newZStart, newZEnd);
 
-            // Dynamically adjust product positions based on container dimensions
-            productMesh.position.set(
-              currentX + productLength / 2, // Center the product along the X-axis
-              currentY + productHeight / 2, // Stack on top of other products
-              currentZ + productWidth / 2 // Center the product along the Z-axis
-            );
+              // Check height limit before placing
+              if (newY + productHeight > containerHeight) {
+                console.warn("Container height limit reached. Cannot place more products.");
+                return;
+              }
 
-            // Add the product to the scene
-            this.scene.add(productMesh);
+              // Create the main product geometry
+              const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+              const productMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(productColor),
+                metalness: 0.5,
+                roughness: 0.5
+              });
 
-            // Update positions for the next product
-            currentX += productLength;
+              const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+              productMesh.castShadow = true;
+              productMesh.receiveShadow = true;
 
-            // Check if we need to move to the next row (Z-axis)
-            if (currentX + productLength > containerLength / 2) {
-              currentX = -containerLength / 2; // Reset X to the start
-              currentZ += productWidth;
+              productMesh.position.set(
+                currentX + productLength / 2, // Centered X
+                newY + productHeight / 2,    // Stack on top of overlapping height
+                currentZ + productWidth / 2  // Centered Z
+              );
 
-              // Check if we need to stack products (Y-axis)
-              if (currentZ + productWidth > containerWidth / 2) {
-                currentZ = -containerWidth / 2; // Reset Z to the start
-                currentY += productHeight;
+              // Add the product to the scene
+              this.scene.add(productMesh);
 
-                // Stop placement if we exceed the container's height
-                if (currentY + productHeight > containerHeight) {
-                  console.warn("Container is full, cannot place more products.");
-                  return;
+              // Create a thin border using edges (lines) around the product
+              const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+              const edgesMaterial = new THREE.LineBasicMaterial({
+                color: 0x000000,  // Black border
+                linewidth: 1      // Thin line thickness
+              });
+
+              const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              edges.position.set(
+                currentX + productLength / 2, // Centered X
+                newY + productHeight / 2,    // Stack on top of overlapping height
+                currentZ + productWidth / 2  // Centered Z
+              );
+
+              // Add the border (lines) around the product
+              this.scene.add(edges);
+
+              // Update position map for product placement
+              positionMap.push({
+                xStart: newXStart,
+                xEnd: newXEnd,
+                zStart: newZStart,
+                zEnd: newZEnd,
+                yTop: newY + productHeight // The new top Y position after placing
+              });
+
+              // Update X position for next product
+              currentX += productLength;
+
+              // Check row boundary
+              if (currentX + productLength > containerLength / 2) {
+                currentX = -containerLength / 2; // Reset X to start
+                currentZ += productWidth;       // Move to next row (Z-axis)
+
+                // Check Z boundary and move up one layer if needed
+                if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2; // Reset Z to start
                 }
               }
+
+              placed = true; // Mark as placed
             }
           }
         });
 
-        console.log("Products dynamically positioned based on container size.");
+        console.log("All products placed successfully with thin borders.");
       },
 
 
@@ -1866,6 +2004,49 @@ sap.ui.define(
           this.renderer.render(this.scene, this.camera);
         };
         animate();
-      }
+      },
+      // downloding the products list selected for the simulation
+      onDownloadPressInSimulate: function () {
+  
+        var oTable = this.byId("idAddProductsTableIn_simulate");
+        var aItems = oTable.getItems();
+        var aData = [];
+        // Push column headers as the first row
+        var aHeaders = [
+          "Product",
+          "Description",
+          "Quantity",
+          "Volume",
+          "Weight",
+          "Length",
+          "Width",
+          "Height",
+          "Color",
+          "Stack"
+         
+        ];
+        aData.push(aHeaders);
+
+        // Iterate through table items and collect data
+        aItems.forEach(function (oItem) {
+          var oCells = oItem.getCells();
+          var rowData = [];
+          oCells.forEach(function (oCell) {
+            rowData.push(oCell.getText());
+          });
+          aData.push(rowData);
+        });
+
+        // Prepare Excel workbook
+        var oSheet = XLSX.utils.aoa_to_sheet(aData);
+        var oWorkbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "ProductsListTable");
+
+        // Generate and download the Excel file
+        XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
+      },
+   
+
+  
     });
   });

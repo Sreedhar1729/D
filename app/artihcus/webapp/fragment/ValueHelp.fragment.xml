@@ -36,6 +36,17 @@
 
                             <columns >
                                 <Column
+                                    visible="false"
+									id="idTableColorgumProduct"
+                                    class="backgroundColour"
+                                >
+                                    <!-- Set specific widths -->
+                                    <Text
+                                      	id="idTablefTextProduct"
+                                        text="UUID"
+                                    />
+                                </Column>
+                                <Column
                                    
 									id="idTableColoumProduct"
                                     class="backgroundColour"
@@ -89,6 +100,10 @@
                                 >
                                     <cells>
                                         <Text
+											id="idTableCdolumnListTextProduct"
+                                            text="{ID}"
+                                        />
+                                        <Text
 											id="idTableColumnListTextProduct"
                                             text="{sapProductno}"
                                         />
@@ -101,8 +116,10 @@
                                             text="{quantity}"
                                         />
 										 <Input
+                                         type="Number"
+                                          liveChange="onlivechangeValue_"
 											id="idTableColumnListTextPickingQty"
-                                            value="{SelectedQuantity}"
+                                            value="{= ${SelectedQuantity}}"
                                         />
                                       
                                     </cells>

@@ -1,39 +1,45 @@
 namespace capacitymanagement.db;
-
+ 
+using {managed} from '@sap/cds/common';
+ 
 /**for custom type */
 type string : String(40);
-
+ 
 /**Defining entity */
-
+ 
 // for unique fields
 @assert.unique: {
     sapProductno: [sapProductno],
-    EANUPC      : [EANUPC]
-
+    EAN         : [EAN]
+ 
 }
-
+ 
 define entity Materials {
-    key ID           : UUID;
-        sapProductno : string;
-        EANUPC       : String;
-        length       : String;
-        width        : String;
-        height       : String;
-        volume       : String;
-        vuom         : String;
-        muom         : String;
-        uom          : String;
-        mCategory    : string;
-        description  : String;
-        weight       : String;
-        wuom         : String;
-        quantity     : String;
-        layers       : String;
-        mass         : String;
-        layersHeight : String;
-        SelectedQuantity:String;
-}
 
+    key ID              : UUID;
+        sapProductno    : string;
+        EAN             : String;
+        length          : String;
+        width           : String;
+        height          : String;
+        volume          : String;
+        vuom            : String;
+        muom            : String;
+        uom             : String;
+        mCategory       : string;
+        description     : String;
+        weight          : String;
+        wuom            : String;
+        quantity        : String;
+        layers          : String;
+        mass            : String;
+        layersHeight    : String;
+        color           : String;
+        selectedProduct : Association to SelectedProduct
+                              on selectedProduct.Productno = $self
+ 
+}
+ 
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
@@ -48,8 +54,18 @@ define entity TruckTypes {
         capacity    : String;
         tuom        : String;
 }
-
+ 
 define entity SelectedProduct {
     key Productno        : Association to Materials;
-        Truckdetails     : Association to TruckTypes;
+        SelectedQuantity : String;
 }
+ 
+ 
+define entity History : managed {
+    key ID        : UUID;
+        productNo : Association to SelectedProduct;
+        truckType : Association to TruckTypes;
+ 
+}
+ 
+ 
