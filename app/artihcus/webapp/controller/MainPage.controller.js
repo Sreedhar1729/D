@@ -1973,24 +1973,6 @@ sap.ui.define(
       },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
