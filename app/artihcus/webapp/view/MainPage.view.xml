@@ -140,14 +140,14 @@
                                     <HBox id="idhboxvghDesdfrghcription">
                                         <Label
                                             id="idLabvbnleDescription_InitialView"
-                                            text="EAN:"
+                                            text="EANUPC:"
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
                                         <Input
                                             id="idDesvbncriptionInput_InitialView"
-                                            value="{ProductModel>/EAN}"
-                                            placeholder="Eneter EAN"
+                                            value="{ProductModel>/EANUPC}"
+                                            placeholder="Eneter UAN"
                                             class="customInput"
                                             width="100%"
                                         />
@@ -641,7 +641,7 @@
                                 <Column id="_IDGenColun4">
                                     <Text
                                         id="_IDGe4"
-                                        text="EAN"
+                                        text="EANUPC"
                                     />
                                 </Column>
 
@@ -880,6 +880,18 @@
                                                 press="onDownloadPressInSimulate"
                                                 tooltip="Print"
                                                 class="line-md--download-outline-loop"
+                                            />
+                                            <u:FileUploader
+                                                id="EditId"
+                                                sameFilenameAllowed="true"
+                                                iconOnly="false"
+                                                buttonOnly="true"
+                                                fileType="XLSX,xlsx"
+                                                icon="sap-icon://edit"
+                                                iconFirst="true"
+                                                buttonText="Edit"
+                                                style="Emphasized"
+                                                change="onEdit"
                                             />
                                         </OverflowToolbar>
                                     </headerToolbar>
