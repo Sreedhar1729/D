@@ -67,7 +67,7 @@ sap.ui.define(
           muom: "",
           mCategory: "",
           description: "",
-          EANUPC: "",
+          EAN: "",
           weight: "",
         })
         this.getView().setModel(oJsonModel, "ProductModel");
@@ -271,17 +271,37 @@ sap.ui.define(
         var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
 
         // Validate: Picking Quantity should not be greater than Actual Quantity
-        if (selectedQuantity > actualQuantity || selectedQuantity <= 0) {
+        if (selectedQuantity > actualQuantity ) {
           // Set error state on the input field
           oInput.setValueState(sap.ui.core.ValueState.Error);
-          oInput.setValueStateText("Picking Quantity cannot be greater than Actual Quantity.");
-        } else {
+          oInput.setValueStateText("Picking Quantity cannot be greaterthan Actual Quantity.");
+        } 
+        else if(selectedQuantity <= 0){
+          oInput.setValueState(sap.ui.core.ValueState.Error);
+          oInput.setValueStateText("Picking Quantity cannot be lessthan or equal to zero.");
+        }
+        else {
           // Clear error state
           oInput.setValueState(sap.ui.core.ValueState.None);
           oInput.setValueStateText("");
         }
       },
+      onDeletePressInSimulate:async function(){
+          var oModel=this.getOwnerComponent().getModel("ModelV2");
+         await oModel.read("/SelectedProduct",{
+            success:function(oData){
+              oData.results.forEach((item)=>{
+                var sId=item.ID;
+                this.deleteData(oModel,`/SelectedProduct('${sId}')`)
+              })
+              
+            }.bind(this),
+            error:function(){
 
+            }
+          })
+
+      },
 
       onAddPress: function () {
         var oTable = this.byId("idTableAddProduct");
@@ -302,7 +322,7 @@ sap.ui.define(
             // Get the value entered in the Input field
             var sPickingQty = oInput.value;
             var actualQuantity = oData.quantity;
-            if (parseInt(sPickingQty) > parseInt(actualQuantity) || parseInt(sPickingQty) <= 0) {
+            if (parseInt(sPickingQty) > parseInt(actualQuantity) || parseInt(sPickingQty) <= 0 || !(sPickingQty)) {
               count = count + 1;
             }
           })
@@ -325,14 +345,14 @@ sap.ui.define(
         // var oTable = this.byId("idTableAddProduct");
         var that = this;
         // Get the selected items (rows) from the table
-        const randomHexColor = (function () {
-          const letters = '0123456789ABCDEF';
-          let color = '#';
-          for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-          }
-          return color;
-        })();
+        // const randomHexColor = (function () {
+        //   const letters = '0123456789ABCDEF';
+        //   let color = '#';
+        //   for (let i = 0; i < 6; i++) {
+        //     color += letters[Math.floor(Math.random() * 16)];
+        //   }
+        //   return color;
+        // })();
         // var aSelectedItems = oTable.getSelectedItems();
 
         // var oModel = this.getOwnerComponent().getModel("ModelV2")
@@ -357,36 +377,54 @@ sap.ui.define(
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
               Productno_ID: oData.ID,
+              SelectedQuantity:sPickingQty
 
             };
-            var dummy2 = {
-              Productno_ID: oData.ID,
+            // var dummy2 = {
+            //   Productno_ID: oData.ID,
 
-              color: randomHexColor
-            };
+            //   color: randomHexColor
+            // };
             selectedData.push({
               product: oData.sapProductno,
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
               pickingQuantity: sPickingQty,
-              color: randomHexColor
+              // color: randomHexColor
             });
             try {
 
-              await that.productExists(oModel, dummy.Productno_ID)
+              var oProductExists=await that.productExists(oModel, dummy.Productno_ID)
             
-              if (!(that.flag)) {
-                await that.createData(oModel, dummy2, "/SelectedProduct")
+              if (!(oProductExists)) {
+                await that.createData(oModel, dummy, "/SelectedProduct");
+                that.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+                return
               }
-           
-             await oModel.update("/Materials('" + dummy.Productno_ID + "')",{SelectedQuantity:sPickingQty}, {
-              success: function () {
+              await oModel.read("/SelectedProduct",{
+                filters: [
+                  new Filter("Productno_ID", FilterOperator.EQ, dummy.Productno_ID),
+                  //new Filter("password", FilterOperator.EQ, sPassword)
 
-              }.bind(this),
-              error: function (oError) {
-                sap.m.MessageBox.error("Failed " + oError.message);
-              }.bind(this)
-            });
+              ],
+                success:async function(oData){
+                console.log(oData)
+                var sID=oData.results[0].ID
+                  await oModel.update("/SelectedProduct('" + sID + "')",{SelectedQuantity:sPickingQty}, {
+                    success: function () {
+                      that.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+                    }.bind(this),
+                    error: function (oError) {
+                      sap.m.MessageBox.error("Failed " + oError.message);
+                    }.bind(this)
+                  });
+                },
+                error:function(oError){
+                  console.log(oError)
+                }
+              })
+           
+            
             }
             catch (error) {
               console.log(error)
@@ -396,7 +434,7 @@ sap.ui.define(
           });
 
           // Do something with the selected data, e.g., display it
-          MessageToast.show("Selected Products: " + JSON.stringify(selectedData));
+          //MessageToast.show("Selected Products: " + JSON.stringify(selectedData.));
           this.oValueDialog.close();
 
         } else {
@@ -419,49 +457,83 @@ sap.ui.define(
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
       },
-      productExists: async function (oModel, sId) {
-        console.log(sId)
-        const that = this
-       await oModel.read(`/SelectedProduct('${sId}')`,{
-                // filters: [new Filter("Productno_ID", FilterOperator.EQ, sId)],
-                success:function (oData,resp) {
-                  console.log(oData);
-                  that.flag = true;
-                },
-                error:function (error) {
-                  console.error(error.message);
-                  that.flag = false;
-                },
-              })
+      productExists: function (oModel, sId) {
+        const that = this;
+        return new Promise((resolve, reject) => {
+            // oModel.read(`/SelectedProduct('${sId}')`, {
+            //     success: function (oData, resp) {
+            //         console.log(oData);
+            //         that.flag = true;  // Set flag to true if product exists
+            //         resolve();         // Resolve promise when success
+            //     },
+            //     error: function (error) {
+            //         console.error(error.message);
+            //         that.flag = false; // Set flag to false if product does not exist
+            //         reject(error);     // Reject promise on error
+            //     }
+            // });
+            oModel.read("/SelectedProduct", {
+              filters: [
+                  new Filter("Productno_ID", FilterOperator.EQ, sId),
+                  //new Filter("password", FilterOperator.EQ, sPassword)
 
-        // return new Promise((resolve, reject) => {
-        //   oModel.read("/SelectedProduct", {
-        //     filters: [
-        //         new Filter("Productno_ID", FilterOperator.EQ, sId),
+              ],
+              success: function (oData) {
+                  resolve(oData.results.length > 0);
+                 
+              },
+              error: function () {
+                  reject(
+                      "An error occurred while checking username existence."
+                  );
+              }
+          })
+        });
+    },
+    
+      // productExists: async function (oModel, sId) {
+      //   console.log(sId)
+      //   const that = this
+      //  await oModel.read(`/SelectedProduct('${sId}')`,{
+      //           // filters: [new Filter("Productno_ID", FilterOperator.EQ, sId)],
+      //           success:function (oData,resp) {
+      //             console.log(oData);
+      //             that.flag = true;
+      //           },
+      //           error:function (error) {
+      //             console.error(error.message);
+      //             that.flag = false;
+      //           },
+      //         })
+
+      //   // return new Promise((resolve, reject) => {
+      //   //   oModel.read("/SelectedProduct", {
+      //   //     filters: [
+      //   //         new Filter("Productno_ID", FilterOperator.EQ, sId),
 
 
-        //     ],
-        //     success: function (oData) {
-        //       // console.log(oData.results)
-        //       // var oProduct1 = oData.results.filter(checkProduct)
-        //       // function checkProduct(v) {
-        //       //   console.log(v)
-        //       //   return v.Productno_ID === product;
-        //       // }
-        //       // console.log(oProduct1)
-        //       // console.log(oProduct1.length)
-        //       resolve(oProduct1.length > 0);
+      //   //     ],
+      //   //     success: function (oData) {
+      //   //       // console.log(oData.results)
+      //   //       // var oProduct1 = oData.results.filter(checkProduct)
+      //   //       // function checkProduct(v) {
+      //   //       //   console.log(v)
+      //   //       //   return v.Productno_ID === product;
+      //   //       // }
+      //   //       // console.log(oProduct1)
+      //   //       // console.log(oProduct1.length)
+      //   //       resolve(oProduct1.length > 0);
 
 
-        //     },
-        //     error: function () {
-        //       reject(
-        //         "An error occurred while checking username existence."
-        //       );
-        //     }
-        //   })
-        // })
-      },
+      //   //     },
+      //   //     error: function () {
+      //   //       reject(
+      //   //         "An error occurred while checking username existence."
+      //   //       );
+      //   //     }
+      //   //   })
+      //   // })
+      // },
 
 
 
@@ -522,7 +594,7 @@ sap.ui.define(
         var aHeaders = [
           "SAP Productno",
           "Description",
-          "EANUPC",
+          "EAN",
           "Material Category",
           "Length",
           "Width",
@@ -725,7 +797,7 @@ sap.ui.define(
         };
 
         const aUserInputs = [
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+$/, message: "Width should be numeric" },
@@ -784,11 +856,13 @@ sap.ui.define(
           MessageToast.show("Successfully Created!");
         } catch (error) {
           console.error(error);
-          if (error.statusCode === "400") {
-            MessageBox.information("Product Number and EANUPC Should be unique enter different values")
-          } else {
             MessageToast.show("Facing technical issue");
-          }
+
+          // if (error.statusCode === "400") {
+          //   MessageBox.information("Product Number and EAN Should be unique enter different values")
+          // } else {
+          //   MessageToast.show("Facing technical issue");
+          // }
         }
       },
 
@@ -804,7 +878,7 @@ sap.ui.define(
           uom: "",
           mCategory: "",
           description: "",
-          EANUPC: "",
+          EAN: "",
           weight: "",
           quantity: ""
         })
@@ -831,6 +905,25 @@ sap.ui.define(
         }
       },
 
+      onliveVehicleSearch: function (oEvent) {
+       
+        let sQuery = oEvent.getParameter("newValue");
+        sQuery = sQuery.replace(/\s+/g, '');
+        sQuery = sQuery.toUpperCase();
+ 
+        // test
+        if (sQuery && sQuery.length > 0) {
+          const truckfilter = new Filter("truckType", FilterOperator.Contains, sQuery),
+             capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
+            //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
+ 
+          var allFilter = new Filter([truckfilter, capacityfilter]);
+        }
+ 
+        var oTableBinding = this.byId("ProductsTable").getBinding("items")
+        oTableBinding.filter(allFilter);
+      },
+
       /**Creating Vehicles */
       onCreateVeh: async function () {
         const oPayloadModel = this.getView().getModel("VehModel"),
@@ -853,6 +946,7 @@ sap.ui.define(
         }
         const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
+        oPayload.truckType=`${oPayload.truckType}FT`
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
@@ -865,7 +959,6 @@ sap.ui.define(
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
-          this.byId("parkingLotSelect").getBinding("items").refresh();
 
           MessageToast.show("Successfully Created!");
         } catch (error) {
@@ -982,7 +1075,7 @@ sap.ui.define(
         await this.oOpenProductEdit();
         this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
         this.byId("editDescriptionInput").setValue(oData.description); // Description
-        this.byId("editEANUPCInput").setValue(oData.EANUPC); // EAN/UPC Code
+        this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
         this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
         this.byId("editproLengthInput").setValue(oData.length); // Length
         this.byId("editprodWidthInput").setValue(oData.width); // Width
@@ -997,7 +1090,7 @@ sap.ui.define(
         const updatedData = {
           sapProductno: this.byId("editProductNoInput").getValue(), // SAP Product Number
           description: this.byId("editDescriptionInput").getValue(), // Description
-          EANUPC: this.byId("editEANUPCInput").getValue(),          // EAN/UPC Code
+          EAN: this.byId("editEANInput").getValue(),          // EAN/UPC Code
           mCategory: this.byId("editCategoryInput").getValue(),      // Material Category
           length: this.byId("editproLengthInput").getValue(),        // Length
           width: this.byId("editprodWidthInput").getValue(),         // Width
@@ -1030,7 +1123,7 @@ sap.ui.define(
       onClearEditProdDialog: function () {
         this.byId("editProductNoInput").setValue(""); // SAP Product Number
         this.byId("editDescriptionInput").setValue(""); // Description
-        this.byId("editEANUPCInput").setValue(""); // EAN/UPC Code
+        this.byId("editEANInput").setValue(""); // EAN/UPC Code
         this.byId("editCategoryInput").setValue(""); // Material Category
         this.byId("editproLengthInput").setValue(""); // Length
         this.byId("editprodWidthInput").setValue(""); // Width
@@ -1356,7 +1449,7 @@ sap.ui.define(
               uom: String(product.UOM),                        // Ensure it's a string
               mCategory: String(product['Material Category']), // Ensure it's a string
               description: String(product.Description),        // Ensure it's a string
-              EANUPC: String(product.EANUPC),                  // Ensure it's a string
+              EAN: String(product.EAN),                  // Ensure it's a string
               weight: String(product.Weight),
               quantity: String(product.Quantity)                    // Ensure it's a string
             };
