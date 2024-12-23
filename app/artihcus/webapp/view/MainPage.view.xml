@@ -116,12 +116,16 @@
                                 layout="ResponsiveGridLayout"
                                 backgroundDesign="Transparent"
                             >
+
                                 <VBox
                                     class="vboxAdd"
                                     id="idConfigSapSysVbox_InitialView"
                                     visible="true"
                                 >
                                     <HBox id="idhboxDescription">
+
+
+                                 
                                         <Label
                                             id="idLableDescription_InitialView"
                                             text="Product Number:"
@@ -589,8 +593,9 @@
                                     <Button
                                         id="idBtghjnHUContentBtn_AHUOBQ"
                                         text="Edit"
-                                        icon="sap-icon://edit"
+                                         icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
+                                    
                                         tooltip="Edit"
                                     />
                                     <Button
@@ -615,7 +620,7 @@
                                         fileType="XLSX,xlsx"
                                         icon="sap-icon://upload"
                                         iconFirst="true"
-                                        style="Transparent"
+                                      style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     />
@@ -841,6 +846,7 @@
                                             />
                                             <ToolbarSpacer id="as" />
 
+                                          
                                             <u:FileUploader
                                                 id="EditId"
                                                 sameFilenameAllowed="true"
@@ -860,7 +866,7 @@
                                                 text="Delete"
                                                 icon="sap-icon://delete"
                                             />
-                                            <u:FileUploader
+                                              <u:FileUploader
                                                 id="FileUploaderId"
                                                 sameFilenameAllowed="true"
                                                 iconOnly="false"
