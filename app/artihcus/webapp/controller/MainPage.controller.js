@@ -1296,6 +1296,24 @@ sap.ui.define(
         var oBinding = oTable.getBinding("items");
         oBinding.filter(aFilter);
       },
+      onliveVehicleSearch: function (oEvent) {
+
+        let sQuery = oEvent.getParameter("newValue");
+        sQuery = sQuery.replace(/\s+/g, '');
+        sQuery = sQuery.toUpperCase();
+
+        // test
+        if (sQuery && sQuery.length > 0) {
+          const truckfilter = new Filter("truckType", FilterOperator.Contains, sQuery),
+             capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
+            //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
+
+          var allFilter = new Filter([truckfilter, capacityfilter]);
+        }
+
+        var oTableBinding = this.byId("ProductsTable").getBinding("items")
+        oTableBinding.filter(allFilter);
+      },
 
       /**For creating n number of products at a time */
       onUploadMaterialCreation: function (e) {
