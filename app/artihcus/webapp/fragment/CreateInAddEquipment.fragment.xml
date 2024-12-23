@@ -7,8 +7,8 @@
         id="idCreateInAddddEquipmentDialog"
         resizable="true"
         draggable="true"
-        contentWidth="20%"
-        contentHeight="30%"
+        contentWidth="40%"
+        contentHeight="35%"
         title="Create Vehicle"
     >
         <beginButton>
