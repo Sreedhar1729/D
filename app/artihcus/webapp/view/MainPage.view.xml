@@ -112,12 +112,16 @@
                                 layout="ResponsiveGridLayout"
                                 backgroundDesign="Transparent"
                             >
+
                                 <VBox
                                     class="vboxAdd"
                                     id="idConfigSapSysVbox_InitialView"
                                     visible="true"
                                 >
                                     <HBox id="idhboxDescription">
+
+
+                                 
                                         <Label
                                             id="idLableDescription_InitialView"
                                             text="Product Number:"
@@ -136,14 +140,14 @@
                                     <HBox id="idhboxvghDesdfrghcription">
                                         <Label
                                             id="idLabvbnleDescription_InitialView"
-                                            text="EAN/UPC:"
+                                            text="EAN:"
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
                                         <Input
                                             id="idDesvbncriptionInput_InitialView"
                                             value="{ProductModel>/EAN}"
-                                            placeholder="Eneter UAN"
+                                            placeholder="Eneter EAN"
                                             class="customInput"
                                             width="100%"
                                         />
@@ -391,7 +395,7 @@
                                 text="Edit"
                                 press="onEdit"
                                 tooltip="Edit"
-                                class="line-md--pencil"
+                                icon="sap-icon://edit"
                             />
                             <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
@@ -585,8 +589,9 @@
                                     <Button
                                         id="idBtghjnHUContentBtn_AHUOBQ"
                                         text="Edit"
+                                         icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
-                                        class="line-md--pencil"
+                                    
                                         tooltip="Edit"
                                     />
                                     <Button
@@ -611,7 +616,7 @@
                                         fileType="XLSX,xlsx"
                                         icon="sap-icon://upload"
                                         iconFirst="true"
-                                        style="Emphasized"
+                                      style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     />
@@ -636,7 +641,7 @@
                                 <Column id="_IDGenColun4">
                                     <Text
                                         id="_IDGe4"
-                                        text="EAN/UPC"
+                                        text="EAN"
                                     />
                                 </Column>
 
@@ -838,24 +843,7 @@
                                             />
                                             <ToolbarSpacer id="as" />
 
-                                            <u:FileUploader
-                                                id="FileUploaderId"
-                                                sameFilenameAllowed="true"
-                                                iconOnly="false"
-                                                buttonOnly="true"
-                                                fileType="XLSX,xlsx"
-                                                icon="sap-icon://upload"
-                                                iconFirst="true"
-                                                buttonText="Upload"
-                                                style="Emphasized"
-                                                change="onUpload"
-                                            />
-                                            <Button
-                                                id="idDownloadBtnIn_Simulate"
-                                                press="onDownloadPressInSimulate"
-                                                tooltip="Print"
-                                                class="line-md--download-outline-loop"
-                                            />
+                                          
                                             <u:FileUploader
                                                 id="EditId"
                                                 sameFilenameAllowed="true"
@@ -865,7 +853,7 @@
                                                 icon="sap-icon://edit"
                                                 iconFirst="true"
                                                 buttonText="Edit"
-                                                style="Emphasized"
+                                                style="Transparent"
                                                 change="onEdit"
                                             />
                                             <Button
@@ -873,6 +861,25 @@
                                                 press="onDeletePressInSimulate"
                                                 tooltip="Delete"
                                                 text="Delete"
+                                                icon="sap-icon://delete"
+                                            />
+                                              <u:FileUploader
+                                                id="FileUploaderId"
+                                                sameFilenameAllowed="true"
+                                                iconOnly="false"
+                                                buttonOnly="true"
+                                                fileType="XLSX,xlsx"
+                                                icon="sap-icon://upload"
+                                                iconFirst="true"
+                                                buttonText="Upload"
+                                                style="Transparent"
+                                                change="onUpload"
+                                            />
+                                            <Button
+                                                id="idDownloadBtnIn_Simulate"
+                                                press="onDownloadPressInSimulate"
+                                                tooltip="Print"
+                                                class="line-md--download-outline-loop"
                                             />
                                         </OverflowToolbar>
                                     </headerToolbar>
