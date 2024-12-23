@@ -867,13 +867,11 @@ sap.ui.define(
           MessageToast.show("Successfully Created!");
         } catch (error) {
           console.error(error);
+          if (error.statusCode === "400" && JSON.parse(error.responseText).error.message.value.toLowerCase() === "entity already exists") {
+            MessageBox.information("Product Number and EAN Should be unique enter different values")
+          } else {
             MessageToast.show("Facing technical issue");
-
-          // if (error.statusCode === "400") {
-          //   MessageBox.information("Product Number and EAN Should be unique enter different values")
-          // } else {
-          //   MessageToast.show("Facing technical issue");
-          // }
+          }
         }
       },
 
