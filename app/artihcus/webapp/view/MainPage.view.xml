@@ -113,12 +113,16 @@
                                 backgroundDesign="Transparent"
                             >
 
+
                                 <VBox
                                     class="vboxAdd"
                                     id="idConfigSapSysVbox_InitialView"
                                     visible="true"
                                 >
                                     <HBox id="idhboxDescription">
+
+
+                                 
 
 
                                  
@@ -140,14 +144,14 @@
                                     <HBox id="idhboxvghDesdfrghcription">
                                         <Label
                                             id="idLabvbnleDescription_InitialView"
-                                            text="EANUPC:"
+                                            text="EAN:"
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
                                         <Input
                                             id="idDesvbncriptionInput_InitialView"
-                                            value="{ProductModel>/EANUPC}"
-                                            placeholder="Eneter UAN"
+                                            value="{ProductModel>/EAN}"
+                                            placeholder="Eneter EAN"
                                             class="customInput"
                                             width="100%"
                                         />
@@ -396,6 +400,7 @@
                                 press="onEdit"
                                 tooltip="Edit"
                                 icon="sap-icon://edit"
+                                icon="sap-icon://edit"
                             />
                             <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
@@ -590,7 +595,9 @@
                                         id="idBtghjnHUContentBtn_AHUOBQ"
                                         text="Edit"
                                          icon="sap-icon://edit"
+                                         icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
+                                    
                                     
                                         tooltip="Edit"
                                     />
@@ -617,6 +624,7 @@
                                         icon="sap-icon://upload"
                                         iconFirst="true"
                                       style="Transparent"
+                                      style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     />
@@ -641,7 +649,7 @@
                                 <Column id="_IDGenColun4">
                                     <Text
                                         id="_IDGe4"
-                                        text="EANUPC"
+                                        text="EAN"
                                     />
                                 </Column>
 
@@ -880,18 +888,6 @@
                                                 press="onDownloadPressInSimulate"
                                                 tooltip="Print"
                                                 class="line-md--download-outline-loop"
-                                            />
-                                            <u:FileUploader
-                                                id="EditId"
-                                                sameFilenameAllowed="true"
-                                                iconOnly="false"
-                                                buttonOnly="true"
-                                                fileType="XLSX,xlsx"
-                                                icon="sap-icon://edit"
-                                                iconFirst="true"
-                                                buttonText="Edit"
-                                                style="Emphasized"
-                                                change="onEdit"
                                             />
                                         </OverflowToolbar>
                                     </headerToolbar>
