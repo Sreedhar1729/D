@@ -67,6 +67,4 @@ define entity History : managed {
         productNo : Association to SelectedProduct;
         truckType : Association to TruckTypes;
  
-}
- 
- 
+}                                                                 

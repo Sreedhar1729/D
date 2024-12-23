@@ -119,7 +119,7 @@
                                          type="Number"
                                           liveChange="onlivechangeValue_"
 											id="idTableColumnListTextPickingQty"
-                                            value="{= ${SelectedQuantity}}"
+                                            value="{= ${selectedProduct/SelectedQuantity}}"
                                         />
                                       
                                     </cells>
