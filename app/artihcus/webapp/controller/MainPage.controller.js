@@ -805,11 +805,11 @@ sap.ui.define(
             oField.setValueState("None");
           }
         };
+        // { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
 
         const aUserInputs = [
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EANUPC, regex: null, message: "Please enter EANUPC" },
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+$/, message: "Length should be numeric" },
@@ -870,13 +870,11 @@ sap.ui.define(
           MessageToast.show("Successfully Created!");
         } catch (error) {
           console.error(error);
+          if (error.statusCode === "400" && JSON.parse(error.responseText).error.message.value.toLowerCase() === "entity already exists") {
+            MessageBox.information("Product Number and EAN Should be unique enter different values")
+          } else {
             MessageToast.show("Facing technical issue");
-
-          // if (error.statusCode === "400") {
-          //   MessageBox.information("Product Number and EAN Should be unique enter different values")
-          // } else {
-          //   MessageToast.show("Facing technical issue");
-          // }
+          }
         }
       },
 
