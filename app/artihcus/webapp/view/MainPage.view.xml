@@ -192,8 +192,6 @@
                                             id="idInstanceNumberInput_InitialView"
                                             value="{ProductModel>/length}"
                                             placeholder="Enter Length"
-                                            maxLength="5"
-                                            type="Number"
                                             width="100%"
                                         />
                                     </HBox>
@@ -208,10 +206,7 @@
                                         <Input
                                             id="idClientInput_InitialView"
                                             value="{ProductModel>/width}"
-                                            placeholder="Enter Width"
-                                            maxLength="5"
-                                            type="Number"
-                                            width="100%"
+                                            placeholder="Enter Width"                                            width="100%"
                                             editable="true"
                                         />
                                     </HBox>
@@ -232,7 +227,6 @@
                                             type="Number"
                                             class="customInput"
                                             width="100%"
-                                            maxLength="200"
                                         />
                                     </HBox>
 
@@ -770,7 +764,7 @@
                     >
                         <Wizard
                             id="idWizardIn_simulate"
-                            class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
+                            class="sapUiResponsivePadding--header sapUiResponsivePadding--content wizard"
                             complete="completedHandler"
                             height="auto"
                             showNextButton="false"
@@ -784,7 +778,7 @@
                                 <Table
                                     id="idAddProductsTableIn_simulate"
                                     mode="MultiSelect"
-                                    width="80%"
+                                    width="100%"
                                     growing="true"
                                     noDataText="No products available"
                                     items="{/SelectedProduct}"
