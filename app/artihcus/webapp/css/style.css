@@ -287,4 +287,8 @@ width:auto;
     height: 800px;    /* Custom height */
     aspect-ratio: auto; /* Set aspect ratio */
 }
-
+/* Wizard class begin*/
+.wizard{
+    margin-right: 20%;
+}
+/* Wizard class End*/
