@@ -192,7 +192,6 @@
                                             id="idInstanceNumberInput_InitialView"
                                             value="{ProductModel>/length}"
                                             placeholder="Enter Length"
-                                            maxLength="5"
                                             width="100%"
                                         />
                                     </HBox>
@@ -207,9 +206,7 @@
                                         <Input
                                             id="idClientInput_InitialView"
                                             value="{ProductModel>/width}"
-                                            placeholder="Enter Width"
-                                            maxLength="5"
-                                            width="100%"
+                                            placeholder="Enter Width"                                            width="100%"
                                             editable="true"
                                         />
                                     </HBox>
@@ -229,7 +226,6 @@
                                             placeholder="Enter Height"
                                             class="customInput"
                                             width="100%"
-                                            maxLength="200"
                                         />
                                     </HBox>
 
