@@ -211,6 +211,7 @@
                                             id="idClientInput_InitialView"
                                             value="{ProductModel>/width}"
                                             placeholder="Enter Width"
+                                            maxLength="5"
                                             width="100%"
                                             editable="true"
                                         />
