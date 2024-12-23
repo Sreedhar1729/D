@@ -1901,16 +1901,22 @@ sap.ui.define(
         this._animate();
       },
      
+     
       _createContainer: function (height, length, width) {
         // Remove any existing container
         if (this.container) {
             this.scene.remove(this.container);
             this.container.geometry.dispose();
             this.container.material.dispose();
+            this.scene.remove(this.container);
+            this.container.geometry.dispose();
+            this.container.material.dispose();
         }
+    
     
         // Create geometry for the container
         const geometry = new THREE.BoxGeometry(length, height, width);
+    
     
         // Create a material with transparency and metallic properties
         const material = new THREE.MeshPhysicalMaterial({
@@ -1920,20 +1926,36 @@ sap.ui.define(
             opacity: 0.5, // Transparent effect
             transparent: true, // Enable transparency
             side: THREE.DoubleSide // Render both sides
+            color: 0x007BFF, // Blue color
+            metalness: 0.8, // Metallic effect
+            roughness: 0.4, // Smooth metallic surface
+            opacity: 0.5, // Transparent effect
+            transparent: true, // Enable transparency
+            side: THREE.DoubleSide // Render both sides
         });
+    
     
         // Create the container mesh
         this.container = new THREE.Mesh(geometry, material);
         this.container.castShadow = true;
         this.container.receiveShadow = true;
     
+    
         // Position the container at the origin
         this.container.position.set(0, height / 2, 0);
+    
     
         // Add the container to the scene
         this.scene.add(this.container);
     
+    
         console.log("Container created with dimensions:", { height, length, width });
+    
+        // Get selected products from the table
+        const oTable = this.getView().byId("idAddProductsTableIn_simulate");
+        const aSelectedItems = oTable.getSelectedItems();
+        const aSelectedData = aSelectedItems.map(item => item.getBindingContext().getObject());
+    
     
         // Get selected products from the table
         const oTable = this.getView().byId("idAddProductsTableIn_simulate");
@@ -1947,126 +1969,123 @@ sap.ui.define(
     },
     
     _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-      let currentX = -containerLength / 2; // Start at the left side of the container
-      let currentZ = -containerWidth / 2;  // Start at the front of the container
-      let currentY = 0;                    // Start at the bottom of the container
-      const positionMap = [];              // Keeps track of the positions of placed products
+        let currentX, currentZ, currentY;
+        let positionMap;
+    
+        const resetPosition = () => {
+            currentX = -containerLength / 2; // Start at the left side of the container
+            currentZ = -containerWidth / 2;  // Start at the front of the container
+            currentY = 0;                    // Start at the bottom of the container
+            positionMap = [];                // Reset position map for a new container
+        };
+    
+        resetPosition();
+    
+        selectedProducts.forEach(product => {
+            const selectedQuantity = parseInt(product.SelectedQuantity);
+            const productLength = parseFloat(product.Productno.length);
+            const productHeight = parseFloat(product.Productno.height);
+            const productWidth = parseFloat(product.Productno.width);
+            const productColor = product.Productno.color;
+    
+            for (let i = 0; i < selectedQuantity; i++) {
+                let isOverlap = true;
+    
+                // Try placing the product until no overlap is detected
+                while (isOverlap) {
+                    // Check if the product fits in the current row (considering container length)
+                    if (currentX + productLength > containerLength / 2) {
+                        currentX = -containerLength / 2; // Move to the start of a new row
+                        currentZ += productWidth;
+    
+                        // If Z-axis exceeds container width, move to the next layer
+                        if (currentZ + productWidth > containerWidth / 2) {
+                            currentZ = -containerWidth / 2; // Reset Z-axis
+                            currentY += productHeight;
+    
+                            // If Y-axis exceeds container height, create a new container
+                            if (currentY + productHeight > containerHeight) {
+                                console.log("Current container is full. Creating a new container.");
+                                this._createContainer(containerHeight, containerLength, containerWidth);
+                                resetPosition(); // Reset position for the new container
+                            }
+                        }
+                    }
+    
+                    // Check for overlap with previously placed products
+                    isOverlap = positionMap.some(position => {
+                        const overlap = (
+                            // X-axis overlap
+                            currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+                            // Z-axis overlap
+                            currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                            // Y-axis overlap
+                            currentY < position.yTop
+                        );
+    
+                        return overlap;
+                    });
+    
+                    if (isOverlap) {
+                        // Adjust the position if overlap is detected
+                        currentX += productLength; // Move along the X-axis
+                    }
+                }
+    
+                // Place the product
+                const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+                const productMaterial = new THREE.MeshStandardMaterial({
+                    color: new THREE.Color(productColor),
+                    metalness: 0.5,
+                    roughness: 0.5
+                });
+    
+                const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+                productMesh.castShadow = true;
+                productMesh.receiveShadow = true;
+    
+                // Set the product's position in the 3D space
+                productMesh.position.set(
+                    currentX + productLength / 2, // Center the product on X
+                    currentY + productHeight / 2, // Center the product on Y
+                    currentZ + productWidth / 2   // Center the product on Z
+                );
+    
+                // Add the product to the scene
+                this.scene.add(productMesh);
+    
+                // Create a border for the product
+                const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+                const edgesMaterial = new THREE.LineBasicMaterial({
+                    color: 0x000000, // Black border
+                    linewidth: 1 // Thin border
+                });
+    
+                const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                edges.position.copy(productMesh.position);
+    
+                // Add the border to the scene
+                this.scene.add(edges);
+    
+                // Track the position of the placed product
+                positionMap.push({
+                    xStart: currentX,
+                    xEnd: currentX + productLength,
+                    zStart: currentZ,
+                    zEnd: currentZ + productWidth,
+                    yTop: currentY + productHeight
+                });
+    
+                // Move to the next position along X-axis for the next product
+                currentX += productLength;
+            }
+        });
+    
+        console.log("All products placed successfully.");
+    }
+    ,
+    
   
-      selectedProducts.forEach(product => {
-          const SelectedQuantity = parseInt(product.SelectedQuantity);
-          const productLength = parseFloat(product.Productno.length);
-          const productHeight = parseFloat(product.Productno.height);
-          const productWidth = parseFloat(product.Productno.width);
-          const productColor = product.Productno.color;
-
-          for (let i = 0; i < SelectedQuantity; i++) {
-              let isOverlap = true;
-  
-              // Try placing the product until no overlap is detected
-              while (isOverlap) {
-                  console.log("Attempting to place product...");
-                  console.log(`Current position: X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-                  console.log(`Product dimensions: Length=${productLength}, Width=${productWidth}, Height=${productHeight}`);
-  
-                  // Check if the product fits in the current row (considering container length)
-                  if (currentX + productLength > containerLength / 2) {
-                      console.log("Row full, moving to the next row...");
-                      // Move to the next row along Z-axis
-                      currentX = -containerLength / 2;
-                      currentZ += productWidth;
-  
-                      // If Z-axis exceeds container width, move to the next layer
-                      if (currentZ + productWidth > containerWidth / 2) {
-                          console.log("Container full on Z-axis, moving to the next layer...");
-                          currentZ = -containerWidth / 2;
-                          currentY += productHeight;
-                      }
-                  }
-  
-                  // Check for overlap with previously placed products
-                  isOverlap = positionMap.some(position => {
-                      const overlap = (
-                          // X-axis overlap
-                          currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                          // Z-axis overlap
-                          currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-                          // Y-axis overlap
-                          currentY < position.yTop
-                      );
-  
-                      if (overlap) {
-                          console.log(`Overlap detected with product at position: [X=${position.xStart}-${position.xEnd}, Z=${position.zStart}-${position.zEnd}, Y Top=${position.yTop}]`);
-                      }
-  
-                      return overlap;
-                  });
-  
-                  if (isOverlap) {
-                      // Adjust the position if overlap is detected
-                      currentX += productLength; // Move along the X-axis
-                      console.log(`Overlap detected, moving to next X position: ${currentX}`);
-                  }
-              }
-  
-              // If no overlap, place the product
-              if (!isOverlap) {
-                  console.log(`Placing product at X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-                  // Create the product geometry
-                  const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-                  const productMaterial = new THREE.MeshStandardMaterial({
-                      color: new THREE.Color(productColor),
-                      metalness: 0.5,
-                      roughness: 0.5
-                  });
-  
-                  const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-                  productMesh.castShadow = true;
-                  productMesh.receiveShadow = true;
-  
-                  // Set the product's position in the 3D space
-                  productMesh.position.set(
-                      currentX + productLength / 2, // Center the product on X
-                      currentY + productHeight / 2, // Center the product on Y
-                      currentZ + productWidth / 2   // Center the product on Z
-                  );
-  
-                  // Add the product to the scene
-                  this.scene.add(productMesh);
-  
-                  // Create a border for the product
-                  const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-                  const edgesMaterial = new THREE.LineBasicMaterial({
-                      color: 0x000000, // Black border
-                      linewidth: 1 // Thin border
-                  });
-  
-                  const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-                  edges.position.copy(productMesh.position);
-  
-                  // Add the border to the scene
-                  this.scene.add(edges);
-  
-                  // Track the position of the placed product
-                  positionMap.push({
-                      xStart: currentX,
-                      xEnd: currentX + productLength,
-                      zStart: currentZ,
-                      zEnd: currentZ + productWidth,
-                      yTop: currentY + productHeight
-                  });
-  
-                  console.log(`Product placed successfully at X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-                  console.log(`Position map updated: [X Start=${currentX}, X End=${currentX + productLength}, Z Start=${currentZ}, Z End=${currentZ + productWidth}, Y Top=${currentY + productHeight}]`);
-  
-                  // Move to the next position along X-axis for the next product
-                  currentX += productLength;
-                  console.log(`Moving to the next X position: ${currentX}`);
-              }
-          }
-      });
-  
-      console.log("All products placed successfully.");
-    },
 
     
   
