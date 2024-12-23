@@ -136,13 +136,13 @@
                                     <HBox id="idhboxvghDesdfrghcription">
                                         <Label
                                             id="idLabvbnleDescription_InitialView"
-                                            text="EANUPC:"
+                                            text="EAN/UPC:"
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
                                         <Input
                                             id="idDesvbncriptionInput_InitialView"
-                                            value="{ProductModel>/EANUPC}"
+                                            value="{ProductModel>/EAN}"
                                             placeholder="Eneter UAN"
                                             class="customInput"
                                             width="100%"
@@ -382,8 +382,8 @@
                             <ToolbarSpacer id="IDGevbnnTfghjoolbar345_AHUOBQ" />
                             <SearchField
                                 id="idSearchFieldcvbnvhjBinnumberTable_AHUOBQ"
-                                liveChange="onVehicleSearch"
-                                placeholder="Truck type, Capacity"
+                                liveChange="onliveVehicleSearch"
+                                placeholder="Search Anything..."
                                 width="25%"
                             />
 
@@ -644,7 +644,7 @@
                                 <Column id="_IDGenColun4">
                                     <Text
                                         id="_IDGe4"
-                                        text="EANUPC"
+                                        text="EAN/UPC"
                                     />
                                 </Column>
 
@@ -716,7 +716,7 @@
                                         />
                                         <Text
                                             id="_Iedfxte8"
-                                            text="{EANUPC}"
+                                            text="{EAN}"
                                         />
                                         <Text
                                             id="_Iext8"
@@ -876,6 +876,12 @@
                                                 style="Emphasized"
                                                 change="onEdit"
                                             />
+                                            <Button
+                                                id="idClearBtnIn_Simulate"
+                                                press="onDeletePressInSimulate"
+                                                tooltip="Delete"
+                                                text="Delete"
+                                            />
                                         </OverflowToolbar>
                                     </headerToolbar>
 
@@ -958,7 +964,7 @@
                                                 />
                                                 <Text
                                                     id="_IDGenText8"
-                                                    text="{Productno/SelectedQuantity}"
+                                                    text="{SelectedQuantity}"
                                                 />
                                                 <Text
                                                     id="_IDGenText9"
@@ -982,7 +988,7 @@
                                                 />
                                                 <Text
                                                     id="_IDGenTextert11"
-                                                    text="{color}"
+                                                    text="{Productno/color}"
                                                 />
                                                 <Button
                                                     id="_IDGenTextert12"

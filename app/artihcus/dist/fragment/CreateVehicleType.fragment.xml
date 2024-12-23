@@ -54,6 +54,7 @@
                 <Input
                     id="idTruckTypeInput"
                     value="{VehModel>/truckType}"
+                    type="Number"
                 />
 
                 <Label
