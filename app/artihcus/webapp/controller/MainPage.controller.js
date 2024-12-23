@@ -287,7 +287,23 @@ sap.ui.define(
           oInput.setValueStateText("");
         }
       },
+      onDeletePressInSimulate:async function(){
+          var oModel=this.getOwnerComponent().getModel("ModelV2");
+         await oModel.read("/SelectedProduct",{
+            success:function(oData){
+              oData.results.forEach((item)=>{
+                var sId=item.ID;
+                this.deleteData(oModel,`/SelectedProduct('${sId}')`)
+              })
+              
+            }.bind(this),
+            error:function(){
 
+            }
+          });
+          this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+
+      },
 
       onAddPress: function () {
         var oTable = this.byId("idTableAddProduct");
@@ -1948,7 +1964,7 @@ sap.ui.define(
           const productHeight = parseFloat(product.Productno.height);
           const productWidth = parseFloat(product.Productno.width);
           const productColor = product.Productno.color;
-  
+
           for (let i = 0; i < SelectedQuantity; i++) {
               let isOverlap = true;
   
