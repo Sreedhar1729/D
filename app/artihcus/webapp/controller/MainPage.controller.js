@@ -69,6 +69,7 @@ sap.ui.define(
           description: "",
           EAN: "",
           weight: "",
+          color:""
         })
         this.getView().setModel(oJsonModel, "ProductModel");
 
@@ -299,7 +300,8 @@ sap.ui.define(
             error:function(){
 
             }
-          })
+          });
+          this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
 
       },
 
@@ -777,6 +779,14 @@ sap.ui.define(
 
       /** ************************Creating New Product  ***************************************************/
       onCreateProduct: async function () {
+        const randomHexColor = (function () {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+              color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+          })();
         const oPayloadModel = this.getView().getModel("ProductModel"),
           oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
@@ -834,6 +844,7 @@ sap.ui.define(
         oPayload.vuom = "M³";
         oPayload.wuom = oSelectedItem1 ? oSelectedItem1 : "";
         var oVolume;
+        oPayload.color=randomHexColor
 
         if (oPayload.uom === 'CM') {
           // If UOM is in centimeters, convert to meters before calculating
@@ -1973,7 +1984,7 @@ sap.ui.define(
           const productLength = parseFloat(product.Productno.length);
           const productHeight = parseFloat(product.Productno.height);
           const productWidth = parseFloat(product.Productno.width);
-          const productColor = product.color;
+          const productColor = product.Productno.color;
 
           for (let i = 0; i < SelectedQuantity; i++) {
             let placed = false;
