@@ -766,7 +766,7 @@
                     >
                         <Wizard
                             id="idWizardIn_simulate"
-                            class="sapUiResponsivePadding--header sapUiResponsivePadding--content"
+                            class="sapUiResponsivePadding--header sapUiResponsivePadding--content wizard"
                             complete="completedHandler"
                             height="auto"
                             showNextButton="false"
@@ -780,7 +780,7 @@
                                 <Table
                                     id="idAddProductsTableIn_simulate"
                                     mode="MultiSelect"
-                                    width="80%"
+                                    width="100%"
                                     growing="true"
                                     noDataText="No products available"
                                     items="{/SelectedProduct}"
