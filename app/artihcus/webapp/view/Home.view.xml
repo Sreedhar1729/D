@@ -1,5 +1,6 @@
-<mvc:View controllerName="com.app.artihcus.controller.Home"
-     xmlns:mvc="sap.ui.core.mvc"
+<mvc:View
+    controllerName="com.app.artihcus.controller.Home"
+    xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
     xmlns="sap.m"
 >
