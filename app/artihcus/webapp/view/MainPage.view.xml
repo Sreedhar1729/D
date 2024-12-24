@@ -112,20 +112,12 @@
                                 layout="ResponsiveGridLayout"
                                 backgroundDesign="Transparent"
                             >
-
-
                                 <VBox
                                     class="vboxAdd"
                                     id="idConfigSapSysVbox_InitialView"
                                     visible="true"
                                 >
                                     <HBox id="idhboxDescription">
-
-
-                                 
-
-
-                                 
                                         <Label
                                             id="idLableDescription_InitialView"
                                             text="Product Number:"
@@ -214,7 +206,8 @@
                                         <Input
                                             id="idClientInput_InitialView"
                                             value="{ProductModel>/width}"
-                                            placeholder="Enter Width"                                            width="100%"
+                                            placeholder="Enter Width"
+                                            width="100%"
                                             editable="true"
                                         />
                                     </HBox>
@@ -306,9 +299,7 @@
                                                 placeholder="Enter Weight"
                                                 width="70px"
                                             />
-                                            <Select
-                                                id="uomSelect"
-                                            >
+                                            <Select id="uomSelect">
                                                 <items>
                                                     <core:Item
                                                         id="_IDGenIt"
@@ -594,11 +585,8 @@
                                     <Button
                                         id="idBtghjnHUContentBtn_AHUOBQ"
                                         text="Edit"
-                                         icon="sap-icon://edit"
-                                         icon="sap-icon://edit"
+                                        icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
-                                    
-                                    
                                         tooltip="Edit"
                                     />
                                     <Button
@@ -623,17 +611,26 @@
                                         fileType="XLSX,xlsx"
                                         icon="sap-icon://upload"
                                         iconFirst="true"
-                                      style="Transparent"
-                                      style="Transparent"
+                                        style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     />
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
+                            <Column
+                                    id="_IDGenn11"
+                                    class="backgroundColour"
+                                    visible="false"
+                                >
+                                    <Text
+                                        id="idUUID"
+                                        text="UUID"
+                                    />
+                                </Column>
                                 <Column
                                     id="_IDGenn2"
-                                    class="backgroundColour"
+                                  
                                 >
                                     <Text
                                         id="_IDGnText2"
@@ -711,6 +708,11 @@
                                     class="backgroundColour"
                                 >
                                     <cells>
+                                     <Text
+                                            id="iduID"
+                                            text="{ID}"
+                                           visible="false"
+                                        />
                                         <Text
                                             id="_ID"
                                             text="{sapProductno}"
@@ -800,7 +802,6 @@
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
-
                                             <!-- <HBox id="idHBoxInAddSimulate" visible="true">
                                         <Label
                                             id="idLabvbnbhnjkleDescription_InitialView"
@@ -851,7 +852,6 @@
                                             />
                                             <ToolbarSpacer id="as" />
 
-                                          
                                             <u:FileUploader
                                                 id="EditId"
                                                 sameFilenameAllowed="true"
@@ -871,7 +871,7 @@
                                                 text="Delete"
                                                 icon="sap-icon://delete"
                                             />
-                                              <u:FileUploader
+                                            <u:FileUploader
                                                 id="FileUploaderId"
                                                 sameFilenameAllowed="true"
                                                 iconOnly="false"
