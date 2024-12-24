@@ -1,7 +1,7 @@
 sap.ui.define(
   [
     "./BaseController",
-    'sap/ui/core/Fragment', 
+    'sap/ui/core/Fragment',
     'sap/ui/model/Filter',
     "sap/ui/model/FilterOperator",
     "sap/m/IconTabBar",
@@ -69,7 +69,7 @@ sap.ui.define(
           description: "",
           EAN: "",
           weight: "",
-          color:""
+          color: ""
         })
         this.getView().setModel(oJsonModel, "ProductModel");
 
@@ -88,7 +88,14 @@ sap.ui.define(
           freezed: "",
         });
         this.getView().setModel(oJsonModelVeh, "VehModel");
+        const oJsonModelCal = new JSONModel({
 
+          TotalQuantity: "",
+          TotalVolume: "",
+          TotalWeight: "",
+          RemainingCapacity: "",
+        });
+        this.getView().setModel(oJsonModelCal, "Calculation");
 
 
 
@@ -272,12 +279,12 @@ sap.ui.define(
         var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
 
         // Validate: Picking Quantity should not be greater than Actual Quantity
-        if (selectedQuantity > actualQuantity ) {
+        if (selectedQuantity > actualQuantity) {
           // Set error state on the input field
           oInput.setValueState(sap.ui.core.ValueState.Error);
           oInput.setValueStateText("Picking Quantity cannot be greaterthan Actual Quantity.");
-        } 
-        else if(selectedQuantity <= 0){
+        }
+        else if (selectedQuantity <= 0) {
           oInput.setValueState(sap.ui.core.ValueState.Error);
           oInput.setValueStateText("Picking Quantity cannot be lessthan or equal to zero.");
         }
@@ -287,21 +294,21 @@ sap.ui.define(
           oInput.setValueStateText("");
         }
       },
-      onDeletePressInSimulate:async function(){
-          var oModel=this.getOwnerComponent().getModel("ModelV2");
-         await oModel.read("/SelectedProduct",{
-            success:function(oData){
-              oData.results.forEach((item)=>{
-                var sId=item.ID;
-                this.deleteData(oModel,`/SelectedProduct('${sId}')`)
-              })
-              
-            }.bind(this),
-            error:function(){
+      onDeletePressInSimulate: async function () {
+        var oModel = this.getOwnerComponent().getModel("ModelV2");
+        await oModel.read("/SelectedProduct", {
+          success: function (oData) {
+            oData.results.forEach((item) => {
+              var sId = item.ID;
+              this.deleteData(oModel, `/SelectedProduct('${sId}')`)
+            })
 
-            }
-          });
-          this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+          }.bind(this),
+          error: function () {
+
+          }
+        });
+        this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
 
       },
 
@@ -379,7 +386,7 @@ sap.ui.define(
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
               Productno_ID: oData.ID,
-              SelectedQuantity:sPickingQty
+              SelectedQuantity: sPickingQty
 
             };
             // var dummy2 = {
@@ -396,23 +403,23 @@ sap.ui.define(
             });
             try {
 
-              var oProductExists=await that.productExists(oModel, dummy.Productno_ID)
-            
+              var oProductExists = await that.productExists(oModel, dummy.Productno_ID)
+
               if (!(oProductExists)) {
                 await that.createData(oModel, dummy, "/SelectedProduct");
                 that.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
                 return
               }
-              await oModel.read("/SelectedProduct",{
+              await oModel.read("/SelectedProduct", {
                 filters: [
                   new Filter("Productno_ID", FilterOperator.EQ, dummy.Productno_ID),
                   //new Filter("password", FilterOperator.EQ, sPassword)
 
-              ],
-                success:async function(oData){
-                console.log(oData)
-                var sID=oData.results[0].ID
-                  await oModel.update("/SelectedProduct('" + sID + "')",{SelectedQuantity:sPickingQty}, {
+                ],
+                success: async function (oData) {
+                  console.log(oData)
+                  var sID = oData.results[0].ID
+                  await oModel.update("/SelectedProduct('" + sID + "')", { SelectedQuantity: sPickingQty }, {
                     success: function () {
                       that.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
                     }.bind(this),
@@ -421,12 +428,12 @@ sap.ui.define(
                     }.bind(this)
                   });
                 },
-                error:function(oError){
+                error: function (oError) {
                   console.log(oError)
                 }
               })
-           
-            
+
+
             }
             catch (error) {
               console.log(error)
@@ -462,37 +469,37 @@ sap.ui.define(
       productExists: function (oModel, sId) {
         const that = this;
         return new Promise((resolve, reject) => {
-            // oModel.read(`/SelectedProduct('${sId}')`, {
-            //     success: function (oData, resp) {
-            //         console.log(oData);
-            //         that.flag = true;  // Set flag to true if product exists
-            //         resolve();         // Resolve promise when success
-            //     },
-            //     error: function (error) {
-            //         console.error(error.message);
-            //         that.flag = false; // Set flag to false if product does not exist
-            //         reject(error);     // Reject promise on error
-            //     }
-            // });
-            oModel.read("/SelectedProduct", {
-              filters: [
-                  new Filter("Productno_ID", FilterOperator.EQ, sId),
-                  //new Filter("password", FilterOperator.EQ, sPassword)
+          // oModel.read(`/SelectedProduct('${sId}')`, {
+          //     success: function (oData, resp) {
+          //         console.log(oData);
+          //         that.flag = true;  // Set flag to true if product exists
+          //         resolve();         // Resolve promise when success
+          //     },
+          //     error: function (error) {
+          //         console.error(error.message);
+          //         that.flag = false; // Set flag to false if product does not exist
+          //         reject(error);     // Reject promise on error
+          //     }
+          // });
+          oModel.read("/SelectedProduct", {
+            filters: [
+              new Filter("Productno_ID", FilterOperator.EQ, sId),
+              //new Filter("password", FilterOperator.EQ, sPassword)
 
-              ],
-              success: function (oData) {
-                  resolve(oData.results.length > 0);
-                 
-              },
-              error: function () {
-                  reject(
-                      "An error occurred while checking username existence."
-                  );
-              }
+            ],
+            success: function (oData) {
+              resolve(oData.results.length > 0);
+
+            },
+            error: function () {
+              reject(
+                "An error occurred while checking username existence."
+              );
+            }
           })
         });
-    },
-    
+      },
+
       // productExists: async function (oModel, sId) {
       //   console.log(sId)
       //   const that = this
@@ -780,13 +787,13 @@ sap.ui.define(
       /** ************************Creating New Product  ***************************************************/
       onCreateProduct: async function () {
         const randomHexColor = (function () {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-              color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-          })();
+          const letters = '0123456789ABCDEF';
+          let color = '#';
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        })();
         const oPayloadModel = this.getView().getModel("ProductModel"),
           oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
@@ -844,7 +851,7 @@ sap.ui.define(
         oPayload.vuom = "M³";
         oPayload.wuom = oSelectedItem1 ? oSelectedItem1 : "";
         var oVolume;
-        oPayload.color=randomHexColor
+        oPayload.color = randomHexColor
 
         if (oPayload.uom === 'CM') {
           // If UOM is in centimeters, convert to meters before calculating
@@ -915,20 +922,20 @@ sap.ui.define(
       },
 
       onliveVehicleSearch: function (oEvent) {
-       
+
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
         sQuery = sQuery.toUpperCase();
- 
+
         // test
         if (sQuery && sQuery.length > 0) {
           const truckfilter = new Filter("truckType", FilterOperator.Contains, sQuery),
-             capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
-            //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
- 
+            capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
+          //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
+
           var allFilter = new Filter([truckfilter, capacityfilter]);
         }
- 
+
         var oTableBinding = this.byId("ProductsTable").getBinding("items")
         oTableBinding.filter(allFilter);
       },
@@ -955,7 +962,7 @@ sap.ui.define(
         }
         const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
-        oPayload.truckType=`${oPayload.truckType}FT`
+        oPayload.truckType = `${oPayload.truckType}FT`
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
@@ -1900,176 +1907,152 @@ sap.ui.define(
         // Start the animation loop
         this._animate();
       },
-     
+
       _createContainer: function (height, length, width) {
         // Remove any existing container
         if (this.container) {
-            this.scene.remove(this.container);
-            this.container.geometry.dispose();
-            this.container.material.dispose();
+          this.scene.remove(this.container);
+          this.container.geometry.dispose();
+          this.container.material.dispose();
         }
-    
+
         // Create geometry for the container
         const geometry = new THREE.BoxGeometry(length, height, width);
-    
+
         // Create a material with transparency and metallic properties
         const material = new THREE.MeshPhysicalMaterial({
-            color: 0x007BFF, // Blue color
-            metalness: 0.8, // Metallic effect
-            roughness: 0.4, // Smooth metallic surface
-            opacity: 0.5, // Transparent effect
-            transparent: true, // Enable transparency
-            side: THREE.DoubleSide // Render both sides
+          color: 0x007BFF, // Blue color
+          metalness: 0.8, // Metallic effect
+          roughness: 0.4, // Smooth metallic surface
+          opacity: 0.5, // Transparent effect
+          transparent: true, // Enable transparency
+          side: THREE.DoubleSide // Render both sides
         });
-    
+
         // Create the container mesh
         this.container = new THREE.Mesh(geometry, material);
         this.container.castShadow = true;
         this.container.receiveShadow = true;
-    
+
         // Position the container at the origin
         this.container.position.set(0, height / 2, 0);
-    
+
         // Add the container to the scene
         this.scene.add(this.container);
-    
+
         console.log("Container created with dimensions:", { height, length, width });
-    
+
         // Get selected products from the table
         const oTable = this.getView().byId("idAddProductsTableIn_simulate");
         const aSelectedItems = oTable.getSelectedItems();
         const aSelectedData = aSelectedItems.map(item => item.getBindingContext().getObject());
-    
+
         console.log("Selected Items Data as Objects:", aSelectedData);
-    
+
         // Call the _createProducts method to add products to the container
         this._createProducts(aSelectedData, height, length, width);
-    },
-    
-    _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-      let currentX = -containerLength / 2; // Start at the left side of the container
-      let currentZ = -containerWidth / 2;  // Start at the front of the container
-      let currentY = 0;                    // Start at the bottom of the container
-      const positionMap = [];              // Keeps track of the positions of placed products
-  
-      selectedProducts.forEach(product => {
+      },
+
+      _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+        let currentX = -containerLength / 2;
+        let currentZ = -containerWidth / 2;
+        let currentY = 0;
+        const positionMap = [];
+        let totalQuantity = 0;
+        let totalVolume = 0;
+        let totalWeight = 0;
+
+        const containerMaxVolume = containerHeight * containerLength * containerWidth;
+        const containerMaxWeight = 1000; // Example max weight in kg
+
+        selectedProducts.forEach(product => {
           const SelectedQuantity = parseInt(product.SelectedQuantity);
           const productLength = parseFloat(product.Productno.length);
           const productHeight = parseFloat(product.Productno.height);
           const productWidth = parseFloat(product.Productno.width);
           const productColor = product.Productno.color;
-  
-          for (let i = 0; i < SelectedQuantity; i++) {
-              let isOverlap = true;
-  
-              // Try placing the product until no overlap is detected
-              while (isOverlap) {
-                  console.log("Attempting to place product...");
-                  console.log(`Current position: X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-                  console.log(`Product dimensions: Length=${productLength}, Width=${productWidth}, Height=${productHeight}`);
-  
-                  // Check if the product fits in the current row (considering container length)
-                  if (currentX + productLength > containerLength / 2) {
-                      console.log("Row full, moving to the next row...");
-                      // Move to the next row along Z-axis
-                      currentX = -containerLength / 2;
-                      currentZ += productWidth;
-  
-                      // If Z-axis exceeds container width, move to the next layer
-                      if (currentZ + productWidth > containerWidth / 2) {
-                          console.log("Container full on Z-axis, moving to the next layer...");
-                          currentZ = -containerWidth / 2;
-                          currentY += productHeight;
-                      }
-                  }
-  
-                  // Check for overlap with previously placed products
-                  isOverlap = positionMap.some(position => {
-                      const overlap = (
-                          // X-axis overlap
-                          currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                          // Z-axis overlap
-                          currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-                          // Y-axis overlap
-                          currentY < position.yTop
-                      );
-  
-                      if (overlap) {
-                          console.log(`Overlap detected with product at position: [X=${position.xStart}-${position.xEnd}, Z=${position.zStart}-${position.zEnd}, Y Top=${position.yTop}]`);
-                      }
-  
-                      return overlap;
-                  });
-  
-                  if (isOverlap) {
-                      // Adjust the position if overlap is detected
-                      currentX += productLength; // Move along the X-axis
-                      console.log(`Overlap detected, moving to next X position: ${currentX}`);
-                  }
-              }
-  
-              // If no overlap, place the product
-              if (!isOverlap) {
-                  console.log(`Placing product at X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-                  // Create the product geometry
-                  const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-                  const productMaterial = new THREE.MeshStandardMaterial({
-                      color: new THREE.Color(productColor),
-                      metalness: 0.5,
-                      roughness: 0.5
-                  });
-  
-                  const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-                  productMesh.castShadow = true;
-                  productMesh.receiveShadow = true;
-  
-                  // Set the product's position in the 3D space
-                  productMesh.position.set(
-                      currentX + productLength / 2, // Center the product on X
-                      currentY + productHeight / 2, // Center the product on Y
-                      currentZ + productWidth / 2   // Center the product on Z
-                  );
-  
-                  // Add the product to the scene
-                  this.scene.add(productMesh);
-  
-                  // Create a border for the product
-                  const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-                  const edgesMaterial = new THREE.LineBasicMaterial({
-                      color: 0x000000, // Black border
-                      linewidth: 1 // Thin border
-                  });
-  
-                  const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-                  edges.position.copy(productMesh.position);
-  
-                  // Add the border to the scene
-                  this.scene.add(edges);
-  
-                  // Track the position of the placed product
-                  positionMap.push({
-                      xStart: currentX,
-                      xEnd: currentX + productLength,
-                      zStart: currentZ,
-                      zEnd: currentZ + productWidth,
-                      yTop: currentY + productHeight
-                  });
-  
-                  console.log(`Product placed successfully at X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-                  console.log(`Position map updated: [X Start=${currentX}, X End=${currentX + productLength}, Z Start=${currentZ}, Z End=${currentZ + productWidth}, Y Top=${currentY + productHeight}]`);
-  
-                  // Move to the next position along X-axis for the next product
-                  currentX += productLength;
-                  console.log(`Moving to the next X position: ${currentX}`);
-              }
-          }
-      });
-  
-      console.log("All products placed successfully.");
-    },
+          const productWeigh = parseFloat(product.Productno.weight);
 
-    
-  
+          for (let i = 0; i < SelectedQuantity; i++) {
+            let isOverlap = true;
+
+            while (isOverlap) {
+              if (currentX + productLength > containerLength / 2) {
+                currentX = -containerLength / 2;
+                currentZ += productWidth;
+
+                if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2;
+                  currentY += productHeight;
+                }
+              }
+
+              isOverlap = positionMap.some(position => (
+                currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+                currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                currentY < position.yTop
+              ));
+
+              if (isOverlap) {
+                currentX += productLength;
+              }
+            }
+
+            if (!isOverlap) {
+              const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+              const productMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(productColor),
+                metalness: 0.5,
+                roughness: 0.5
+              });
+
+              const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+              productMesh.position.set(
+                currentX + productLength / 2,
+                currentY + productHeight / 2,
+                currentZ + productWidth / 2
+              );
+              this.scene.add(productMesh);
+
+              const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+              const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+              const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              edges.position.copy(productMesh.position);
+              this.scene.add(edges);
+
+              positionMap.push({
+                xStart: currentX,
+                xEnd: currentX + productLength,
+                zStart: currentZ,
+                zEnd: currentZ + productWidth,
+                yTop: currentY + productHeight
+              });
+
+              totalQuantity += 1;
+              const productVolume = productLength * productHeight * productWidth;
+              totalVolume += productVolume;
+              totalWeight += productWeigh;
+
+              currentX += productLength;
+            }
+          }
+        });
+
+        const remainingVolume = containerMaxVolume - totalVolume;
+        const remainingWeight = containerMaxWeight - totalWeight;
+
+
+        this.getView().getModel("Calculation").setProperty("/", {
+          TotalQuantity: totalQuantity,
+          TotalVolume: totalVolume.toFixed(2) + " m\u00B3",
+          TotalWeight: totalWeight.toFixed(2) + " Kg",
+          RemainingCapacity: Math.min(remainingVolume, remainingWeight).toFixed(2) + " m\u00B3"
+        })
+
+      },
+
+
+
 
 
       _addLighting: function () {
@@ -2100,7 +2083,7 @@ sap.ui.define(
       },
       // downloding the products list selected for the simulation
       onDownloadPressInSimulate: function () {
-  
+
         var oTable = this.byId("idAddProductsTableIn_simulate");
         var aItems = oTable.getItems();
         var aData = [];
@@ -2116,7 +2099,7 @@ sap.ui.define(
           "Height",
           "Color",
           "Stack"
-         
+
         ];
         aData.push(aHeaders);
 
@@ -2138,6 +2121,6 @@ sap.ui.define(
         // Generate and download the Excel file
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
-  
+
     });
   });

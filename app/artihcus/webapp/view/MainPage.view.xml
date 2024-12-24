@@ -19,6 +19,10 @@
     xmlns:u="sap.ui.unified"
     displayBlock="true"
     xmlns:tnt="sap.tnt"
+    xmlns:suite="sap.suite.ui.commons"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
 >
     <Page
         id="_IDGenPage1"
@@ -112,16 +116,12 @@
                                 layout="ResponsiveGridLayout"
                                 backgroundDesign="Transparent"
                             >
-
                                 <VBox
                                     class="vboxAdd"
                                     id="idConfigSapSysVbox_InitialView"
                                     visible="true"
                                 >
                                     <HBox id="idhboxDescription">
-
-
-                                 
                                         <Label
                                             id="idLableDescription_InitialView"
                                             text="Product Number:"
@@ -210,7 +210,8 @@
                                         <Input
                                             id="idClientInput_InitialView"
                                             value="{ProductModel>/width}"
-                                            placeholder="Enter Width"                                            width="100%"
+                                            placeholder="Enter Width"
+                                            width="100%"
                                             editable="true"
                                         />
                                     </HBox>
@@ -302,9 +303,7 @@
                                                 placeholder="Enter Weight"
                                                 width="70px"
                                             />
-                                            <Select
-                                                id="uomSelect"
-                                            >
+                                            <Select id="uomSelect">
                                                 <items>
                                                     <core:Item
                                                         id="_IDGenIt"
@@ -589,9 +588,8 @@
                                     <Button
                                         id="idBtghjnHUContentBtn_AHUOBQ"
                                         text="Edit"
-                                         icon="sap-icon://edit"
+                                        icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
-                                    
                                         tooltip="Edit"
                                     />
                                     <Button
@@ -616,7 +614,7 @@
                                         fileType="XLSX,xlsx"
                                         icon="sap-icon://upload"
                                         iconFirst="true"
-                                      style="Transparent"
+                                        style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     />
@@ -792,7 +790,6 @@
                                     <!-- Assuming 'products' is the array in your JSON model -->
                                     <headerToolbar>
                                         <OverflowToolbar id="idUsersInfoHeade">
-
                                             <!-- <HBox id="idHBoxInAddSimulate" visible="true">
                                         <Label
                                             id="idLabvbnbhnjkleDescription_InitialView"
@@ -843,7 +840,6 @@
                                             />
                                             <ToolbarSpacer id="as" />
 
-                                          
                                             <u:FileUploader
                                                 id="EditId"
                                                 sameFilenameAllowed="true"
@@ -863,7 +859,7 @@
                                                 text="Delete"
                                                 icon="sap-icon://delete"
                                             />
-                                              <u:FileUploader
+                                            <u:FileUploader
                                                 id="FileUploaderId"
                                                 sameFilenameAllowed="true"
                                                 iconOnly="false"
@@ -1076,6 +1072,71 @@
                                             justifyContent="Center"
                                             class="sapUiLargeMarginBegin"
                                         >
+                                            <suite:ChartContainer
+                                                id="chartContainer"
+                                            >
+                                                <suite:content>
+                                                    <suite:ChartContainerContent
+                                                        id="chartContainerContent"
+                                                    >
+                                                        <suite:content>
+                                                            <viz:VizFrame
+                                                                id="idpiechart"
+                                                                width="auto"
+                                                                uiConfig="{applicationSet:'fiori'}"
+                                                                vizType="pie"
+                                                                vizProperties="{
+                                plotArea: {
+                                    dataLabel: {visible: true}
+                                },
+                                title: {text:'Capacity'}
+                            }"
+                                                                selectData="myOnClickHandler"
+                                                                renderComplete="handleRenderComplete"
+                                                            >
+                                                                <viz:dataset>
+                                                                    <viz.data:FlattenedDataset
+                                                                        id="flattenData"
+                                                                        data="{}"
+                                                                    >
+                                                                        <viz.data:dimensions
+                                                                        >
+                                                                            <viz.data:DimensionDefinition
+                                                                                id="_IDGenDimensionDefinition1"
+                                                                                name="Quantity"
+                                                                                value="{}"
+                                                                            />
+                                                                        </viz.data:dimensions>
+                                                                        <viz.data:measures
+                                                                        >
+                                                                            <viz.data:MeasureDefinition
+                                                                                id="_IDGenMeasureDefinition1"
+                                                                                name="Volume"
+                                                                                value="{}"
+                                                                            />
+                                                                        </viz.data:measures>
+                                                                    </viz.data:FlattenedDataset>
+                                                                </viz:dataset>
+
+                                                                <viz:feeds>
+                                                                    <viz.feeds:FeedItem
+                                                                        id="_IDGenFeedItem1"
+                                                                        uid="size"
+                                                                        type="Measure"
+                                                                        values="Count"
+                                                                    />
+                                                                    <viz.feeds:FeedItem
+                                                                        id="_IDGenFeedItem2"
+                                                                        uid="color"
+                                                                        type="Dimension"
+                                                                        values="Status"
+                                                                    />
+                                                                </viz:feeds>
+                                                            </viz:VizFrame>
+                                                        </suite:content>
+                                                    </suite:ChartContainerContent>
+                                                </suite:content>
+                                            </suite:ChartContainer>
                                             <form:SimpleForm
                                                 id="idGenSimpleForm1"
                                                 layout="ResponsiveGridLayout"
@@ -1091,12 +1152,12 @@
                                                     <Text
                                                         id="idTesxtInSimlate"
                                                         class="sapUiLargeMarginBegin"
-                                                        text="Total Quantity:"
+                                                        text="Total Product Quantity:"
                                                     />
                                                     <Text
                                                         id="idTesxtInSimlate11"
                                                         class="sapUiTinyMarginBegin"
-                                                        text=""
+                                                        text="{Calculation>/TotalQuantity}"
                                                     />
                                                 </HBox>
                                                 <Label
@@ -1108,13 +1169,13 @@
                                                 >
                                                     <Text
                                                         id="idTesxtInSimlate14"
-                                                        text="Total Volume:"
+                                                        text="Total Product Volume:"
                                                         class="sapUiLargeMarginBegin"
                                                     />
                                                     <Text
                                                         id="idTesxtInSimlate13"
                                                         class="sapUiTinyMarginBegin"
-                                                        text=""
+                                                        text="{Calculation>/TotalVolume}"
                                                     />
                                                 </HBox>
                                                 <Label
@@ -1126,13 +1187,13 @@
                                                 >
                                                     <Text
                                                         id="idTesxtInSimlate45"
-                                                        text="Total Weight:"
+                                                        text="Total Product Weight:"
                                                         class="sapUiLargeMarginBegin"
                                                     />
                                                     <Text
                                                         id="idTesxtInSimlatee06"
                                                         class="sapUiTinyMarginBegin"
-                                                        text=""
+                                                        text="{Calculation>/TotalWeight}"
                                                     />
                                                 </HBox>
                                                 <Label
@@ -1150,7 +1211,7 @@
                                                     <Text
                                                         id="idTesxtInSimlateer06"
                                                         class="sapUiTinyMarginBegin"
-                                                        text=""
+                                                        text="{Calculation>/RemainingCapacity}"
                                                     />
                                                 </HBox>
                                             </form:SimpleForm>
