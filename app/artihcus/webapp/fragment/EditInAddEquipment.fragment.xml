@@ -51,9 +51,8 @@
                     text="Truck Type"
                 />
                 <Input
-                    id="idVehInpTruckType"
-                    value="{VehModel>/truckType}"
-                    editable="false"
+                    id="editTruckTypeInput"
+                    value="{CombinedModel>/Vehicle/truckType}"
                 />
 
                 <Label
@@ -61,8 +60,8 @@
                     text="Length"
                 />
                 <Input
-                    id="idVehInplength"
-                    value="{VehModel>/length}"
+                    id="editLengthInput"
+                   value="{CombinedModel>/Vehicle/length}"
                 />
 
                 <Label
@@ -70,8 +69,8 @@
                     text="Width"
                 />
                 <Input
-                    id="idVehInpWidth"
-                   value="{VehModel>/width}"
+                    id="editWidthInput"
+                  value="{CombinedModel>/Vehicle/width}"
                 />
 
                 <Label
@@ -79,16 +78,29 @@
                     text="Height"
                 />
                 <Input
-                    id="idVehInpheight"
-                    value="{VehModel>/height}"
+                    id="editHeightInput"
+           value="{CombinedModel>/Vehicle/height}"
                 />
+
+                <!-- <Label id="_IDGenLabel5" text="Unit of Measurement (UOM)" />
+                <Input
+                    id="editUomInput"
+                    value=" "
+                /> -->
+
+                <!-- <Label id="_IDGenLabel6" text="Volume" />
+                <Input
+                    id="editVolumeInput"
+                    value=" "
+                /> -->
+
                 <Label
                     id="_IDGenLabel7"
                     text="Truck Weight"
                 />
                 <Input
-                    id="idVehInptruckweight"
-                    value="{VehModel>/truckWeight}"
+                    id="editTruckWeightInput"
+                     value="{CombinedModel>/Vehicle/truckWeight}"
                 />
 
                 <Label
@@ -96,30 +108,18 @@
                     text="Capacity"
                 />
                 <Input
-                    id="idVehInpcapacity"
-                    value="{VehModel>/capacity}"
+                    id="editCapacityInput"
+                    value="{CombinedModel>/Vehicle/capacity}"
                 />
                 <Label
                     id="_IDGenLabel9"
                     text="Freezed"
                 />
-                <Select id="idSlectOPt">
-                    <core:Item
-                        id="idd0"
-                        key="Select"
-                        text="Select"
-                    />
-                    <core:Item
-                        id="iDs"
-                        key="Yes"
-                        text="Yes"
-                    />
-                    <core:Item
-                        id="ifDs"
-                        key="No"
-                        text="No"
-                    />
-                </Select>
+                <Input
+                    id="editFreezedInput"
+                   value="{CombinedModel>/Vehicle/freezed}"
+                    editable="false"
+                />
             </form:SimpleForm>
         </content>
     </Dialog>
