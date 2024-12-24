@@ -46,6 +46,16 @@
                 columnsM="1"
                 singleContainerFullSize="false"
             >
+             <Label
+                    id="editIDLabel"
+                    text="Product Number"
+                    visible="false"
+                />
+                <Input
+                    id="editIDInput"
+                    value=" "
+                    visible="false"
+                />
                 <Label
                     id="editProductNoLabel"
                     text="Product Number"
@@ -81,15 +91,6 @@
                     id="editprodHeightInput"
                     value=" "
                 />
-
-                <!-- <Label
-                    id="editVolumeLabel"
-                    text="Volume"
-                />
-                <Input
-                    id="editVolumeInput"
-                    value=" "
-                /> -->
 
                 <Label
                     id="editUOMLabel"
@@ -135,6 +136,17 @@
                     id="editWeightInput"
                     value=" "
                 />
+
+                
+                 <Label
+                    id="editQuanLabel"
+                    text="Quantity"
+                />
+                <Input
+                    id="editQuanInput"
+                    value=" "
+                /> 
+
             </form:SimpleForm>
         </content>
     </Dialog>
