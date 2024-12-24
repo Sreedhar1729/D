@@ -822,15 +822,19 @@ sap.ui.define(
           }
           return color;
         })();
-        const oPayloadModel = this.getView().getModel("CombinedModel"),
-          oPayload = oPayloadModel.getProperty("/Product"),
+        const oPayloadModel = this.getView().getModel("ProductModel"),
+          oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
 
         // Validations 
+        // Validations 
         const aUserInputs = [
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
+          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
+          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
@@ -838,17 +842,24 @@ sap.ui.define(
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
           { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
         ]
 
         let raisedErrors = []
+        let raisedErrors = []
         aUserInputs.forEach(async input => {
-          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
+          let aValidations =  this.validateField(oView, input.Id, input.value, input.regex, input.message)
           if (aValidations.length > 0) {
             raisedErrors.push(aValidations[0])
           }
         })
 
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(error)
+            return;
+          }
         if (raisedErrors.length > 0) {
           for (let error of raisedErrors) {
             MessageBox.information(error)
@@ -904,24 +915,6 @@ sap.ui.define(
         }
       },
 
-      /**Clearing Properties after creation */
-      ClearingModel: function () {
-        const oPayloadModel = this.getView().getModel("CombinedModel");
-        oPayloadModel.setProperty("/Product", {
-          sapProductno: "",
-          length: "",
-          width: "",
-          height: "",
-          volume: "",
-          uom: "",
-          mCategory: "",
-          description: "",
-          EAN: "",
-          weight: "",
-          quantity: ""
-        })
-      },
-
       /**Deleting Products */
       onProductDel: async function () {
         const oTable = this.byId("ProductsTable"),
@@ -944,6 +937,7 @@ sap.ui.define(
       },
 
       onliveVehicleSearch: function (oEvent) {
+
 
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
@@ -1045,27 +1039,57 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",oData)
-        // this.byId("editTruckTypeInput").setValue(oData.truckType);
-        // this.byId("editLengthInput").setValue(oData.length);
-        // this.byId("editWidthInput").setValue(oData.width);
-        // this.byId("editHeightInput").setValue(oData.height);
-        // this.byId("editTruckWeightInput").setValue(oData.truckWeight);
-        // this.byId("editCapacityInput").setValue(oData.capacity);
+        this.byId("idVehInpTruckType").setValue(oData.truckType);
+        this.byId("idVehInplength").setValue(oData.length);
+        this.byId("idVehInpWidth").setValue(oData.width);
+        this.byId("idVehInpheight").setValue(oData.height);
+        this.byId("idVehInptruckweight").setValue(oData.truckWeight);
+        this.byId("idVehInpcapacity").setValue(oData.capacity);
+        this.byId("idSlectOPt").setSelectedKey(oData.freezed ? "Yes" : "No");
       },
 
       /* Updading Edited Values */
       onSave: async function () {
-        const updatedData = this.getView().getModel("CombinedModel").getProperty("/Vehicle")
-        //   truckType: this.byId("editTruckTypeInput").getValue(),
-        //   length: this.byId("editLengthInput").getValue(),
-        //   width: this.byId("editWidthInput").getValue(),
-        //   height: this.byId("editHeightInput").getValue(),
-        //   volume: "",
-        //   truckWeight: this.byId("editTruckWeightInput").getValue(),
-        //   capacity: this.byId("editCapacityInput").getValue()
-        // };
-        const oPayload = updatedData;
+        const currentFreezStatus = this.byId("idTruckTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
+          updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
+          oData = this.getView().getModel("VehModel").getProperty("/"),
+          oView = this.getView();
+
+        // validations
+        const aUserInput = [
+          { Id: "idVehInplength", value: oData.length, regex: /^\d+(\.\d+)?$/, message: "Enter length as a numeric value" },
+          { Id: "idVehInpWidth", value: oData.width, regex: /^\d+(\.\d+)?$/, message: "Enter width as a numeric value" },
+          { Id: "idVehInpheight", value: oData.height, regex: /^\d+(\.\d+)?$/, message: "Enter height as a numeric value" },
+          { Id: "idVehInptruckweight", value: oData.truckWeight, regex: /^\d+(\.\d+)?$/, message: "Enter truck weight as numeric value" },
+          { Id: "idVehInpcapacity", value: oData.capacity, regex: /^\d+(\.\d+)?$/, message: "Enter capacity" }
+        ]
+
+        // here interating through the above arrayv "aUserInputs" and calling "validateField" with arguments 
+        let raisedErrors = [] //created an empty array
+        aUserInput.forEach(async input => {
+          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
+          if (aValidations.length > 0) {
+            raisedErrors.push(aValidations[0]) // pushning error into empty array
+          }
+        })
+
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(error) // showing error msg 
+            return;
+          }
+        }
+
+        const oPayload = {
+          truckType: oData.truckType,
+          length: oData.length,
+          width: oData.width,
+          height: oData.height,
+          volume: "",
+          truckWeight: oData.truckWeight,
+          capacity: oData.capacity,
+          freezed: this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false
+        };
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         const oModel = this.getView().getModel("ModelV2");
