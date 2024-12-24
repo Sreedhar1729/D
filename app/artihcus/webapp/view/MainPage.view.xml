@@ -280,7 +280,7 @@
                                             />
                                         </Select>
                                         <!-- <Input
-                                        id="idServiceInput_InitialView"
+                                        id="idServiceInput_InitialView"vehicl
                                         value="{ProductModel>/uom}"
                                         placeholder="Enter UOM"
                                         class="customInput"
