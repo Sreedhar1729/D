@@ -987,17 +987,8 @@ sap.ui.define(
 
       /**Clearing Vehicle Model */
       ClearVeh: function () {
-        const oPayloadModel = this.getView().getModel("VehModel");
-        oPayloadModel.setProperty("/", {
-          truckType: "",
-          length: "",
-          width: "",
-          height: "",
-          uom: "",
-          volume: "",
-          truckWeight: "",
-          capacity: "",
-        })
+        const oPayloadModel = this.getView().getModel("CombinedModel");
+        oPayloadModel.setProperty("/Vehicle", {})
       },
 
       /**Deleting Vehicles */
@@ -1114,12 +1105,13 @@ sap.ui.define(
 
       /**Clearing Vehicle Editing Values */
       idTruckTypeTable: function () {
-        this.byId("editTruckTypeInput").setValue(""); // Set to empty string
-        this.byId("editLengthInput").setValue(""); // Set to empty string
-        this.byId("editWidthInput").setValue(""); // Set to empty string
-        this.byId("editHeightInput").setValue(""); // Set to empty strin
-        this.byId("editTruckWeightInput").setValue(""); // Set to empty string
-        this.byId("editCapacityInput").setValue("");
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
+        // this.byId("editTruckTypeInput").setValue(""); // Set to empty string
+        // this.byId("editLengthInput").setValue(""); // Set to empty string
+        // this.byId("editWidthInput").setValue(""); // Set to empty string
+        // this.byId("editHeightInput").setValue(""); // Set to empty strin
+        // this.byId("editTruckWeightInput").setValue(""); // Set to empty string
+        // this.byId("editCapacityInput").setValue("");
       },
 
       /**Editing Product Details */
@@ -1131,13 +1123,14 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.oOpenProductEdit();
-        var DummyModel = this.getView().getModel("ProductModel");
-        DummyModel.setData(oData);
+        /**Getting the model and setting data */
+        var DummyModel = this.getView().getModel("CombinedModel");
+        DummyModel.setProperty("/Product",oData);
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-        const updatedData = this.getView().getModel("ProductModel");
-        const oPayload = updatedData.getData();
+        const updatedData = this.getView().getModel("CombinedModel");
+        const oPayload = updatedData.getProperty("/Product");
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         var oID = this.byId("editIDInput").getValue();
@@ -1163,7 +1156,7 @@ sap.ui.define(
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.getView().getModel("ProductModel").setProperty("/", {});
+        this.getView().getModel("CombinedModel").setProperty("/Product", {});
       },
 
       /**Product Simulation */
