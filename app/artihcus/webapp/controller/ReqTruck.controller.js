@@ -64,7 +64,7 @@ sap.ui.define(
 
             _init3DScene: function () {
                 this.scene = new THREE.Scene();
-     
+
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 this.camera.position.set(20, 15, 30);
 
@@ -228,14 +228,14 @@ sap.ui.define(
 
                 const container = new THREE.Mesh(containerGeometry, containerMaterial);
                 container.position.set(0.1, 2.05, -3.6);
-                container.rotation.y = -1.6 ;
+                container.rotation.y = -1.6;
                 this.scene.add(container);
-               
+
 
                 console.log("Transparent container with truck-style wheels added.");
             },
 
-           
+
 
             _animate: function () {
                 const animate = () => {
@@ -249,4 +249,3 @@ sap.ui.define(
     }
 );
 
-      
