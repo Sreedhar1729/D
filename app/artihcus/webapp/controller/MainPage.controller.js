@@ -291,9 +291,11 @@ sap.ui.define(
           var oModel=this.getOwnerComponent().getModel("ModelV2");
          await oModel.read("/SelectedProduct",{
             success:function(oData){
-              oData.results.forEach((item)=>{
+              oData.results.forEach(async (item)=>{
                 var sId=item.ID;
-                this.deleteData(oModel,`/SelectedProduct('${sId}')`)
+               await this.deleteData(oModel,`/SelectedProduct('${sId}')`)
+                this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+                this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
               })
               
             }.bind(this),
@@ -301,7 +303,7 @@ sap.ui.define(
 
             }
           });
-          this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+         
 
       },
 
@@ -1766,7 +1768,7 @@ sap.ui.define(
           this.oValueDialog = await this.loadFragment("ValueHelp");
         }
         this.oValueDialog.open();
-
+        this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
 
 
 
