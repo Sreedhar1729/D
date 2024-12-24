@@ -1,21 +1,20 @@
 namespace capacitymanagement.db;
- 
+
 using {managed} from '@sap/cds/common';
- 
+
 /**for custom type */
 type string : String(40);
- 
+
 /**Defining entity */
- 
+
 // for unique fields
 @assert.unique: {
     sapProductno: [sapProductno],
     EAN         : [EAN]
- 
-}
- 
-define entity Materials {
 
+}
+
+define entity Materials {
     key ID              : UUID;
         sapProductno    : string;
         EAN             : String;
@@ -37,9 +36,9 @@ define entity Materials {
         color           : String;
         selectedProduct : Association to SelectedProduct
                               on selectedProduct.Productno = $self
- 
+
 }
- 
+
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
@@ -54,17 +53,17 @@ define entity TruckTypes {
         capacity    : String;
         tuom        : String;
 }
- 
-define entity SelectedProduct  {
-       key ID        : UUID;
+
+define entity SelectedProduct {
+    key ID               : UUID;
         Productno        : Association to Materials;
         SelectedQuantity : String;
 }
- 
- 
+
+
 define entity History : managed {
     key ID        : UUID;
         productNo : Association to SelectedProduct;
         truckType : Association to TruckTypes;
- 
-}                                                                 
+
+}

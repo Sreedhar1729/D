@@ -69,7 +69,7 @@ sap.ui.define(
           description: "",
           EAN: "",
           weight: "",
-          color:""
+          color: ""
         })
         this.getView().setModel(oJsonModel, "ProductModel");
 
@@ -272,12 +272,12 @@ sap.ui.define(
         var actualQuantity = parseFloat(oBindingContext.getProperty("quantity"));  // Actual Quantity
 
         // Validate: Picking Quantity should not be greater than Actual Quantity
-        if (selectedQuantity > actualQuantity ) {
+        if (selectedQuantity > actualQuantity) {
           // Set error state on the input field
           oInput.setValueState(sap.ui.core.ValueState.Error);
           oInput.setValueStateText("Picking Quantity cannot be greaterthan Actual Quantity.");
-        } 
-        else if(selectedQuantity <= 0){
+        }
+        else if (selectedQuantity <= 0) {
           oInput.setValueState(sap.ui.core.ValueState.Error);
           oInput.setValueStateText("Picking Quantity cannot be lessthan or equal to zero.");
         }
@@ -287,21 +287,21 @@ sap.ui.define(
           oInput.setValueStateText("");
         }
       },
-      onDeletePressInSimulate:async function(){
-          var oModel=this.getOwnerComponent().getModel("ModelV2");
-         await oModel.read("/SelectedProduct",{
-            success:function(oData){
-              oData.results.forEach((item)=>{
-                var sId=item.ID;
-                this.deleteData(oModel,`/SelectedProduct('${sId}')`)
-              })
-              
-            }.bind(this),
-            error:function(){
+      onDeletePressInSimulate: async function () {
+        var oModel = this.getOwnerComponent().getModel("ModelV2");
+        await oModel.read("/SelectedProduct", {
+          success: function (oData) {
+            oData.results.forEach((item) => {
+              var sId = item.ID;
+              this.deleteData(oModel, `/SelectedProduct('${sId}')`)
+            })
 
-            }
-          });
-          this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+          }.bind(this),
+          error: function () {
+
+          }
+        });
+        this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
 
       },
 
@@ -379,7 +379,7 @@ sap.ui.define(
             // Add the relevant data along with the entered Picking Quantity
             var dummy = {
               Productno_ID: oData.ID,
-              SelectedQuantity:sPickingQty
+              SelectedQuantity: sPickingQty
 
             };
             // var dummy2 = {
@@ -396,23 +396,23 @@ sap.ui.define(
             });
             try {
 
-              var oProductExists=await that.productExists(oModel, dummy.Productno_ID)
-            
+              var oProductExists = await that.productExists(oModel, dummy.Productno_ID)
+
               if (!(oProductExists)) {
                 await that.createData(oModel, dummy, "/SelectedProduct");
                 that.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
                 return
               }
-              await oModel.read("/SelectedProduct",{
+              await oModel.read("/SelectedProduct", {
                 filters: [
                   new Filter("Productno_ID", FilterOperator.EQ, dummy.Productno_ID),
                   //new Filter("password", FilterOperator.EQ, sPassword)
 
-              ],
-                success:async function(oData){
-                console.log(oData)
-                var sID=oData.results[0].ID
-                  await oModel.update("/SelectedProduct('" + sID + "')",{SelectedQuantity:sPickingQty}, {
+                ],
+                success: async function (oData) {
+                  console.log(oData)
+                  var sID = oData.results[0].ID
+                  await oModel.update("/SelectedProduct('" + sID + "')", { SelectedQuantity: sPickingQty }, {
                     success: function () {
                       that.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
                     }.bind(this),
@@ -421,12 +421,12 @@ sap.ui.define(
                     }.bind(this)
                   });
                 },
-                error:function(oError){
+                error: function (oError) {
                   console.log(oError)
                 }
               })
-           
-            
+
+
             }
             catch (error) {
               console.log(error)
@@ -462,37 +462,37 @@ sap.ui.define(
       productExists: function (oModel, sId) {
         const that = this;
         return new Promise((resolve, reject) => {
-            // oModel.read(`/SelectedProduct('${sId}')`, {
-            //     success: function (oData, resp) {
-            //         console.log(oData);
-            //         that.flag = true;  // Set flag to true if product exists
-            //         resolve();         // Resolve promise when success
-            //     },
-            //     error: function (error) {
-            //         console.error(error.message);
-            //         that.flag = false; // Set flag to false if product does not exist
-            //         reject(error);     // Reject promise on error
-            //     }
-            // });
-            oModel.read("/SelectedProduct", {
-              filters: [
-                  new Filter("Productno_ID", FilterOperator.EQ, sId),
-                  //new Filter("password", FilterOperator.EQ, sPassword)
+          // oModel.read(`/SelectedProduct('${sId}')`, {
+          //     success: function (oData, resp) {
+          //         console.log(oData);
+          //         that.flag = true;  // Set flag to true if product exists
+          //         resolve();         // Resolve promise when success
+          //     },
+          //     error: function (error) {
+          //         console.error(error.message);
+          //         that.flag = false; // Set flag to false if product does not exist
+          //         reject(error);     // Reject promise on error
+          //     }
+          // });
+          oModel.read("/SelectedProduct", {
+            filters: [
+              new Filter("Productno_ID", FilterOperator.EQ, sId),
+              //new Filter("password", FilterOperator.EQ, sPassword)
 
-              ],
-              success: function (oData) {
-                  resolve(oData.results.length > 0);
-                 
-              },
-              error: function () {
-                  reject(
-                      "An error occurred while checking username existence."
-                  );
-              }
+            ],
+            success: function (oData) {
+              resolve(oData.results.length > 0);
+
+            },
+            error: function () {
+              reject(
+                "An error occurred while checking username existence."
+              );
+            }
           })
         });
-    },
-    
+      },
+
       // productExists: async function (oModel, sId) {
       //   console.log(sId)
       //   const that = this
@@ -780,13 +780,13 @@ sap.ui.define(
       /** ************************Creating New Product  ***************************************************/
       onCreateProduct: async function () {
         const randomHexColor = (function () {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-              color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-          })();
+          const letters = '0123456789ABCDEF';
+          let color = '#';
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        })();
         const oPayloadModel = this.getView().getModel("ProductModel"),
           oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
@@ -846,7 +846,7 @@ sap.ui.define(
         oPayload.vuom = "M³";
         oPayload.wuom = oSelectedItem1 ? oSelectedItem1 : "";
         var oVolume;
-        oPayload.color=randomHexColor
+        oPayload.color = randomHexColor
 
         if (oPayload.uom === 'CM') {
           // If UOM is in centimeters, convert to meters before calculating
@@ -917,20 +917,20 @@ sap.ui.define(
       },
 
       onliveVehicleSearch: function (oEvent) {
-       
+
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
         sQuery = sQuery.toUpperCase();
- 
+
         // test
         if (sQuery && sQuery.length > 0) {
           const truckfilter = new Filter("truckType", FilterOperator.Contains, sQuery),
-             capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
-            //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
- 
+            capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
+          //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
+
           var allFilter = new Filter([truckfilter, capacityfilter]);
         }
- 
+
         var oTableBinding = this.byId("ProductsTable").getBinding("items")
         oTableBinding.filter(allFilter);
       },
@@ -957,7 +957,7 @@ sap.ui.define(
         }
         const oFreezeVal = oFreeze === 'Yes' ? true : false;
         oPayload.freezed = oFreezeVal;
-        oPayload.truckType=`${oPayload.truckType}FT`
+        oPayload.truckType = `${oPayload.truckType}FT`
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
@@ -1022,7 +1022,7 @@ sap.ui.define(
       onEdit: async function () {
         var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItem();
         if (!oSelectedItem) {
-          MessageBox.information("Please select at least one Row for edit!");
+          MessageBox.information("Please select at least one Row to edit!");
           return;
         }
         const oData = oSelectedItem.getBindingContext().getObject();
@@ -1036,7 +1036,7 @@ sap.ui.define(
       },
 
       /**Updading Edited Values */
-      onSave: async function () {
+      onSaveModifiedVehicleData: async function () {
         const updatedData = {
           truckType: this.byId("editTruckTypeInput").getValue(),
           length: this.byId("editLengthInput").getValue(),
@@ -1056,11 +1056,14 @@ sap.ui.define(
           await this.updateData(oModel, oPayload, oPath);
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.onClearEditDialog();
+          this.getView().getModel()
+          // this.onClearEditDialog();
+          this.getView().getModel("VehModel").setProperty("/",{})
           MessageToast.show('Successfully Updated');
         } catch (error) {
           this.onCancelInEditVehicleDialog();
-          this.onClearEditDialog();
+          // this.onClearEditDialog();
+          this.getView().getModel("VehModel").setProperty("/",{})
           MessageToast.show('Error');
         }
       },
@@ -1407,8 +1410,8 @@ sap.ui.define(
         // test
         if (sQuery && sQuery.length > 0) {
           const truckfilter = new Filter("truckType", FilterOperator.Contains, sQuery),
-             capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
-            //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
+            capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
+          //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
 
           var allFilter = new Filter([truckfilter, capacityfilter]);
         }
