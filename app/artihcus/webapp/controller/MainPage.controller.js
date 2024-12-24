@@ -54,43 +54,76 @@ sap.ui.define(
 
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
-        /**Constructing Product Model and set the model to the view */
-        const oJsonModel = new JSONModel({
-          sapProductno: "",
-          length: "",
-          width: "",
-          height: "",
-          volume: "",
-          uom: "",
-          vuom: "",
-          wuom: "",
-          muom: "",
-          mCategory: "",
-          description: "",
-          EAN: "",
-          weight: "",
-          color: ""
-        })
-        this.getView().setModel(oJsonModel, "ProductModel");
+        // /**Constructing Product Model and set the model to the view */
+        // const oJsonModel = new JSONModel({
+        //   sapProductno: "",
+        //   length: "",
+        //   width: "",
+        //   height: "",
+        //   volume: "",
+        //   uom: "",
+        //   vuom: "",
+        //   wuom: "",
+        //   muom: "",
+        //   mCategory: "",
+        //   description: "",
+        //   EAN: "",
+        //   weight: "",
+        //   color: ""
+        // })
+        // this.getView().setModel(oJsonModel, "ProductModel");
 
         /**Constructing JSON Model and set the model to the view*/
-        const oJsonModelVeh = new JSONModel({
-          truckType: "",
-          length: "",
-          width: "",
-          height: "",
-          uom: "",
-          tvuom: "M³",
-          tuom: "M",
-          volume: "",
-          truckWeight: "",
-          capacity: "",
-          freezed: "",
+        // const oJsonModelVeh = new JSONModel({
+        //   truckType: "",
+        //   length: "",
+        //   width: "",
+        //   height: "",
+        //   uom: "",
+        //   tvuom: "M³",
+        //   tuom: "M",
+        //   volume: "",
+        //   truckWeight: "",
+        //   capacity: "",
+        //   freezed: "",
+        // });
+        // this.getView().setModel(oJsonModelVeh, "VehModel");
+        
+        // Constructing a combined JSON Model
+        const oCombinedJsonModel = new JSONModel({
+          Product: {
+            sapProductno: "",
+            length: "",
+            width: "",
+            height: "",
+            volume: "",
+            uom: "",
+            vuom: "",
+            wuom: "",
+            muom: "",
+            mCategory: "",
+            description: "",
+            EAN: "",
+            weight: "",
+            color: ""
+          },
+          Vehicle: {
+            truckType: "",
+            length: "",
+            width: "",
+            height: "",
+            uom: "",
+            tvuom: "M³",
+            tuom: "M",
+            volume: "",
+            truckWeight: "",
+            capacity: "",
+            freezed: ""
+          }
         });
-        this.getView().setModel(oJsonModelVeh, "VehModel");
 
-
-
+        // Set the combined model to the view
+        this.getView().setModel(oCombinedJsonModel, "CombinedModel")
 
       },
       // _createGenericTile: async function () {
@@ -789,8 +822,8 @@ sap.ui.define(
           }
           return color;
         })();
-        const oPayloadModel = this.getView().getModel("ProductModel"),
-          oPayload = oPayloadModel.getProperty("/"),
+        const oPayloadModel = this.getView().getModel("CombinedModel"),
+          oPayload = oPayloadModel.getProperty("/Product"),
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
@@ -858,7 +891,8 @@ sap.ui.define(
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
-          this.getView().getModel("ProductModel").setProperty("/", {}) // clear data after successful creation
+          this.getView().getModel("CombinedModel").setProperty("/Product", {}) // clear data after successful creation
+          // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
           console.error(error);
@@ -868,6 +902,24 @@ sap.ui.define(
             MessageToast.show("Facing technical issue");
           }
         }
+      },
+
+      /**Clearing Properties after creation */
+      ClearingModel: function () {
+        const oPayloadModel = this.getView().getModel("CombinedModel");
+        oPayloadModel.setProperty("/Product", {
+          sapProductno: "",
+          length: "",
+          width: "",
+          height: "",
+          volume: "",
+          uom: "",
+          mCategory: "",
+          description: "",
+          EAN: "",
+          weight: "",
+          quantity: ""
+        })
       },
 
       /**Deleting Products */
@@ -912,8 +964,8 @@ sap.ui.define(
 
       /**Creating Vehicles */
       onCreateVeh: async function () {
-        const oPayloadModel = this.getView().getModel("VehModel"),
-          oPayload = oPayloadModel.getProperty("/"),
+        const oPayloadModel = this.getView().getModel("CombinedModel"),
+          oPayload = oPayloadModel.getProperty("/Vehicle"),
           oModel = this.getView().getModel("ModelV2"),
           oPath = '/TruckTypes';
         if (!oPayload.truckType ||
@@ -955,17 +1007,8 @@ sap.ui.define(
 
       /**Clearing Vehicle Model */
       ClearVeh: function () {
-        const oPayloadModel = this.getView().getModel("VehModel");
-        oPayloadModel.setProperty("/", {
-          truckType: "",
-          length: "",
-          width: "",
-          height: "",
-          uom: "",
-          volume: "",
-          truckWeight: "",
-          capacity: "",
-        })
+        const oPayloadModel = this.getView().getModel("CombinedModel");
+        oPayloadModel.setProperty("/Vehicle", {})
       },
 
       /**Deleting Vehicles */
@@ -1002,56 +1045,27 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
-        this.byId("idVehInpTruckType").setValue(oData.truckType);
-        this.byId("idVehInplength").setValue(oData.length);
-        this.byId("idVehInpWidth").setValue(oData.width);
-        this.byId("idVehInpheight").setValue(oData.height);
-        this.byId("idVehInptruckweight").setValue(oData.truckWeight);
-        this.byId("idVehInpcapacity").setValue(oData.capacity);
-        this.byId("idSlectOPt").setSelectedKey(oData.freezed ? "Yes" : "No");
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",oData)
+        // this.byId("editTruckTypeInput").setValue(oData.truckType);
+        // this.byId("editLengthInput").setValue(oData.length);
+        // this.byId("editWidthInput").setValue(oData.width);
+        // this.byId("editHeightInput").setValue(oData.height);
+        // this.byId("editTruckWeightInput").setValue(oData.truckWeight);
+        // this.byId("editCapacityInput").setValue(oData.capacity);
       },
 
       /* Updading Edited Values */
       onSave: async function () {
-        const currentFreezStatus = this.byId("idTruckTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
-          updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
-          oData = this.getView().getModel("VehModel").getProperty("/"),
-          oView = this.getView();
-
-        // validations
-        const aUserInput = [
-          { Id: "idVehInplength", value: oData.length, regex: /^\d+(\.\d+)?$/, message: "Enter length as a numeric value" },
-          { Id: "idVehInpWidth", value: oData.width, regex: /^\d+(\.\d+)?$/, message: "Enter width as a numeric value" },
-          { Id: "idVehInpheight", value: oData.height, regex: /^\d+(\.\d+)?$/, message: "Enter height as a numeric value" },
-          { Id: "idVehInptruckweight", value: oData.truckWeight, regex: /^\d+(\.\d+)?$/, message: "Enter truck weight as numeric value" },
-          { Id: "idVehInpcapacity", value: oData.capacity, regex: /^\d+(\.\d+)?$/, message: "Enter capacity" }
-        ]
-        // here interating through the above arrayv "aUserInputs" and calling "validateField" with arguments 
-        let raisedErrors = [] //created an empty array
-        aUserInput.forEach(async input => {
-          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
-          if (aValidations.length > 0) {
-            raisedErrors.push(aValidations[0]) // pushning error into empty array
-          }
-        })
-
-        if (raisedErrors.length > 0) {
-          for (let error of raisedErrors) {
-            MessageBox.information(error) // showing error msg 
-            return;
-          }
-        }
-
-        const oPayload = {
-          truckType: oData.truckType,
-          length: oData.length,
-          width: oData.width,
-          height: oData.height,
-          volume: "",
-          truckWeight: oData.truckWeight,
-          capacity: oData.capacity,
-          freezed: this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false
-        };
+        const updatedData = this.getView().getModel("CombinedModel").getProperty("/Vehicle")
+        //   truckType: this.byId("editTruckTypeInput").getValue(),
+        //   length: this.byId("editLengthInput").getValue(),
+        //   width: this.byId("editWidthInput").getValue(),
+        //   height: this.byId("editHeightInput").getValue(),
+        //   volume: "",
+        //   truckWeight: this.byId("editTruckWeightInput").getValue(),
+        //   capacity: this.byId("editCapacityInput").getValue()
+        // };
+        const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         const oModel = this.getView().getModel("ModelV2");
@@ -1076,12 +1090,13 @@ sap.ui.define(
 
       /**Clearing Vehicle Editing Values */
       idTruckTypeTable: function () {
-        this.byId("editTruckTypeInput").setValue(""); // Set to empty string
-        this.byId("editLengthInput").setValue(""); // Set to empty string
-        this.byId("editWidthInput").setValue(""); // Set to empty string
-        this.byId("editHeightInput").setValue(""); // Set to empty strin
-        this.byId("editTruckWeightInput").setValue(""); // Set to empty string
-        this.byId("editCapacityInput").setValue("");
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
+        // this.byId("editTruckTypeInput").setValue(""); // Set to empty string
+        // this.byId("editLengthInput").setValue(""); // Set to empty string
+        // this.byId("editWidthInput").setValue(""); // Set to empty string
+        // this.byId("editHeightInput").setValue(""); // Set to empty strin
+        // this.byId("editTruckWeightInput").setValue(""); // Set to empty string
+        // this.byId("editCapacityInput").setValue("");
       },
 
       /**Editing Product Details */
@@ -1093,13 +1108,14 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.oOpenProductEdit();
-        var DummyModel = this.getView().getModel("ProductModel");
-        DummyModel.setData(oData);
+        /**Getting the model and setting data */
+        var DummyModel = this.getView().getModel("CombinedModel");
+        DummyModel.setProperty("/Product",oData);
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-        const updatedData = this.getView().getModel("ProductModel");
-        const oPayload = updatedData.getData();
+        const updatedData = this.getView().getModel("CombinedModel");
+        const oPayload = updatedData.getProperty("/Product");
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         var oID = this.byId("editIDInput").getValue();
@@ -1125,7 +1141,7 @@ sap.ui.define(
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.getView().getModel("ProductModel").setProperty("/", {});
+        this.getView().getModel("CombinedModel").setProperty("/Product", {});
       },
 
       /**Product Simulation */

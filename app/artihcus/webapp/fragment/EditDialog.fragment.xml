@@ -53,7 +53,7 @@
                 />
                 <Input
                     id="editIDInput"
-                    value="{ProductModel>/ID}"
+                    value="{CombinedModel>/Product/ID}"
                     visible="false"
                 />
                 <Label
@@ -62,7 +62,7 @@
                 />
                 <Input
                     id="editProductNoInput"
-                    value="{ProductModel>/sapProductno}"
+                    value="{CombinedModel>/Product/sapProductno}"
                 />
 
                 <Label
@@ -72,7 +72,7 @@
                 <Input
                     id="editproLengthInput"
                     
-                    value="{ProductModel>/length}"
+                    value="{CombinedModel>/Product/length}"
                 />
 
                 <Label
@@ -81,7 +81,7 @@
                 />
                 <Input
                     id="editprodWidthInput"
-                     value="{ProductModel>/width}"
+                     value="{CombinedModel>/Product/width}"
                 />
 
                 <Label
@@ -90,7 +90,7 @@
                 />
                 <Input
                     id="editprodHeightInput"
-                   value="{ProductModel>/height}"
+                   value="{CombinedModel>/Product/height}"
                 />
 
                 <Label
@@ -99,7 +99,7 @@
                 />
                 <Input
                     id="editUOMInput"
-                 value="{ProductModel>/uom}"
+                 value="{CombinedModel>/Product/uom}"
                 />
 
                 <Label
@@ -108,7 +108,7 @@
                 />
                 <Input
                     id="editCategoryInput"
-                   value="{ProductModel>/mCategory}"
+                   value="{CombinedModel>/Product/mCategory}"
                 />
 
                 <Label
@@ -117,7 +117,7 @@
                 />
                 <Input
                     id="editDescriptionInput"
-                       value="{ProductModel>/description}"
+                       value="{CombinedModel>/Product/description}"
                 />
 
                 <Label
@@ -126,7 +126,7 @@
                 />
                 <Input
                     id="editEANUPCInput"
-                     value="{ProductModel>/EAN}"
+                     value="{CombinedModel>/Product/EAN}"
                 />
 
                 <Label
@@ -135,7 +135,7 @@
                 />
                 <Input
                     id="editWeightInput"
-                      value="{ProductModel>/weight}"
+                      value="{CombinedModel>/Product/weight}"
                 />
 
                 
@@ -145,7 +145,7 @@
                 />
                 <Input
                     id="editQuanInput"
-                   value="{ProductModel>/quantity}"
+                   value="{CombinedModel>/Product/quantity}"
                 /> 
 
             </form:SimpleForm>
