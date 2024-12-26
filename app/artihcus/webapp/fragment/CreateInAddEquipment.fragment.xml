@@ -53,7 +53,7 @@
 
                 <Input
                     id="idTruckTypeInput"
-                    value="{VehModel>/truckType}"
+                    value="{CombinedModel>/Vehicle/truckType}"
                     type="Number"
                 />
 
@@ -64,7 +64,7 @@
 
                 <Input
                     id="idLengthInputVeh"
-                    value="{VehModel>/length}"
+                    value="{CombinedModel>/Vehicle/length}"
                 />
 
                 <Label
@@ -74,7 +74,7 @@
 
                 <Input
                     id="idWidthInputveh"
-                    value="{VehModel>/width}"
+                    value="{CombinedModel>/Vehicle/width}"
                 />
 
                 <Label
@@ -84,7 +84,7 @@
 
                 <Input
                     id="idHeightInputveh"
-                    value="{VehModel>/height}"
+                    value="{CombinedModel>/Vehicle/height}"
                 />
 
                 <Label
@@ -94,7 +94,7 @@
 
                 <!-- <Input
                     id="idUomInputveh"
-                    value="{VehModel>/uom}"
+                    value="{CombinedModel>/Vehicle/uom}"
                 /> -->
                 <Select id="idvehtypeUOM">
                     <core:Item
@@ -107,11 +107,6 @@
                         key="M"
                         text="M"
                     />
-                    <!-- <core:Item
-                        id="id2"
-                        key="L"
-                        text="L"
-                    /> -->
                 </Select>
 
                 <!-- <Label
@@ -121,7 +116,7 @@
 
                 <Input
                     id="idVolumeInputveh"
-                    value="{VehModel>/volume}"
+                    value="{CombinedModel>/Vehicle/volume}"
                 /> -->
 
                 <Label
@@ -131,7 +126,7 @@
 
                 <Input
                     id="idTruckWeightInput"
-                    value="{VehModel>/truckWeight}"
+                    value="{CombinedModel>/Vehicle/truckWeight}"
                 />
 
                 <Label
@@ -141,7 +136,7 @@
 
                 <Input
                     id="idCapacityInput"
-                    value="{VehModel>/capacity}"
+                    value="{CombinedModel>/Vehicle/capacity}"
                 />
 
                 <Label
@@ -163,7 +158,7 @@
                 <!-- <Input
                     id="idFreezedInput"
                     
-                    value="{VehModel>/freezed}"
+                    value="{CombinedModel>/Vehicle/freezed}"
                 /> -->
             </form:SimpleForm>
         </content>

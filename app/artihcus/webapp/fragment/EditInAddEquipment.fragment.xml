@@ -7,8 +7,8 @@
         id="idEditInssAddEquipmentDialog"
         resizable="true"
         draggable="true"
-        contentWidth="20%"
-        contentHeight="30%"
+        contentWidth="40%"
+        contentHeight="37%"
         title="Edit Vehicle"
     >
         <beginButton>
@@ -51,8 +51,9 @@
                     text="Truck Type"
                 />
                 <Input
-                    id="editTruckTypeInput"
-                    value=" "
+                    id="idVehInpTruckType"
+                    value="{CombinedModel>/Vehicle/truckType}"
+                    editable="false"
                 />
 
                 <Label
@@ -60,8 +61,8 @@
                     text="Length"
                 />
                 <Input
-                    id="editLengthInput"
-                    value=" "
+                    id="idVehInplength"
+                    value="{CombinedModel>/Vehicle/length}"
                 />
 
                 <Label
@@ -69,8 +70,8 @@
                     text="Width"
                 />
                 <Input
-                    id="editWidthInput"
-                    value=""
+                    id="idVehInpWidth"
+                    value="{CombinedModel>/Vehicle/width}"
                 />
 
                 <Label
@@ -78,8 +79,8 @@
                     text="Height"
                 />
                 <Input
-                    id="editHeightInput"
-                    value=" "
+                    id="idVehInpheight"
+                    value="{CombinedModel>/Vehicle/height}"
                 />
 
                 <!-- <Label id="_IDGenLabel5" text="Unit of Measurement (UOM)" />
@@ -99,8 +100,8 @@
                     text="Truck Weight"
                 />
                 <Input
-                    id="editTruckWeightInput"
-                    value=" "
+                    id="idVehInptruckweight"
+                    value="{CombinedModel>/Vehicle/truckWeight}"
                 />
 
                 <Label
@@ -108,17 +109,34 @@
                     text="Capacity"
                 />
                 <Input
-                    id="editCapacityInput"
-                    value=" "
+                    id="idVehInpcapacity"
+                    value="{CombinedModel>/Vehicle/capacity}"
                 />
                 <Label
                     id="_IDGenLabel9"
                     text="Freezed"
                 />
-                <Input
-                    id="editFreezedInput"
-                    value=" "
-                />
+                <Select id="idSlectOPt">
+                    <items>
+                        <core:Item
+                            id="_IDenIt"
+                            key="Select"
+                            text="Select"
+                        />
+                        <core:Item
+                            id="_IGenItem1"
+                            key="Yes"
+                            text="Yes"
+                        />
+                        <core:Item
+                            id="_DGenItem2"
+                            key="No"
+                            text="No"
+                        />
+
+                        <!-- Add more UOM options as needed -->
+                    </items>
+                </Select>
             </form:SimpleForm>
         </content>
     </Dialog>
