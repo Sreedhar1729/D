@@ -54,7 +54,7 @@ sap.ui.define(
 
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
-        // /**Constructing Product Model and set the model to the view */
+        /**Constructing Product Model and set the model to the view */
         // const oJsonModel = new JSONModel({
         //   sapProductno: "",
         //   length: "",
@@ -73,7 +73,7 @@ sap.ui.define(
         // })
         // this.getView().setModel(oJsonModel, "ProductModel");
 
-        /**Constructing JSON Model and set the model to the view*/
+        // /**Constructing JSON Model and set the model to the view*/
         // const oJsonModelVeh = new JSONModel({
         //   truckType: "",
         //   length: "",
@@ -88,7 +88,7 @@ sap.ui.define(
         //   freezed: "",
         // });
         // this.getView().setModel(oJsonModelVeh, "VehModel");
-        
+
         // Constructing a combined JSON Model
         const oCombinedJsonModel = new JSONModel({
           Product: {
@@ -822,19 +822,15 @@ sap.ui.define(
           }
           return color;
         })();
-        const oPayloadModel = this.getView().getModel("ProductModel"),
-          oPayload = oPayloadModel.getProperty("/"),
+        const oPayloadModel = this.getView().getModel("CombinedModel"),
+          oPayload = oPayloadModel.getProperty("/Product"),
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
 
         // Validations 
-        // Validations 
         const aUserInputs = [
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
-          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
@@ -842,24 +838,17 @@ sap.ui.define(
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
-          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
           { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
         ]
 
         let raisedErrors = []
-        let raisedErrors = []
         aUserInputs.forEach(async input => {
-          let aValidations =  this.validateField(oView, input.Id, input.value, input.regex, input.message)
+          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
           if (aValidations.length > 0) {
             raisedErrors.push(aValidations[0])
           }
         })
 
-        if (raisedErrors.length > 0) {
-          for (let error of raisedErrors) {
-            MessageBox.information(error)
-            return;
-          }
         if (raisedErrors.length > 0) {
           for (let error of raisedErrors) {
             MessageBox.information(error)
@@ -903,7 +892,6 @@ sap.ui.define(
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
           this.getView().getModel("CombinedModel").setProperty("/Product", {}) // clear data after successful creation
-          // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
           console.error(error);
@@ -937,7 +925,6 @@ sap.ui.define(
       },
 
       onliveVehicleSearch: function (oEvent) {
-
 
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
@@ -986,12 +973,11 @@ sap.ui.define(
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
         try {
           await this.createData(oModel, oPayload, oPath);
-          debugger
-          this.ClearVeh();
+          this.getView().getModel("CombinedModel"),
+          oPayloadModel.setProperty("/Vehicle",{}),
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
-
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.onCancelInCreateVehicleDialog();
@@ -1001,8 +987,17 @@ sap.ui.define(
 
       /**Clearing Vehicle Model */
       ClearVeh: function () {
-        const oPayloadModel = this.getView().getModel("CombinedModel");
-        oPayloadModel.setProperty("/Vehicle", {})
+        const oPayloadModel = this.getView().getModel("VehModel");
+        oPayloadModel.setProperty("/", {
+          truckType: "",
+          length: "",
+          width: "",
+          height: "",
+          uom: "",
+          volume: "",
+          truckWeight: "",
+          capacity: "",
+        })
       },
 
       /**Deleting Vehicles */
@@ -1048,11 +1043,11 @@ sap.ui.define(
         this.byId("idSlectOPt").setSelectedKey(oData.freezed ? "Yes" : "No");
       },
 
-      /* Updading Edited Values */
+      /**Updading Edited Values */
       onSave: async function () {
         const currentFreezStatus = this.byId("idTruckTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
           updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
-          oData = this.getView().getModel("VehModel").getProperty("/"),
+          oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
           oView = this.getView();
 
         // validations
@@ -1065,7 +1060,7 @@ sap.ui.define(
         ]
 
         // here interating through the above arrayv "aUserInputs" and calling "validateField" with arguments 
-        let raisedErrors = [] //created an empty array
+        let raisedErrors = []
         aUserInput.forEach(async input => {
           let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
           if (aValidations.length > 0) {
@@ -1078,6 +1073,11 @@ sap.ui.define(
             MessageBox.information(error) // showing error msg 
             return;
           }
+        }
+        let Freezed = this.byId("idSlectOPt").getSelectedKey();
+        if (Freezed === "Select") {
+          MessageBox.information("Please select container type");
+          return;
         }
 
         const oPayload = {
@@ -1114,13 +1114,12 @@ sap.ui.define(
 
       /**Clearing Vehicle Editing Values */
       idTruckTypeTable: function () {
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
-        // this.byId("editTruckTypeInput").setValue(""); // Set to empty string
-        // this.byId("editLengthInput").setValue(""); // Set to empty string
-        // this.byId("editWidthInput").setValue(""); // Set to empty string
-        // this.byId("editHeightInput").setValue(""); // Set to empty strin
-        // this.byId("editTruckWeightInput").setValue(""); // Set to empty string
-        // this.byId("editCapacityInput").setValue("");
+        this.byId("editTruckTypeInput").setValue(""); // Set to empty string
+        this.byId("editLengthInput").setValue(""); // Set to empty string
+        this.byId("editWidthInput").setValue(""); // Set to empty string
+        this.byId("editHeightInput").setValue(""); // Set to empty strin
+        this.byId("editTruckWeightInput").setValue(""); // Set to empty string
+        this.byId("editCapacityInput").setValue("");
       },
 
       /**Editing Product Details */
@@ -1132,24 +1131,39 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.oOpenProductEdit();
-        /**Getting the model and setting data */
-        var DummyModel = this.getView().getModel("CombinedModel");
-        DummyModel.setProperty("/Product",oData);
+        this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
+        this.byId("editDescriptionInput").setValue(oData.description); // Description
+        this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
+        this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
+        this.byId("editproLengthInput").setValue(oData.length); // Length
+        this.byId("editprodWidthInput").setValue(oData.width); // Width
+        this.byId("editprodHeightInput").setValue(oData.height); // Height
+        // this.byId("editVolumeInput").setValue(oData.volume); // Volume
+        this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
+        this.byId("editWeightInput").setValue(oData.weight); // Weight
+        this.byId("editQuantityInput").setValue(oData.quantity);
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-        const updatedData = this.getView().getModel("CombinedModel");
-        const oPayload = updatedData.getProperty("/Product");
+        const updatedData = {
+          sapProductno: this.byId("editProductNoInput").getValue(), // SAP Product Number
+          description: this.byId("editDescriptionInput").getValue(), // Description
+          EAN: this.byId("editEANInput").getValue(),          // EAN/UPC Code
+          mCategory: this.byId("editCategoryInput").getValue(),      // Material Category
+          length: this.byId("editproLengthInput").getValue(),        // Length
+          width: this.byId("editprodWidthInput").getValue(),         // Width
+          height: this.byId("editprodHeightInput").getValue(),       // Height
+          volume: "",                                                // Volume (currently set to an empty string)
+          uom: this.byId("editUOMInput").getValue(),                                                   // Unit of Measure (UOM, currently set to an empty string)
+          weight: this.byId("editWeightInput").getValue(),
+          quantity: this.byId("editQuantityInput").getValue()           // Weight
+        };
+        const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        var oID = this.byId("editIDInput").getValue();
-        /**If key is missing returns error */
-        if(!oID){
-          sap.m.MessageBox.error("ID is not Found/Key Missing");
-          return;
-        }
+        const sapProductno = this.byId("editProductNoInput").getValue();
         const oModel = this.getView().getModel("ModelV2");
-        const oPath = `/Materials('${oID}')`;
+        const oPath = `/Materials('${sapProductno}')`;
         try {
           await this.updateData(oModel, oPayload, oPath);
           this.getView().byId("ProductsTable").getBinding("items").refresh();
@@ -1165,7 +1179,17 @@ sap.ui.define(
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.getView().getModel("CombinedModel").setProperty("/Product", {});
+        this.byId("editProductNoInput").setValue(""); // SAP Product Number
+        this.byId("editDescriptionInput").setValue(""); // Description
+        this.byId("editEANInput").setValue(""); // EAN/UPC Code
+        this.byId("editCategoryInput").setValue(""); // Material Category
+        this.byId("editproLengthInput").setValue(""); // Length
+        this.byId("editprodWidthInput").setValue(""); // Width
+        this.byId("editprodHeightInput").setValue(""); // Height
+        // this.byId("editVolumeInput").setValue(""); // Volume (currently commented out)
+        this.byId("editUOMInput").setValue(""); // Unit of Measure (UOM, currently commented out)
+        this.byId("editWeightInput").setValue(""); // Weight
+        this.byId("editQuantityInput").setValue("");
       },
 
       /**Product Simulation */
