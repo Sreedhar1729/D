@@ -52,7 +52,7 @@
                 />
                 <Input
                     id="editTruckTypeInput"
-                    value=" "
+                    value="{CombinedModel>/Vehicle/truckType}"
                 />
 
                 <Label
@@ -61,7 +61,7 @@
                 />
                 <Input
                     id="editLengthInput"
-                    value=" "
+                   value="{CombinedModel>/Vehicle/length}"
                 />
 
                 <Label
@@ -70,7 +70,7 @@
                 />
                 <Input
                     id="editWidthInput"
-                    value=""
+                  value="{CombinedModel>/Vehicle/width}"
                 />
 
                 <Label
@@ -79,7 +79,7 @@
                 />
                 <Input
                     id="editHeightInput"
-                    value=" "
+           value="{CombinedModel>/Vehicle/height}"
                 />
 
                 <!-- <Label id="_IDGenLabel5" text="Unit of Measurement (UOM)" />
@@ -100,7 +100,7 @@
                 />
                 <Input
                     id="editTruckWeightInput"
-                    value=" "
+                     value="{CombinedModel>/Vehicle/truckWeight}"
                 />
 
                 <Label
@@ -109,7 +109,7 @@
                 />
                 <Input
                     id="editCapacityInput"
-                    value=" "
+                    value="{CombinedModel>/Vehicle/capacity}"
                 />
                 <Label
                     id="_IDGenLabel9"
@@ -117,7 +117,8 @@
                 />
                 <Input
                     id="editFreezedInput"
-                    value=" "
+                   value="{CombinedModel>/Vehicle/freezed}"
+                    editable="false"
                 />
             </form:SimpleForm>
         </content>
