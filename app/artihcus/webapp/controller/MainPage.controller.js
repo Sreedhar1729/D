@@ -810,7 +810,7 @@ sap.ui.define(
 
         let raisedErrors = []
         aUserInputs.forEach(async input => {
-          let aValidations =  this.validateField(oView, input.Id, input.value, input.regex, input.message)
+          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
           if (aValidations.length > 0) {
             raisedErrors.push(aValidations[0])
           }
@@ -1011,7 +1011,7 @@ sap.ui.define(
         this.byId("idSlectOPt").setSelectedKey(oData.freezed ? "Yes" : "No");
       },
 
-      /**Updading Edited Values */
+      /* Updading Edited Values */
       onSave: async function () {
         const currentFreezStatus = this.byId("idTruckTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
           updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
@@ -1026,7 +1026,6 @@ sap.ui.define(
           { Id: "idVehInptruckweight", value: oData.truckWeight, regex: /^\d+(\.\d+)?$/, message: "Enter truck weight as numeric value" },
           { Id: "idVehInpcapacity", value: oData.capacity, regex: /^\d+(\.\d+)?$/, message: "Enter capacity" }
         ]
-
         // here interating through the above arrayv "aUserInputs" and calling "validateField" with arguments 
         let raisedErrors = [] //created an empty array
         aUserInput.forEach(async input => {
