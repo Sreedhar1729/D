@@ -391,7 +391,6 @@
                                 press="onEdit"
                                 tooltip="Edit"
                                 icon="sap-icon://edit"
-                                icon="sap-icon://edit"
                             />
                             <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
