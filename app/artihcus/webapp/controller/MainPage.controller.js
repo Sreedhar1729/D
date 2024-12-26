@@ -96,6 +96,9 @@ sap.ui.define(
           RemainingCapacity: "",
         });
         this.getView().setModel(oJsonModelCal, "Calculation");
+        const chartDataModel = new sap.ui.model.json.JSONModel({ chartData: [] });
+        const calculationModel = new sap.ui.model.json.JSONModel();
+        this.getView().setModel(chartDataModel, "ChartData");
 
 
 
@@ -1958,6 +1961,8 @@ sap.ui.define(
         let currentZ = -containerWidth / 2;
         let currentY = 0;
         const positionMap = [];
+        const chartData = [];
+
         let totalQuantity = 0;
         let totalVolume = 0;
         let totalWeight = 0;
@@ -1972,6 +1977,11 @@ sap.ui.define(
           const productWidth = parseFloat(product.Productno.width);
           const productColor = product.Productno.color;
           const productWeigh = parseFloat(product.Productno.weight);
+
+          const productName = product.Productno.description;
+
+          let productVolume = 0;
+          let productWeightTotal = 0;
 
           for (let i = 0; i < SelectedQuantity; i++) {
             let isOverlap = true;
@@ -2036,18 +2046,57 @@ sap.ui.define(
               currentX += productLength;
             }
           }
+
+
+          chartData.push({
+            Name: productName,
+            Packages: SelectedQuantity,
+            Volume: totalVolume.toFixed(2),
+            Weight: totalWeight.toFixed(2),
+            Color: productColor
+          });
+
+
+
+
         });
 
         const remainingVolume = containerMaxVolume - totalVolume;
+        // Add the "Empty" capacity as an additional data point
+        chartData.push({
+          Status: "Empty",
+          Quantity: 0,
+          Volume: remainingVolume.toFixed(2),
+          Color: "#cccccc" // Gray color for "Empty" section
+        });
+
+
+
+
+
         const remainingWeight = containerMaxWeight - totalWeight;
 
 
+        this.getView().getModel("ChartData").setProperty("/chartData", chartData);
         this.getView().getModel("Calculation").setProperty("/", {
           TotalQuantity: totalQuantity,
-          TotalVolume: totalVolume.toFixed(2) + " m\u00B3",
-          TotalWeight: totalWeight.toFixed(2) + " Kg",
-          RemainingCapacity: Math.min(remainingVolume, remainingWeight).toFixed(2) + " m\u00B3"
-        })
+          TotalVolume: `${totalVolume.toFixed(2)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(0)}% filled)`,
+          TotalWeight: `${totalWeight.toFixed(2)} kg`,
+          RemainingCapacity: `${remainingVolume.toFixed(2)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(0)}% empty)`
+        });
+        const oVizFrame = this.getView().byId("idPieChart");
+        oVizFrame.setVizProperties({
+          plotArea: {
+            colorPalette: chartData.map(item => item.Color), // Extract colors dynamically
+            dataLabel: {
+              visible: true
+            }
+          },
+          title: {
+            text: "Cargo Volume Breakdown"
+          }
+        });
+
 
       },
 
