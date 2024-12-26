@@ -55,75 +55,52 @@ sap.ui.define(
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
         /**Constructing Product Model and set the model to the view */
-        // const oJsonModel = new JSONModel({
-        //   sapProductno: "",
-        //   length: "",
-        //   width: "",
-        //   height: "",
-        //   volume: "",
-        //   uom: "",
-        //   vuom: "",
-        //   wuom: "",
-        //   muom: "",
-        //   mCategory: "",
-        //   description: "",
-        //   EAN: "",
-        //   weight: "",
-        //   color: ""
-        // })
-        // this.getView().setModel(oJsonModel, "ProductModel");
+        const oJsonModel = new JSONModel({
+          sapProductno: "",
+          length: "",
+          width: "",
+          height: "",
+          volume: "",
+          uom: "",
+          vuom: "",
+          wuom: "",
+          muom: "",
+          mCategory: "",
+          description: "",
+          EAN: "",
+          weight: "",
+          color: ""
+        })
+        this.getView().setModel(oJsonModel, "ProductModel");
 
-        // /**Constructing JSON Model and set the model to the view*/
-        // const oJsonModelVeh = new JSONModel({
-        //   truckType: "",
-        //   length: "",
-        //   width: "",
-        //   height: "",
-        //   uom: "",
-        //   tvuom: "M³",
-        //   tuom: "M",
-        //   volume: "",
-        //   truckWeight: "",
-        //   capacity: "",
-        //   freezed: "",
-        // });
-        // this.getView().setModel(oJsonModelVeh, "VehModel");
-
-        // Constructing a combined JSON Model
-        const oCombinedJsonModel = new JSONModel({
-          Product: {
-            sapProductno: "",
-            length: "",
-            width: "",
-            height: "",
-            volume: "",
-            uom: "",
-            vuom: "",
-            wuom: "",
-            muom: "",
-            mCategory: "",
-            description: "",
-            EAN: "",
-            weight: "",
-            color: ""
-          },
-          Vehicle: {
-            truckType: "",
-            length: "",
-            width: "",
-            height: "",
-            uom: "",
-            tvuom: "M³",
-            tuom: "M",
-            volume: "",
-            truckWeight: "",
-            capacity: "",
-            freezed: ""
-          }
+        /**Constructing JSON Model and set the model to the view*/
+        const oJsonModelVeh = new JSONModel({
+          truckType: "",
+          length: "",
+          width: "",
+          height: "",
+          uom: "",
+          tvuom: "M³",
+          tuom: "M",
+          volume: "",
+          truckWeight: "",
+          capacity: "",
+          freezed: "",
         });
+        this.getView().setModel(oJsonModelVeh, "VehModel");
+        const oJsonModelCal = new JSONModel({
 
-        // Set the combined model to the view
-        this.getView().setModel(oCombinedJsonModel, "CombinedModel")
+          TotalQuantity: "",
+          TotalVolume: "",
+          TotalWeight: "",
+          RemainingCapacity: "",
+        });
+        this.getView().setModel(oJsonModelCal, "Calculation");
+        const chartDataModel = new sap.ui.model.json.JSONModel({ chartData: [] });
+        const calculationModel = new sap.ui.model.json.JSONModel();
+        this.getView().setModel(chartDataModel, "ChartData");
+
+
 
       },
       // _createGenericTile: async function () {
@@ -324,11 +301,9 @@ sap.ui.define(
         var oModel = this.getOwnerComponent().getModel("ModelV2");
         await oModel.read("/SelectedProduct", {
           success: function (oData) {
-            oData.results.forEach(async (item) => {
+            oData.results.forEach((item) => {
               var sId = item.ID;
-              await this.deleteData(oModel, `/SelectedProduct('${sId}')`)
-              this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
-              this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
+              this.deleteData(oModel, `/SelectedProduct('${sId}')`)
             })
 
           }.bind(this),
@@ -336,7 +311,7 @@ sap.ui.define(
 
           }
         });
-
+        this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
 
       },
 
@@ -822,38 +797,44 @@ sap.ui.define(
           }
           return color;
         })();
-        const oPayloadModel = this.getView().getModel("CombinedModel"),
-          oPayload = oPayloadModel.getProperty("/Product"),
+        const oPayloadModel = this.getView().getModel("ProductModel"),
+          oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
 
-        // Validations 
+        // Validation
+        const validationErrors = [];
+        const validateField = (fieldId, value, regex, errorMessage) => {
+          const oField = oView.byId(fieldId);
+          if (!value || (regex && !regex.test(value))) {
+            oField.setValueState("Error");
+            oField.setValueStateText(errorMessage);
+            validationErrors.push(errorMessage);
+          } else {
+            oField.setValueState("None");
+          }
+        };
+
         const aUserInputs = [
-          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
           { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
-          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
+          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
-          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+          { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
+          { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
           { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
+          { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
         ]
 
-        let raisedErrors = []
         aUserInputs.forEach(async input => {
-          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
-          if (aValidations.length > 0) {
-            raisedErrors.push(aValidations[0])
-          }
+          validateField(input.Id, input.value, input.regex, input.message)
         })
 
-        if (raisedErrors.length > 0) {
-          for (let error of raisedErrors) {
-            MessageBox.information(error)
-            return;
-          }
+        if (validationErrors.length > 0) {
+          MessageBox.information("Please enter correct data");
+          return;
         }
 
         // Get the selected item from the event parameters
@@ -891,7 +872,8 @@ sap.ui.define(
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
-          this.getView().getModel("CombinedModel").setProperty("/Product", {}) // clear data after successful creation
+          this.getView().getModel("ProductModel").setProperty("/", {}) // clear data after successful creation
+          // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
           console.error(error);
@@ -901,6 +883,24 @@ sap.ui.define(
             MessageToast.show("Facing technical issue");
           }
         }
+      },
+
+      /**Clearing Properties after creation */
+      ClearingModel: function () {
+        const oPayloadModel = this.getView().getModel("ProductModel");
+        oPayloadModel.setProperty("/", {
+          sapProductno: "",
+          length: "",
+          width: "",
+          height: "",
+          volume: "",
+          uom: "",
+          mCategory: "",
+          description: "",
+          EAN: "",
+          weight: "",
+          quantity: ""
+        })
       },
 
       /**Deleting Products */
@@ -945,8 +945,8 @@ sap.ui.define(
 
       /**Creating Vehicles */
       onCreateVeh: async function () {
-        const oPayloadModel = this.getView().getModel("CombinedModel"),
-          oPayload = oPayloadModel.getProperty("/Vehicle"),
+        const oPayloadModel = this.getView().getModel("VehModel"),
+          oPayload = oPayloadModel.getProperty("/"),
           oModel = this.getView().getModel("ModelV2"),
           oPath = '/TruckTypes';
         if (!oPayload.truckType ||
@@ -973,11 +973,12 @@ sap.ui.define(
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
         try {
           await this.createData(oModel, oPayload, oPath);
-          this.getView().getModel("CombinedModel"),
-          oPayloadModel.setProperty("/Vehicle",{}),
+          debugger
+          this.ClearVeh();
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
+
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.onCancelInCreateVehicleDialog();
@@ -987,8 +988,17 @@ sap.ui.define(
 
       /**Clearing Vehicle Model */
       ClearVeh: function () {
-        const oPayloadModel = this.getView().getModel("CombinedModel");
-        oPayloadModel.setProperty("/Vehicle", {})
+        const oPayloadModel = this.getView().getModel("VehModel");
+        oPayloadModel.setProperty("/", {
+          truckType: "",
+          length: "",
+          width: "",
+          height: "",
+          uom: "",
+          volume: "",
+          truckWeight: "",
+          capacity: "",
+        })
       },
 
       /**Deleting Vehicles */
@@ -1020,98 +1030,57 @@ sap.ui.define(
       onEdit: async function () {
         var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItem();
         if (!oSelectedItem) {
-          MessageBox.information("Please select one Row to edit!");
+          MessageBox.information("Please select at least one Row for edit!");
           return;
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
-        this.byId("idVehInpTruckType").setValue(oData.truckType);
-        this.byId("idVehInplength").setValue(oData.length);
-        this.byId("idVehInpWidth").setValue(oData.width);
-        this.byId("idVehInpheight").setValue(oData.height);
-        this.byId("idVehInptruckweight").setValue(oData.truckWeight);
-        this.byId("idVehInpcapacity").setValue(oData.capacity);
-        this.byId("idSlectOPt").setSelectedKey(oData.freezed ? "Yes" : "No");
+        this.byId("editTruckTypeInput").setValue(oData.truckType);
+        this.byId("editLengthInput").setValue(oData.length);
+        this.byId("editWidthInput").setValue(oData.width);
+        this.byId("editHeightInput").setValue(oData.height);
+        this.byId("editTruckWeightInput").setValue(oData.truckWeight);
+        this.byId("editCapacityInput").setValue(oData.capacity);
       },
 
       /**Updading Edited Values */
       onSave: async function () {
-        const currentFreezStatus = this.byId("idTruckTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
-          updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
-          oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
-          oView = this.getView();
-
-        // validations
-        const aUserInput = [
-          { Id: "idVehInplength", value: oData.length, regex: /^\d+(\.\d+)?$/, message: "Enter length as a numeric value" },
-          { Id: "idVehInpWidth", value: oData.width, regex: /^\d+(\.\d+)?$/, message: "Enter width as a numeric value" },
-          { Id: "idVehInpheight", value: oData.height, regex: /^\d+(\.\d+)?$/, message: "Enter height as a numeric value" },
-          { Id: "idVehInptruckweight", value: oData.truckWeight, regex: /^\d+(\.\d+)?$/, message: "Enter truck weight as numeric value" },
-          { Id: "idVehInpcapacity", value: oData.capacity, regex: /^\d+(\.\d+)?$/, message: "Enter capacity" }
-        ]
-
-        // here interating through the above arrayv "aUserInputs" and calling "validateField" with arguments 
-        let raisedErrors = []
-        aUserInput.forEach(async input => {
-          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
-          if (aValidations.length > 0) {
-            raisedErrors.push(aValidations[0]) // pushning error into empty array
-          }
-        })
-
-        if (raisedErrors.length > 0) {
-          for (let error of raisedErrors) {
-            MessageBox.information(error) // showing error msg 
-            return;
-          }
-        }
-        let Freezed = this.byId("idSlectOPt").getSelectedKey();
-        if (Freezed === "Select") {
-          MessageBox.information("Please select container type");
-          return;
-        }
-
-        const oPayload = {
-          truckType: oData.truckType,
-          length: oData.length,
-          width: oData.width,
-          height: oData.height,
+        const updatedData = {
+          truckType: this.byId("editTruckTypeInput").getValue(),
+          length: this.byId("editLengthInput").getValue(),
+          width: this.byId("editWidthInput").getValue(),
+          height: this.byId("editHeightInput").getValue(),
           volume: "",
-          truckWeight: oData.truckWeight,
-          capacity: oData.capacity,
-          freezed: this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false
+          truckWeight: this.byId("editTruckWeightInput").getValue(),
+          capacity: this.byId("editCapacityInput").getValue()
         };
+        const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
+        const truckType = this.byId("editTruckTypeInput").getValue();
         const oModel = this.getView().getModel("ModelV2");
-        const oPath = "/TruckTypes(truckType='" + oData.truckType + "',freezed=" + currentFreezStatus + ")"
+        const oPath = `/TruckTypes('${truckType}')`;
         try {
-          if (currentFreezStatus !== updatedFreexStatus) {
-            await this.deleteData(oModel, oPath); // delete the current record 
-            await this.createData(oModel, oPayload, "/TruckTypes"); // create with new keys 
-            MessageToast.show('Successfully Updated');
-          } else {
-            await this.updateData(oModel, oPayload, oPath);
-            MessageToast.show('Successfully Updated');
-          }
-
-        } catch (error) {
-          MessageToast.show('Error');
-        } finally {
+          await this.updateData(oModel, oPayload, oPath);
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
+          this.onClearEditDialog();
+          MessageToast.show('Successfully Updated');
+        } catch (error) {
+          this.onCancelInEditVehicleDialog();
+          this.onClearEditDialog();
+          MessageToast.show('Error');
         }
       },
 
       /**Clearing Vehicle Editing Values */
       idTruckTypeTable: function () {
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
-        // this.byId("editTruckTypeInput").setValue(""); // Set to empty string
-        // this.byId("editLengthInput").setValue(""); // Set to empty string
-        // this.byId("editWidthInput").setValue(""); // Set to empty string
-        // this.byId("editHeightInput").setValue(""); // Set to empty strin
-        // this.byId("editTruckWeightInput").setValue(""); // Set to empty string
-        // this.byId("editCapacityInput").setValue("");
+        this.byId("editTruckTypeInput").setValue(""); // Set to empty string
+        this.byId("editLengthInput").setValue(""); // Set to empty string
+        this.byId("editWidthInput").setValue(""); // Set to empty string
+        this.byId("editHeightInput").setValue(""); // Set to empty strin
+        this.byId("editTruckWeightInput").setValue(""); // Set to empty string
+        this.byId("editCapacityInput").setValue("");
       },
 
       /**Editing Product Details */
@@ -1123,24 +1092,39 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.oOpenProductEdit();
-        /**Getting the model and setting data */
-        var DummyModel = this.getView().getModel("CombinedModel");
-        DummyModel.setProperty("/Product",oData);
+        this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
+        this.byId("editDescriptionInput").setValue(oData.description); // Description
+        this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
+        this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
+        this.byId("editproLengthInput").setValue(oData.length); // Length
+        this.byId("editprodWidthInput").setValue(oData.width); // Width
+        this.byId("editprodHeightInput").setValue(oData.height); // Height
+        // this.byId("editVolumeInput").setValue(oData.volume); // Volume
+        this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
+        this.byId("editWeightInput").setValue(oData.weight); // Weight
+        this.byId("editQuantityInput").setValue(oData.quantity);
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-        const updatedData = this.getView().getModel("CombinedModel");
-        const oPayload = updatedData.getProperty("/Product");
+        const updatedData = {
+          sapProductno: this.byId("editProductNoInput").getValue(), // SAP Product Number
+          description: this.byId("editDescriptionInput").getValue(), // Description
+          EAN: this.byId("editEANInput").getValue(),          // EAN/UPC Code
+          mCategory: this.byId("editCategoryInput").getValue(),      // Material Category
+          length: this.byId("editproLengthInput").getValue(),        // Length
+          width: this.byId("editprodWidthInput").getValue(),         // Width
+          height: this.byId("editprodHeightInput").getValue(),       // Height
+          volume: "",                                                // Volume (currently set to an empty string)
+          uom: this.byId("editUOMInput").getValue(),                                                   // Unit of Measure (UOM, currently set to an empty string)
+          weight: this.byId("editWeightInput").getValue(),
+          quantity: this.byId("editQuantityInput").getValue()           // Weight
+        };
+        const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        var oID = this.byId("editIDInput").getValue();
-        /**If key is missing returns error */
-        if(!oID){
-          sap.m.MessageBox.error("ID is not Found/Key Missing");
-          return;
-        }
+        const sapProductno = this.byId("editProductNoInput").getValue();
         const oModel = this.getView().getModel("ModelV2");
-        const oPath = `/Materials('${oID}')`;
+        const oPath = `/Materials('${sapProductno}')`;
         try {
           await this.updateData(oModel, oPayload, oPath);
           this.getView().byId("ProductsTable").getBinding("items").refresh();
@@ -1156,7 +1140,17 @@ sap.ui.define(
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.getView().getModel("CombinedModel").setProperty("/Product", {});
+        this.byId("editProductNoInput").setValue(""); // SAP Product Number
+        this.byId("editDescriptionInput").setValue(""); // Description
+        this.byId("editEANInput").setValue(""); // EAN/UPC Code
+        this.byId("editCategoryInput").setValue(""); // Material Category
+        this.byId("editproLengthInput").setValue(""); // Length
+        this.byId("editprodWidthInput").setValue(""); // Width
+        this.byId("editprodHeightInput").setValue(""); // Height
+        // this.byId("editVolumeInput").setValue(""); // Volume (currently commented out)
+        this.byId("editUOMInput").setValue(""); // Unit of Measure (UOM, currently commented out)
+        this.byId("editWeightInput").setValue(""); // Weight
+        this.byId("editQuantityInput").setValue("");
       },
 
       /**Product Simulation */
@@ -1782,7 +1776,7 @@ sap.ui.define(
           this.oValueDialog = await this.loadFragment("ValueHelp");
         }
         this.oValueDialog.open();
-        this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
+
 
 
 
@@ -1963,10 +1957,18 @@ sap.ui.define(
       },
 
       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-        let currentX = -containerLength / 2; // Start at the left side of the container
-        let currentZ = -containerWidth / 2;  // Start at the front of the container
-        let currentY = 0;                    // Start at the bottom of the container
-        const positionMap = [];              // Keeps track of the positions of placed products
+        let currentX = -containerLength / 2;
+        let currentZ = -containerWidth / 2;
+        let currentY = 0;
+        const positionMap = [];
+        const chartData = [];
+
+        let totalQuantity = 0;
+        let totalVolume = 0;
+        let totalWeight = 0;
+
+        const containerMaxVolume = containerHeight * containerLength * containerWidth;
+        const containerMaxWeight = 1000; // Example max weight in kg
 
         selectedProducts.forEach(product => {
           const SelectedQuantity = parseInt(product.SelectedQuantity);
@@ -1974,60 +1976,39 @@ sap.ui.define(
           const productHeight = parseFloat(product.Productno.height);
           const productWidth = parseFloat(product.Productno.width);
           const productColor = product.Productno.color;
+          const productWeigh = parseFloat(product.Productno.weight);
+
+          const productName = product.Productno.description;
+
+          let productVolume = 0;
+          let productWeightTotal = 0;
 
           for (let i = 0; i < SelectedQuantity; i++) {
             let isOverlap = true;
 
-            // Try placing the product until no overlap is detected
             while (isOverlap) {
-              console.log("Attempting to place product...");
-              console.log(`Current position: X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-              console.log(`Product dimensions: Length=${productLength}, Width=${productWidth}, Height=${productHeight}`);
-
-              // Check if the product fits in the current row (considering container length)
               if (currentX + productLength > containerLength / 2) {
-                console.log("Row full, moving to the next row...");
-                // Move to the next row along Z-axis
                 currentX = -containerLength / 2;
                 currentZ += productWidth;
 
-                // If Z-axis exceeds container width, move to the next layer
                 if (currentZ + productWidth > containerWidth / 2) {
-                  console.log("Container full on Z-axis, moving to the next layer...");
                   currentZ = -containerWidth / 2;
                   currentY += productHeight;
                 }
               }
 
-              // Check for overlap with previously placed products
-              isOverlap = positionMap.some(position => {
-                const overlap = (
-                  // X-axis overlap
-                  currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                  // Z-axis overlap
-                  currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-                  // Y-axis overlap
-                  currentY < position.yTop
-                );
-
-                if (overlap) {
-                  console.log(`Overlap detected with product at position: [X=${position.xStart}-${position.xEnd}, Z=${position.zStart}-${position.zEnd}, Y Top=${position.yTop}]`);
-                }
-
-                return overlap;
-              });
+              isOverlap = positionMap.some(position => (
+                currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+                currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                currentY < position.yTop
+              ));
 
               if (isOverlap) {
-                // Adjust the position if overlap is detected
-                currentX += productLength; // Move along the X-axis
-                console.log(`Overlap detected, moving to next X position: ${currentX}`);
+                currentX += productLength;
               }
             }
 
-            // If no overlap, place the product
             if (!isOverlap) {
-              console.log(`Placing product at X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-              // Create the product geometry
               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
               const productMaterial = new THREE.MeshStandardMaterial({
                 color: new THREE.Color(productColor),
@@ -2036,33 +2017,19 @@ sap.ui.define(
               });
 
               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-              productMesh.castShadow = true;
-              productMesh.receiveShadow = true;
-
-              // Set the product's position in the 3D space
               productMesh.position.set(
-                currentX + productLength / 2, // Center the product on X
-                currentY + productHeight / 2, // Center the product on Y
-                currentZ + productWidth / 2   // Center the product on Z
+                currentX + productLength / 2,
+                currentY + productHeight / 2,
+                currentZ + productWidth / 2
               );
-
-              // Add the product to the scene
               this.scene.add(productMesh);
 
-              // Create a border for the product
               const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-              const edgesMaterial = new THREE.LineBasicMaterial({
-                color: 0x000000, // Black border
-                linewidth: 1 // Thin border
-              });
-
+              const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
               const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
               edges.position.copy(productMesh.position);
-
-              // Add the border to the scene
               this.scene.add(edges);
 
-              // Track the position of the placed product
               positionMap.push({
                 xStart: currentX,
                 xEnd: currentX + productLength,
@@ -2071,17 +2038,66 @@ sap.ui.define(
                 yTop: currentY + productHeight
               });
 
-              console.log(`Product placed successfully at X=${currentX}, Y=${currentY}, Z=${currentZ}`);
-              console.log(`Position map updated: [X Start=${currentX}, X End=${currentX + productLength}, Z Start=${currentZ}, Z End=${currentZ + productWidth}, Y Top=${currentY + productHeight}]`);
+              totalQuantity += 1;
+              const productVolume = productLength * productHeight * productWidth;
+              totalVolume += productVolume;
+              totalWeight += productWeigh;
 
-              // Move to the next position along X-axis for the next product
               currentX += productLength;
-              console.log(`Moving to the next X position: ${currentX}`);
             }
+          }
+
+
+          chartData.push({
+            Name: productName,
+            Packages: SelectedQuantity,
+            Volume: totalVolume.toFixed(2),
+            Weight: totalWeight.toFixed(2),
+            Color: productColor
+          });
+
+
+
+
+        });
+
+        const remainingVolume = containerMaxVolume - totalVolume;
+        // Add the "Empty" capacity as an additional data point
+        chartData.push({
+          Status: "Empty",
+          Quantity: 0,
+          Volume: remainingVolume.toFixed(2),
+          Color: "#cccccc" // Gray color for "Empty" section
+        });
+
+
+
+
+
+        const remainingWeight = containerMaxWeight - totalWeight;
+
+
+        this.getView().getModel("ChartData").setProperty("/chartData", chartData);
+        this.getView().getModel("Calculation").setProperty("/", {
+          TotalQuantity: totalQuantity,
+          TotalVolume: `${totalVolume.toFixed(2)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(0)}% filled)`,
+          TotalWeight: `${totalWeight.toFixed(2)} kg`,
+          RemainingCapacity: `${remainingVolume.toFixed(2)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(0)}% empty)`
+        });
+        const oVizFrame = this.getView().byId("idPieChart");
+        oVizFrame.setVizProperties({
+          plotArea: {
+            colorPalette: chartData.map(item => item.Color), // Extract colors dynamically
+            dataLabel: {
+              visible: true
+            }
+          },
+          title: {
+            text: "Cargo Volume Breakdown"
           }
         });
 
-        console.log("All products placed successfully.");
+
       },
 
 
@@ -2154,6 +2170,6 @@ sap.ui.define(
         // Generate and download the Excel file
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
-
+  
     });
   });
