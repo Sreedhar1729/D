@@ -107,11 +107,6 @@
                         key="M"
                         text="M"
                     />
-                    <!-- <core:Item
-                        id="id2"
-                        key="L"
-                        text="L"
-                    /> -->
                 </Select>
 
                 <!-- <Label
