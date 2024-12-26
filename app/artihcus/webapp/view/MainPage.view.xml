@@ -1079,7 +1079,7 @@
                                         >
                                             <suite:ChartContainer
                                                 id="chartContainer"
-                                                width="200%"
+                                                width="100%"
                                             >
                                                 <suite:content>
                                                     <suite:ChartContainerContent
@@ -1089,8 +1089,8 @@
                                                         <suite:content>
                                                             <viz:VizFrame
                                                                 id="idPieChart"
-                                                                width="800%"
-                                                                height="400px"
+                                                                width="700%"
+                                                                height="300px"
                                                                 vizType="pie"
                                                                 vizProperties="{
                                                                  title: { text: 'Cargo Volume Breakdown' },
