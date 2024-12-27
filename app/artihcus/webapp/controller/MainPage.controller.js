@@ -978,8 +978,10 @@ sap.ui.define(
           this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
+          this.byId("idFreezedInput").setSelectedKey("");
           MessageToast.show("Successfully Created!");
         } catch (error) {
+          this.byId("idFreezedInput").setSelectedKey("");
           this.onCancelInCreateVehicleDialog();
           MessageToast.show("Error at the time of creation");
         }
@@ -1006,10 +1008,12 @@ sap.ui.define(
             await this.deleteData(oModel, oPath);
           }));
           this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
-          this.byId("parkingLotSelect").getBinding("items").refresh();
           MessageToast.show('Successfully Deleted')
         } catch (error) {
-          MessageToast.show('Error Occurs');
+          if(error){
+          MessageBox.error('Error Occurs');
+          return;
+          }
         }
       },
       onRow: function (oEvent) {
