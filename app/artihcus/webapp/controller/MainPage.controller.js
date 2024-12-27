@@ -59,6 +59,7 @@ sap.ui.define(
         //   sapProductno: "",
         //   length: "",
         //   width: "",
+        
         //   height: "",
         //   volume: "",
         //   uom: "",
