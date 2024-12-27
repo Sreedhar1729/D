@@ -43,7 +43,7 @@ define entity Materials {
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
-        freezed     : Boolean;
+    key freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
@@ -67,6 +67,4 @@ define entity History : managed {
         productNo : Association to SelectedProduct;
         truckType : Association to TruckTypes;
  
-}
- 
- 
+}                                                                 
