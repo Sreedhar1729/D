@@ -917,10 +917,8 @@ sap.ui.define(
           oPayloadModel.setProperty("/Vehicle",{}),
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
-
           this.byId("idFreezedInput").setSelectedKey("");
           this.byId("idContainerTypeUOM").setSelectedKey("");
-
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.byId("idFreezedInput").setSelectedKey("");
@@ -931,8 +929,8 @@ sap.ui.define(
 
       /**Clearing Vehicle Model */
       ClearVeh: function () {
-        const oPayloadModel = this.getView().getModel("VehModel");
-        oPayloadModel.setProperty("/", {
+        const oPayloadModel = this.getView().getModel("CombinedModel");
+        oPayloadModel.setProperty("/Vehicle", {
           truckType: "",
           length: "",
           width: "",
@@ -958,9 +956,7 @@ sap.ui.define(
             const oPath = oItem.getBindingContext().getPath();
             await this.deleteData(oModel, oPath);
           }));
-
           this.getView().byId("idContainerTypeTable").getBinding("items").refresh();
-          this.byId("parkingLotSelect").getBinding("items").refresh();
           MessageToast.show('Successfully Deleted')
         } catch (error) {
           if(error){
