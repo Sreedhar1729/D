@@ -877,7 +877,7 @@
                                                 iconFirst="true"
                                                 buttonText="Upload"
                                                 style="Transparent"
-                                                change="onUpload"
+                                                change="onSelectedProductSimulations"
                                             />
                                             <Button
                                                 id="idDownloadBtnIn_Simulate"

@@ -1,3 +1,4 @@
+
 sap.ui.define(
   [
     "./BaseController",
@@ -59,7 +60,6 @@ sap.ui.define(
         //   sapProductno: "",
         //   length: "",
         //   width: "",
-        
         //   height: "",
         //   volume: "",
         //   uom: "",
@@ -251,20 +251,44 @@ sap.ui.define(
         }
       },
       onDeletePressInSimulate: async function () {
-        var oModel = this.getOwnerComponent().getModel("ModelV2");
-        await oModel.read("/SelectedProduct", {
-          success: function (oData) {
-            oData.results.forEach((item) => {
-              var sId = item.ID;
-              this.deleteData(oModel, `/SelectedProduct('${sId}')`)
-            })
+        const oModel = this.getView().getModel("ModelV2");
+        const oSelectedItems = this.byId("idAddProductsTableIn_simulate").getSelectedItems();
+        if (!oSelectedItems) {
+          return MessageBox.error("Please select atleast one item for deletion")
+        }
+        oSelectedItems.forEach(ele => {
+          let oPath = ele.getBindingContext().getPath();
+          oModel.remove(oPath, {
+            success: function () {
+              this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+              MessageToast.show("Deleted successfully")
+            }.bind(this), error: function (oError) {
+              this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+              MessageBox.error(oError);
 
-          }.bind(this),
-          error: function () {
 
-          }
-        });
-        this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+            }.bind(this)
+          })
+        })
+
+        // var oModel = this.getOwnerComponent().getModel("ModelV2");
+
+
+        // await oModel.read("/SelectedProduct", {
+        //   success: function (oData) {
+        //     oData.results.forEach(async (item) => {
+        //       var sId = item.ID;
+        //       await this.deleteData(oModel, `/SelectedProduct('${sId}')`)
+        //       this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+        //       this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
+        //     })
+
+        //   }.bind(this),
+        //   error: function () {
+
+        //   }
+        // });
+
 
       },
 
@@ -914,6 +938,8 @@ sap.ui.define(
         try {
           await this.createData(oModel, oPayload, oPath);
           this.getView().getModel("CombinedModel"),
+            oPayloadModel.setProperty("/Vehicle", {}),
+            this.byId("idTruckTypeTable").getBinding("items").refresh();
           oPayloadModel.setProperty("/Vehicle",{}),
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
@@ -963,9 +989,9 @@ sap.ui.define(
           this.byId("parkingLotSelect").getBinding("items").refresh();
           MessageToast.show('Successfully Deleted')
         } catch (error) {
-          if(error){
-          MessageBox.error('Error Occurs');
-          return;
+          if (error) {
+            MessageBox.error('Error Occurs');
+            return;
           }
         }
       },
@@ -1027,7 +1053,7 @@ sap.ui.define(
           return;
         }
 
-        const oPayload = {
+        const updatedData= {
           truckType: oData.truckType,
           length: oData.length,
           width: oData.width,
@@ -1058,14 +1084,15 @@ sap.ui.define(
         }
       },
 
-      /**Clearing Container Editing Values */
-      idContainerTypeTable: function () {
-        this.byId("editTruckTypeInput").setValue(""); // Set to empty string
-        this.byId("editLengthInput").setValue(""); // Set to empty string
-        this.byId("editWidthInput").setValue(""); // Set to empty string
-        this.byId("editHeightInput").setValue(""); // Set to empty strin
-        this.byId("editTruckWeightInput").setValue(""); // Set to empty string
-        this.byId("editCapacityInput").setValue("");
+      /**Clearing Vehicle Editing Values */
+      idTruckTypeTable: function () {
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", {})
+        // this.byId("editTruckTypeInput").setValue(""); // Set to empty string
+        // this.byId("editLengthInput").setValue(""); // Set to empty string
+        // this.byId("editWidthInput").setValue(""); // Set to empty string
+        // this.byId("editHeightInput").setValue(""); // Set to empty strin
+        // this.byId("editTruckWeightInput").setValue(""); // Set to empty string
+        // this.byId("editCapacityInput").setValue("");
       },
 
       /**Editing Product Details */
@@ -1077,6 +1104,9 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.oOpenProductEdit();
+        /**Getting the model and setting data */
+        var DummyModel = this.getView().getModel("CombinedModel");
+        DummyModel.setProperty("/Product", oData);
         this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
         this.byId("editDescriptionInput").setValue(oData.description); // Description
         this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
@@ -1107,6 +1137,12 @@ sap.ui.define(
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
+        var oID = this.byId("editIDInput").getValue();
+        /**If key is missing returns error */
+        if (!oID) {
+          sap.m.MessageBox.error("ID is not Found/Key Missing");
+          return;
+        }
         const sapProductno = this.byId("editProductNoInput").getValue();
         const oModel = this.getView().getModel("ModelV2");
         const oPath = `/Materials('${sapProductno}')`;
@@ -1392,14 +1428,13 @@ sap.ui.define(
         oBinding.filter(aFilter);
       },
 
+
       /**For creating n number of products at a time */
       onUploadMaterialCreation: function (e) {
         this._import1(e.getParameter("files") && e.getParameter("files")[0]);
       },
-
       _import1: function (file) {
         var that = this;
-
         if (file && window.FileReader) {
           var reader = new FileReader();
           reader.onload = function (e) {
@@ -1413,10 +1448,9 @@ sap.ui.define(
               excelData = excelData.concat(sheetData); // Combine data from all sheets
             });
 
-            console.log(excelData);
-            // Call createProducts with the parsed excel data
-            that.createProducts(excelData);
+            console.log(excelData)
 
+            that.createProducts(excelData);
             // Refresh the local model if necessary
             that.localModel.refresh(true);
           };
@@ -2029,66 +2063,13 @@ sap.ui.define(
               totalWeight += productWeigh;
 
               currentX += productLength;
+              console.log(`Moving to the next X position: ${currentX}`);
             }
           }
-
-
-          chartData.push({
-            Name: productName,
-            Packages: SelectedQuantity,
-            Volume: totalVolume.toFixed(2),
-            Weight: totalWeight.toFixed(2),
-            Color: productColor
-          });
-
-
-
-
         });
 
-        const remainingVolume = containerMaxVolume - totalVolume;
-        // Add the "Empty" capacity as an additional data point
-        chartData.push({
-          Status: "Empty",
-          Quantity: 0,
-          Volume: remainingVolume.toFixed(2),
-          Color: "#cccccc" // Gray color for "Empty" section
-        });
-
-
-
-
-
-        const remainingWeight = containerMaxWeight - totalWeight;
-
-
-        this.getView().getModel("ChartData").setProperty("/chartData", chartData);
-        this.getView().getModel("Calculation").setProperty("/", {
-          TotalQuantity: totalQuantity,
-          TotalVolume: `${totalVolume.toFixed(2)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(0)}% filled)`,
-          TotalWeight: `${totalWeight.toFixed(2)} kg`,
-          RemainingCapacity: `${remainingVolume.toFixed(2)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(0)}% empty)`
-        });
-        const oVizFrame = this.getView().byId("idPieChart");
-        oVizFrame.setVizProperties({
-          plotArea: {
-            colorPalette: chartData.map(item => item.Color), // Extract colors dynamically
-            dataLabel: {
-              visible: true
-            }
-          },
-          title: {
-            text: "Cargo Volume Breakdown"
-          }
-        });
-
-
+        console.log("All products placed successfully.");
       },
-
-
-
-
-
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
@@ -2157,5 +2138,120 @@ sap.ui.define(
       },
 
    
+
+      /**logic for material upload and simulation */
+      onSelectedProductSimulations: function (e) {
+        this._ProductUploads(e.getParameter("files") && e.getParameter("files")[0]);
+      },
+      _ProductUploads: function (file) {
+        var that = this;
+        if (file && window.FileReader) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, { type: 'binary' });
+            var excelData = []; // Initialize an array to hold the data
+            workbook.SheetNames.forEach(function (sheetName) {
+              // Convert each sheet to an array of objects
+              const sheetData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+              excelData = excelData.concat(sheetData); // Combine data from all sheets
+            });
+            console.log("Products table data for Simulation:", excelData);
+
+            that.onMaterialRead(excelData);
+          };
+          reader.onerror = function (ex) {
+            console.error("Error reading file:", ex);
+          };
+          reader.readAsBinaryString(file);
+        } else {
+          console.error("No file selected or FileReader not supported.");
+        }
+      },
+      /**Reading products */
+      onMaterialRead: async function (excelData) {
+        const oModel = this.getView().getModel('ModelV2');
+        const oPath = "/Materials";
+        let oFilter = [];
+
+        try {
+          // Fetch product data from the model
+          const oProductData = await this.readData(oModel, oPath, oFilter);
+          console.log("oProduct Data:", oProductData);
+
+          // Extract Productno values from excelData
+          const oTempData = excelData.map(item => item["Productno"]); // Assuming "Productno " has a trailing space
+          console.log("TempData:", oTempData);
+
+          // Extract sapProductno values from fetched product data
+          const oTest = oProductData.results.map(ele => ele.sapProductno);
+          console.log("oTest Data:", oTest);
+
+          // Check if all elements in excelData exist in oTest
+          const allExist = oTempData.every(item => oTest.includes(item));
+          if (!allExist) {
+            return MessageBox.error("Some products do not exist.");
+          }
+
+          // If all products exist, filter IDs based on excelData and include SelectedQuantity
+          const filteredIDs = excelData
+            .filter(item => oTest.includes(item["Productno"])); // Filter based on Productno
+
+          const result = filteredIDs.map(item => {
+            const product = oProductData.results.find(product => product.sapProductno === item["Productno"]);
+            return {
+              ID: product ? product.ID : null, // Get ID if product exists
+              SelectedQuantity: item["SelectedQuantity"] // Get corresponding SelectedQuantity
+            };
+          });
+          this.onCreateSelProduct(result);
+
+          console.log("Filtered IDs with Selected Quantities:", result); // Log the filtered IDs with quantities
+
+        } catch (error) {
+          // Handle errors and display error message
+          MessageBox.error("An error occurred");
+        }
+      },
+
+      /**Creating  selected Products*/
+      onCreateSelProduct: async function (oEvent) {
+        const oModel = this.getView().getModel("ModelV2"),
+          sPath = "/SelectedProduct";
+
+
+        try {
+          // Initialize an empty array for the payload
+          let oPayload = [];
+
+          // Iterate over each element in oEvent
+          oEvent.forEach(ele => {
+            // Log the current element for debugging
+            console.log("Processing element:", ele);
+
+            // Create an object for the payload based on the current element
+            const payloadItem = {
+              Productno_ID: ele.ID, // Adjust property names as necessary
+              SelectedQuantity: String(ele.SelectedQuantity) // Adjust property names as necessary
+            };        // Push the created object into the payload array
+            oPayload.push(payloadItem);
+          });
+          // Log the complete payload for debugging
+          console.log("Payload to be sent:", oPayload);
+          // Create data using the constructed payload
+          await this.createData(oModel, oPayload, sPath);
+          // Refresh the binding of the items in the table
+          this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+          // Show success message
+          MessageToast.show("Created Successfully");
+        } catch (oError) {
+          // Refresh the binding of the items in case of error as well
+          this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+
+          // Show error message
+          MessageBox.error(oError.message || "An error occurred");
+        }
+
+      }
     });
   });
