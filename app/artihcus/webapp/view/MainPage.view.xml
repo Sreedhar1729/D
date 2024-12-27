@@ -104,12 +104,13 @@
                         interactionMode="Auto"
                         icon="Image/ProductInIconTabBar.png"
                         iconColor="Positive"
-                        text="Add product"
+                        text="Add Product"
                         class="backgroundColour"
                     >
                         <HBox
                             id="_IDGenHBox8"
                             class="backgroundColour"
+                            width="80%"
                         >
                             <form:SimpleForm
                                 id="_IDGenSimpleForm"
@@ -150,8 +151,8 @@
                                         />
                                         <Input
                                             id="idDesvbncriptionInput_InitialView"
-                                            value="{ProductModel>/EAN}"
-                                            placeholder="Eneter EAN"
+                                            value="{CombinedModel>/Product/EAN}"
+                                            placeholder="Enter EAN"
                                             class="customInput"
                                             width="100%"
                                         />
@@ -359,11 +360,11 @@
                         />
                     </IconTabFilter>
 
-                    <!-- Add vehicle -->
+                    <!-- Add Container-->
 
                     <IconTabFilter
                         id="icon2"
-                        text="Vehicle Type"
+                        text="Container Type"
                         iconColor="Critical"
                         visible="true"
                         key="info1"
@@ -377,12 +378,12 @@
                         >
                             <Title
                                 id="Titzxdfglfghe1455896_AHUOBQ"
-                                text="Adding New vehicle:"
+                                text="Adding New Container:"
                             />
                             <ToolbarSpacer id="IDGevbnnTfghjoolbar345_AHUOBQ" />
                             <SearchField
                                 id="idSearchFieldcvbnvhjBinnumberTable_AHUOBQ"
-                                liveChange="onliveVehicleSearch"
+                                liveChange="onliveContainerSearch"
                                 placeholder="Search Anything..."
                                 width="25%"
                             />
@@ -397,35 +398,35 @@
                             <Button
                                 id="idBtghcvbnjnHUvbnContentBtn_AHUOBQ"
                                 text="Edit"
-                                press="onEdit"
+                                press="onEditContainer"
                                 tooltip="Edit"
                                 icon="sap-icon://edit"
                             />
                             <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
                                 text="Delete"
-                                press="onVehDel"
+                                press="onContainerDel"
                                 tooltip="Delete"
                                 icon="sap-icon://delete"
                             />
                             <Button
                                 id="idBtbnmfghnHUCcvbnontentBtn_AHUOBQ"
-                                press="onPressDownloadInAddVehicleTable"
+                                press="onPressDownloadInAddContainerTable"
                                 tooltip="Print"
                                 class="line-md--download-outline-loop"
                             />
                         </Toolbar>
-                        <!-- Vehicle types table -->
+                        <!-- Containertypes table -->
                         <Table
-                            id="idTruckTypeTable"
+                            id="idContainerTypeTable"
                             growing="true"
-                            noDataText="No Vehicle Types Available"
+                            noDataText="No Container Types Available"
                             backgroundDesign="Transparent"
                             selectionChange="onRow"
                             items="{/TruckTypes}"
                             mode="MultiSelect"
                             class="backgroundColour"
-                            width="85%"
+                            width="80%"
                         >
                             <columns>
                                 <Column
@@ -435,7 +436,7 @@
                                     <!-- Set specific widths -->
                                     <Text
                                         id="_IghjklDcvbnGe1"
-                                        text="TruckType"
+                                        text="Container Type"
                                     />
                                 </Column>
                                 <Column id="_IcfgvbgbnmhnDGenC">
@@ -471,7 +472,7 @@
                                 <Column id="_IvbnDbnmvbnGenCo">
                                     <Text
                                         id="_IcvbnmDbvbnmnGen"
-                                        text="TruckWeight"
+                                        text="Container Weight"
                                     />
                                 </Column>
                                 <Column id="_IvbnDbnmvbnGenCoFre">
@@ -779,7 +780,7 @@
                             <WizardStep
                                 id="idWizardAddProductIn_simulate"
                                 nextStep="ProcessGroupStep"
-                                title="Add products for simulate"
+                                title="Add Products for simulate"
                                 icon="sap-icon://add-product"
                             >
                                 <Table
@@ -897,7 +898,7 @@
                                         <Column id="_IDGenColumn2">
                                             <Text
                                                 id="_IDGensdfText1"
-                                                text="Material Description"
+                                                text="Material Des"
                                             />
                                         </Column>
                                         <Column id="_IDGenColumn4">
@@ -1013,7 +1014,7 @@
                             <!-- group wizard -->
                             <WizardStep
                                 id="idAddVehicleTypeSrInSimulate_changeQueue"
-                                title="Add Vehicle Type"
+                                title="Add Container Type"
                                 nextStep="SimulateSetupStep"
                                 icon="sap-icon://inventory"
                             >
