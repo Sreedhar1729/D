@@ -4,18 +4,18 @@
     xmlns="sap.m"
 >
     <Dialog
-        id="idCreateInAddddEquipmentDialog"
+        id="idCreateInContainerDialog"
         resizable="true"
         draggable="true"
         contentWidth="40%"
         contentHeight="35%"
-        title="Create Vehicle"
+        title="Create Container"
     >
         <beginButton>
             <Button
                 id="idCreatnwwjkeButton"
                 text="Create"
-                press="onCreateVeh"
+                press="onCreateContainer"
                 type="Success"
             />
         </beginButton>
@@ -96,7 +96,7 @@
                     id="idUomInputveh"
                     value="{CombinedModel>/Vehicle/uom}"
                 /> -->
-                <Select id="idvehtypeUOM">
+                <Select id="idContainerTypeUOM">
                     <core:Item
                         id="id0"
                         key=""
@@ -109,15 +109,7 @@
                     />
                 </Select>
 
-                <!-- <Label
-                    id="idVolumeLabelveh"
-                    text="Volume"
-                />
-
-                <Input
-                    id="idVolumeInputveh"
-                    value="{CombinedModel>/Vehicle/volume}"
-                /> -->
+              
 
                 <Label
                     id="idTruckWeightLabel"
