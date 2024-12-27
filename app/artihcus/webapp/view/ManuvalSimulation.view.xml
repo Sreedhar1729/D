@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="com.app.artihcus.controller.ReqTruck"
+    controllerName="com.app.artihcus.controller.ManuvalSimulation"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"

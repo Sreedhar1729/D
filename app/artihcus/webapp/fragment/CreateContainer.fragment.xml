@@ -4,32 +4,32 @@
     xmlns="sap.m"
 >
     <Dialog
-        id="idEditInssAddEquipmentDialog"
+        id="idCreateInContainerDialog"
         resizable="true"
         draggable="true"
         contentWidth="40%"
-        contentHeight="37%"
-        title="Edit Vehicle"
+        contentHeight="35%"
+        title="Create Container"
     >
         <beginButton>
             <Button
-                id="idCreatessvgbhdfgjkButton"
-                text="Save"
-                press="onSave"
+                id="idCreatnwwjkeButton"
+                text="Create"
+                press="onCreateContainer"
                 type="Success"
             />
         </beginButton>
         <endButton>
             <Button
-                id="idCancelssbnmdfgButton"
+                id="idCancwwkelButton"
                 text="Cancel"
-                press="onCancelInEditVehicleDialog"
+                press="onCancelInCreateVehicleDialog"
                 type="Negative"
             />
         </endButton>
         <content>
             <form:SimpleForm
-                id="idStarDesstanmidfglsForm"
+                id="idStabnrDwwetanmilsForm"
                 editable="true"
                 layout="ResponsiveGridLayout"
                 labelSpanXL="3"
@@ -47,96 +47,111 @@
                 singleContainerFullSize="false"
             >
                 <Label
-                    id="_IDGenLabel1"
+                    id="idTruckTypeLabel"
                     text="Truck Type"
                 />
+
                 <Input
-                    id="idVehInpTruckType"
+                    id="idTruckTypeInput"
                     value="{CombinedModel>/Vehicle/truckType}"
-                    editable="false"
+                    type="Number"
                 />
 
                 <Label
-                    id="_IDGenLabel2"
+                    id="idLengthLabelveh"
                     text="Length"
                 />
+
                 <Input
-                    id="idVehInplength"
+                    id="idLengthInputVeh"
                     value="{CombinedModel>/Vehicle/length}"
                 />
 
                 <Label
-                    id="_IDGenLabel3"
+                    id="idWidthLabelVeh"
                     text="Width"
                 />
+
                 <Input
-                    id="idVehInpWidth"
+                    id="idWidthInputveh"
                     value="{CombinedModel>/Vehicle/width}"
                 />
 
                 <Label
-                    id="_IDGenLabel4"
+                    id="idHeightLabelveh"
                     text="Height"
                 />
+
                 <Input
-                    id="idVehInpheight"
+                    id="idHeightInputveh"
                     value="{CombinedModel>/Vehicle/height}"
                 />
 
-                <!-- <Label id="_IDGenLabel5" text="Unit of Measurement (UOM)" />
-                <Input
-                    id="editUomInput"
-                    value=" "
-                /> -->
+                <Label
+                    id="idUomLabelveh"
+                    text="Unit of Measure (UOM)"
+                />
 
-                <!-- <Label id="_IDGenLabel6" text="Volume" />
-                <Input
-                    id="editVolumeInput"
-                    value=" "
+                <!-- <Input
+                    id="idUomInputveh"
+                    value="{CombinedModel>/Vehicle/uom}"
                 /> -->
+                <Select id="idContainerTypeUOM">
+                    <core:Item
+                        id="id0"
+                        key=""
+                        text=""
+                    />
+                    <core:Item
+                        id="id1"
+                        key="M"
+                        text="M"
+                    />
+                </Select>
+
+              
 
                 <Label
-                    id="_IDGenLabel7"
+                    id="idTruckWeightLabel"
                     text="Truck Weight"
                 />
+
                 <Input
-                    id="idVehInptruckweight"
+                    id="idTruckWeightInput"
                     value="{CombinedModel>/Vehicle/truckWeight}"
                 />
 
                 <Label
-                    id="_IDGenLabel8"
+                    id="idCapacityLabel"
                     text="Capacity"
                 />
+
                 <Input
-                    id="idVehInpcapacity"
+                    id="idCapacityInput"
                     value="{CombinedModel>/Vehicle/capacity}"
                 />
+
                 <Label
-                    id="_IDGenLabel9"
+                    id="idFreezedLabel"
                     text="Freezed"
                 />
-                <Select id="idSlectOPt">
-                    <items>
-                        <core:Item
-                            id="_IDenIt"
-                            key="Select"
-                            text="Select"
-                        />
-                        <core:Item
-                            id="_IGenItem1"
-                            key="Yes"
-                            text="Yes"
-                        />
-                        <core:Item
-                            id="_DGenItem2"
-                            key="No"
-                            text="No"
-                        />
-
-                        <!-- Add more UOM options as needed -->
-                    </items>
-                </Select>
+                <ComboBox id="idFreezedInput">
+                    <core:Item
+                        id="idforflags"
+                        text="Yes"
+                        key="Yes"
+                    />
+                    <core:Item
+                        id="idforflags1"
+                        text="No"
+                        key="No"
+                    />
+                </ComboBox>
+                <!-- <Input
+                    id="idFreezedInput"
+                    
+                    value="{CombinedModel>/Vehicle/freezed}"
+                /> -->
             </form:SimpleForm>
         </content>
     </Dialog>

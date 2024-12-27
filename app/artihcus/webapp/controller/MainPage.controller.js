@@ -126,78 +126,7 @@ sap.ui.define(
         this.getView().setModel(oCombinedJsonModel, "CombinedModel")
 
       },
-      // _createGenericTile: async function () {
-
-      //   console.log("Called")
-      //   // Get the container where the tile will be placed
-      //   var oTileContainer = this.byId("idVBoxInSelectVehicleType");
-      //   //getting model
-      //   var that = this;
-      //   const oModel = this.getOwnerComponent().getModel("ModelV2"),
-      //     oPath = "/TruckTypes";
-      //   var oObject = {
-      //     "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
-      //     "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
-      //     "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
-      //     "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-      //     "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-      //     "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
-      //     "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
-      //     "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
-      //   }
-      //   try {
-      //     const oSuccessData = await this.readData(oModel, oPath, [])
-      //     oSuccessData.results.forEach(
-      //       function (item) {
-      //         if (item.freezed) {
-      //           var oId = item.truckType + "_f"
-      //           var oImage = oObject[`${item.truckType}F`]
-      //         }
-      //         else {
-      //           var oId = item.truckType
-      //           var oImage = oObject[`${item.truckType}`]
-      //         }
-      //         var oGenericTile = new GenericTile({
-      //           id: `id_generictile_${oId}`,
-      //           class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
-      //           header: `${item.truckType}`,   // The tile's header
-      //           width: "150px",    // The tile's width
-
-      //           press: that.onPressGenericTilePress.bind(that)  // Event handler for press
-      //         });
-
-      //         // Create the TileContent control
-      //         var oTileContent = new TileContent({
-      //           id: `id_idTileContent_${oId}`
-      //         });
-
-      //         // Create the ImageContent inside the TileContent
-      //         var oImageContent = new ImageContent({
-      //           id: `id_idImageContentN_${oId}`,
-      //           src: `${oImage}`
-      //         });
-
-      //         // Add the ImageContent to the TileContent
-      //         oTileContent.setContent(oImageContent);
-
-      //         // Add the TileContent to the GenericTile
-      //         oGenericTile.addTileContent(oTileContent);
-
-      //         // Now, add the GenericTile to the container
-      //         oTileContainer.addItem(oGenericTile);
-      //         oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
-      //       }
-      //     )
-
-      //   } catch (error) {
-      //     console.log(error)
-      //     MessageToast.show(error)
-      //   }
-
-      //   // Create the GenericTile control dynamically
-
-      // },
-
+      
       _createGenericTile: async function () {
 
         console.log("Called")
@@ -666,9 +595,9 @@ sap.ui.define(
       },
 
       //print in add Equipment 
-      onPressDownloadInAddVehicleTable: function () {
+      onPressDownloadInAddContainerTable: function () {
 
-        var oTable = this.byId("idTruckTypeTable");
+        var oTable = this.byId("idContainerTypeTable");
         var aItems = oTable.getItems();
         var aData = [];
 
@@ -700,7 +629,7 @@ sap.ui.define(
         XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idProductsTableEdit");
 
         // Generate and download the Excel file
-        XLSX.writeFile(oWorkbook, "VehicleTable.xlsx");
+        XLSX.writeFile(oWorkbook, "ContainerTable.xlsx");
       },
 
       // 
@@ -743,37 +672,24 @@ sap.ui.define(
         XLSX.utils.book_append_sheet(oWorkbook, oSheet, "idListTable");
 
         // Generate and download the Excel file
-        XLSX.writeFile(oWorkbook, "ListOfProductsInVehicle.xlsx");
+        XLSX.writeFile(oWorkbook, "ListOfProductsInContainer.xlsx");
       },
 
-
-
-      // Create fragment in products table
-      // onPressAddInProductsTable: async function () {
-      //   if (!this.oCreateStarDialog) {
-      //     this.oCreateStarDialog = await this.loadFragment("CreateDialog");
-      //   }
-      //   this.oCreateStarDialog.open();
-      // },
-
-      onCancelInCreateProductDialog: function () {
-        this.byId("idCreateProduc33tDialog").close();
-      },
       // create fragment in add Eqipment page
       onPressInAddEquipment: async function () {
-        if (!this.oCreateInAddEquipmentDialog) {
-          this.oCreateInAddEquipmentDialog = await this.loadFragment("CreateInAddEquipment");
+        if (!this.oCreateContainerDialog) {
+          this.oCreateContainerDialog = await this.loadFragment("CreateContainer");
         }
-        this.oCreateInAddEquipmentDialog.open();
+        this.oCreateContainerDialog.open();
       },
       onCancelInCreateVehicleDialog: function () {
-        this.byId("idCreateInAddddEquipmentDialog").close();
+        this.byId("idCreateInContainerDialog").close();
         this.ClearVeh();
       },
       // edit  fragment in products table
       oOpenProductEdit: async function () {
         if (!this.oEditDialog) {
-          this.oEditDialog = await this.loadFragment("EditDialog");
+          this.oEditDialog = await this.loadFragment("EditProductDialog");
         }
         this.oEditDialog.open();
       },
@@ -783,12 +699,12 @@ sap.ui.define(
       // edit  fragment in Add equipment table
       onPressEditInAddEquipmentTable: async function () {
         if (!this.oEditInAddEquipment) {
-          this.oEditInAddEquipment = await this.loadFragment("EditInAddEquipment");
+          this.oEditInAddEquipment = await this.loadFragment("EditContainer");
         }
         this.oEditInAddEquipment.open();
       },
       onCancelInEditVehicleDialog: function () {
-        this.byId("idEditInssAddEquipmentDialog").close();
+        this.byId("idEditContainerDialog").close();
       },
 
       //create dialog in list 
@@ -924,7 +840,7 @@ sap.ui.define(
         }
       },
 
-      onliveVehicleSearch: function (oEvent) {
+      onliveContainerSearch: function (oEvent) {
 
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
@@ -943,8 +859,8 @@ sap.ui.define(
         oTableBinding.filter(allFilter);
       },
 
-      /**Creating Vehicles */
-      onCreateVeh: async function () {
+      /**Creating Containers */
+      onCreateContainer: async function () {
         const oPayloadModel = this.getView().getModel("CombinedModel"),
           oPayload = oPayloadModel.getProperty("/Vehicle"),
           oModel = this.getView().getModel("ModelV2"),
@@ -969,15 +885,15 @@ sap.ui.define(
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         // Get the selected item from the event parameters
-        var oSelectedItem = this.byId("idvehtypeUOM").getSelectedItem();
+        var oSelectedItem = this.byId("idContainerTypeUOM").getSelectedItem();
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
         try {
           await this.createData(oModel, oPayload, oPath);
           this.getView().getModel("CombinedModel"),
           oPayloadModel.setProperty("/Vehicle",{}),
-          this.byId("idTruckTypeTable").getBinding("items").refresh();
+          this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
-          this.byId("idvehtypeUOM").setSelectedKey("");
+          this.byId("idContainerTypeUOM").setSelectedKey("");
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.onCancelInCreateVehicleDialog();
@@ -1001,8 +917,8 @@ sap.ui.define(
       },
 
       /**Deleting Vehicles */
-      onVehDel: async function () {
-        const oTable = this.byId("idTruckTypeTable"),
+      onContainerDel: async function () {
+        const oTable = this.byId("idContainerTypeTable"),
           aSelectedItems = oTable.getSelectedItems(),
           oModel = this.getView().getModel("ModelV2");
         if (aSelectedItems.length === 0) {
@@ -1014,7 +930,7 @@ sap.ui.define(
             const oPath = oItem.getBindingContext().getPath();
             await this.deleteData(oModel, oPath);
           }));
-          this.getView().byId("idTruckTypeTable").getBinding("items").refresh();
+          this.getView().byId("idContainerTypeTable").getBinding("items").refresh();
           this.byId("parkingLotSelect").getBinding("items").refresh();
           MessageToast.show('Successfully Deleted')
         } catch (error) {
@@ -1025,9 +941,9 @@ sap.ui.define(
         var path = oEvent.getSource();
       },
 
-      /**Editing vehical types */
-      onEdit: async function () {
-        var oSelectedItem = this.byId("idTruckTypeTable").getSelectedItem();
+      /**Editing Container types */
+      onEditContainerContainer: async function () {
+        var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItem();
         if (!oSelectedItem) {
           MessageBox.information("Please select one Row to edit!");
           return;
@@ -1045,7 +961,7 @@ sap.ui.define(
 
       /**Updading Edited Values */
       onSave: async function () {
-        const currentFreezStatus = this.byId("idTruckTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
+        const currentFreezStatus = this.byId("idContainerTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
           updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
           oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
           oView = this.getView();
@@ -1107,13 +1023,13 @@ sap.ui.define(
         } catch (error) {
           MessageToast.show('Error');
         } finally {
-          this.byId("idTruckTypeTable").getBinding("items").refresh();
+          this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
         }
       },
 
-      /**Clearing Vehicle Editing Values */
-      idTruckTypeTable: function () {
+      /**Clearing Container Editing Values */
+      idContainerTypeTable: function () {
         this.byId("editTruckTypeInput").setValue(""); // Set to empty string
         this.byId("editLengthInput").setValue(""); // Set to empty string
         this.byId("editWidthInput").setValue(""); // Set to empty string
@@ -1340,8 +1256,8 @@ sap.ui.define(
           console.log("Overall Total Volume:", overallTotalVolume);
           console.log("Overall Total Volume:", overallTotalWeight);
 
-          // Load truck details
-          await this.onTruckDetailsLoad().then(Trucks => {
+          // Load Container details
+          await this.onContainerDetailsLoad().then(Trucks => {
             let requiredTrucks = [];
             Trucks.forEach(truck => {
               if (!oSelectedKey || truck.truckType === oSelectedKey) {
@@ -1395,8 +1311,8 @@ sap.ui.define(
         }
       },
 
-      /** Truck Details reading */
-      onTruckDetailsLoad: function () {
+      /** Container Details reading */
+      onContainerDetailsLoad: function () {
         return new Promise((resolve, reject) => {
           const oPath = "/TruckTypes";
           const oModel = this.getView().getModel("ModelV2");
@@ -1412,17 +1328,17 @@ sap.ui.define(
         });
       },
 
-      /**Loading Required Trucks */
+      /**Loading Required Container */
 
       onLoadRequiredTrucks: async function () {
-        if (!this.oReqTruckDialog) {
-          this.oReqTruckDialog = await this.loadFragment("RequiredTruck");
+        if (!this.oReqContainerDialog) {
+          this.oReqContainerDialog = await this.loadFragment("RequiredContainer");
         }
-        this.oReqTruckDialog.setModel(this.getView().getModel("resultModel"), "resultModel")
+        this.oReqContainerDialog.setModel(this.getView().getModel("resultModel"), "resultModel")
         // Get the count of trucks
         const products = this.getView().getModel("resultModel").getProperty("/Products");
         const productCount = products ? products.length : 0;
-        this.oReqTruckDialog.open();
+        this.oReqContainerDialog.open();
       },
 
       onTruckDialogClose: function () {
@@ -1430,7 +1346,7 @@ sap.ui.define(
       },
       MoveToNextScreen: function () {
         const oRouter = UIComponent.getRouterFor(this);
-        oRouter.navTo("ReqTruck");
+        oRouter.navTo("ManuvalSimulation");
       },
       /**Filtering Based on Material number */
       onLiveBinNumberTAble: function (oEvent) {
@@ -2188,5 +2104,6 @@ sap.ui.define(
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
 
+   
     });
   });
