@@ -4,7 +4,7 @@
     xmlns="sap.m"
 >
     <Dialog
-        id="idEditInssAddEquipmentDialog"
+        id="idEditContainerDialog"
         resizable="true"
         draggable="true"
         contentWidth="40%"

@@ -5,7 +5,7 @@ sap.ui.define(
     function (Controller) {
         "use strict";
 
-        return Controller.extend("com.app.artihcus.controller.ReqTruck", {
+        return Controller.extend("com.app.artihcus.controller.ManuvalSimulation", {
             onInit: function () {
                 this._validateDependencies();
                 this._loadDependencies();
