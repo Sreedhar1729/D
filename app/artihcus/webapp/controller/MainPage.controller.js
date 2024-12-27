@@ -737,8 +737,8 @@ sap.ui.define(
           }
           return color;
         })();
-        const oPayloadModel = this.getView().getModel("ProductModel"),
-          oPayload = oPayloadModel.getProperty("/"),
+        const oPayloadModel = this.getView().getModel("CombinedModel"),
+          oPayload = oPayloadModel.getProperty("/Product"),
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
@@ -812,7 +812,7 @@ sap.ui.define(
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
-          this.getView().getModel("ProductModel").setProperty("/", {}) // clear data after successful creation
+          this.getView().getModel("CombinedModel").setProperty("/Product", {}) // clear data after successful creation
           // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
@@ -827,8 +827,8 @@ sap.ui.define(
 
       /**Clearing Properties after creation */
       ClearingModel: function () {
-        const oPayloadModel = this.getView().getModel("ProductModel");
-        oPayloadModel.setProperty("/", {
+        const oPayloadModel = this.getView().getModel("CombinedModel");
+        oPayloadModel.setProperty("/Product", {
           sapProductno: "",
           length: "",
           width: "",
