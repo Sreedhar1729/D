@@ -1027,7 +1027,6 @@ sap.ui.define(
           truckWeight: this.byId("editTruckWeightInput").getValue(),
           capacity: this.byId("editCapacityInput").getValue()
         };
-        const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         const truckType = this.byId("editTruckTypeInput").getValue();
