@@ -54,41 +54,7 @@ sap.ui.define(
 
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
-        /**Constructing Product Model and set the model to the view */
-        // const oJsonModel = new JSONModel({
-        //   sapProductno: "",
-        //   length: "",
-        //   width: "",
-        
-        //   height: "",
-        //   volume: "",
-        //   uom: "",
-        //   vuom: "",
-        //   wuom: "",
-        //   muom: "",
-        //   mCategory: "",
-        //   description: "",
-        //   EAN: "",
-        //   weight: "",
-        //   color: ""
-        // })
-        // this.getView().setModel(oJsonModel, "ProductModel");
 
-        // /**Constructing JSON Model and set the model to the view*/
-        // const oJsonModelVeh = new JSONModel({
-        //   truckType: "",
-        //   length: "",
-        //   width: "",
-        //   height: "",
-        //   uom: "",
-        //   tvuom: "M³",
-        //   tuom: "M",
-        //   volume: "",
-        //   truckWeight: "",
-        //   capacity: "",
-        //   freezed: "",
-        // });
-        // this.getView().setModel(oJsonModelVeh, "VehModel");
 
         // Constructing a combined JSON Model
         const oCombinedJsonModel = new JSONModel({
@@ -125,7 +91,17 @@ sap.ui.define(
 
         // Set the combined model to the view
         this.getView().setModel(oCombinedJsonModel, "CombinedModel")
+        const oJsonModelCal = new JSONModel({
 
+          TotalQuantity: "",
+          TotalVolume: "",
+          TotalWeight: "",
+          RemainingCapacity: "",
+        });
+        this.getView().setModel(oJsonModelCal, "Calculation");
+        const chartDataModel = new sap.ui.model.json.JSONModel({ chartData: [] });
+        const calculationModel = new sap.ui.model.json.JSONModel();
+        this.getView().setModel(chartDataModel, "ChartData");
       },
       
       _createGenericTile: async function () {
@@ -410,14 +386,14 @@ sap.ui.define(
 
 
 
-      onPressGenericTilePress: function () {
+      // onPressGenericTilePress: function () {
 
-        var oWizard = this.byId("idWizardIn_simulate");
-        var oCurrentStep = oWizard.getCurrentStep();
+      //   var oWizard = this.byId("idWizardIn_simulate");
+      //   var oCurrentStep = oWizard.getCurrentStep();
 
-        oWizard.nextStep();
+      //   oWizard.nextStep();
 
-      },
+      // },
 
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
@@ -1712,22 +1688,22 @@ sap.ui.define(
         debugger;
         var oWizard = this.byId("idWizardIn_simulate");
         var oCurrentStep = oWizard.getCurrentStep();
-
+ 
         oWizard.nextStep();
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
-
-
-
-
+ 
+ 
+ 
+ 
         // Reinitialize the 3D scene
         this._init3DScene();
-
+ 
         // Fetch dimensions based on truck type
         const oModel = this.getOwnerComponent().getModel("ModelV2");
         const sPath = "/TruckTypes";
         const oFilter = new Filter("truckType", FilterOperator.EQ, header);
-
+ 
         oModel.read(sPath, {
           filters: [oFilter],
           success: function (odata) {
@@ -1735,7 +1711,7 @@ sap.ui.define(
               const height = parseFloat(odata.results[0].height);
               const length = parseFloat(odata.results[0].length);
               const width = parseFloat(odata.results[0].width);
-
+ 
               // Create a new container
               this._createContainer(height, length, width);
             } else {
@@ -1747,6 +1723,7 @@ sap.ui.define(
           }
         });
       },
+ 
 
 
       onPressAddProductInSimulate: async function () {
