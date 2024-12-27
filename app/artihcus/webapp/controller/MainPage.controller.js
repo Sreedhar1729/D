@@ -1872,7 +1872,7 @@ sap.ui.define(
           console.error("Canvas container not found");
           return;
         }
-        this.renderer.setSize(800, 600); // Increase canvas size
+        this.renderer.setSize(800, 540); // Increase canvas size
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.shadowMap.enabled = true;
         canvasContainer.appendChild(this.renderer.domElement);
@@ -2152,6 +2152,12 @@ sap.ui.define(
         // Generate and download the Excel file
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
+      onPressManuvalSimulate:function () {
+        var oRouter = UIComponent.getRouterFor(this);
+        oRouter.navTo("ManuvalSimulation");
+       
+      },
+
 
    
     });

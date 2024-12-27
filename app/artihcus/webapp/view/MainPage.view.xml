@@ -1046,11 +1046,26 @@
                                 title="Simulated Result"
                                 icon="sap-icon://collections-management"
                             >
+                            <Toolbar id="idToolbarInSimulatedResult">
+                                 
+                               
+                             <Button
+                                                id="idManuvalSimulateBtnIn_Simulate"
+                                                press="onPressManuvalSimulate"
+                                                tooltip="ManuvalSimulate"
+                                                text="Manuval simulation"
+                                                icon="sap-icon://collections-management"
+                                             
+                                               
+                                            />
+                                     
+                                    </Toolbar>
                                 <VBox
                                     id="idVBoxInVehicleType1"
                                     wrap="Wrap"
                                     alignContent="Stretch"
                                     alignItems="Stretch"
+                                    class="sapUiTinyMarginTop"
                                 >
                                     <HBox
                                         id="idHBoxInVehicleType1"
