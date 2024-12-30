@@ -9,8 +9,7 @@ type string : String(40);
  
 // for unique fields
 @assert.unique: {
-    sapProductno: [sapProductno],
-    EAN         : [EAN]
+    sapProductno: [sapProductno]
  
 }
  

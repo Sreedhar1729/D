@@ -288,7 +288,7 @@
                                         </Select>
                                         <!-- <Input
                                         id="idServiceInput_InitialView"
-                                        value="{ProductModel>/uom}"
+                                        value="{CombinedModel>/Product/uom}"
                                         placeholder="Enter UOM"
                                         class="customInput"
                                         width="100%"
@@ -877,7 +877,7 @@
                                                 iconFirst="true"
                                                 buttonText="Upload"
                                                 style="Transparent"
-                                                change="onUpload"
+                                                change="onSelectedProductSimulations"
                                             />
                                             <Button
                                                 id="idDownloadBtnIn_Simulate"
