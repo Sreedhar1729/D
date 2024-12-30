@@ -1,6 +1,2 @@
 ID,sapProductno,EAN,length,width,height,volume,vuom,muom,uom,mCategory,description,weight,wuom,quantity,layers,mass,layersHeight,color
-1,sap,0123456789012,10.0,5.0,2.0,100.0,cm,kg,piece,Electronics,"High-quality SAP product with advanced features",1.5,kg,100,5,7.5,15.0,Red
-2,Temp,0987654321098,15.0,10.0,3.0,450.0,cm,g,piece,Furniture,"Stylish and modern furniture piece",10.0,g,50,3,30.0,9.0,Blue
-3,sapProductA,EAN1234567890,7.5,4.5,1.5,250.0,liter,g,piece,Toys,"Fun and educational toy for children",250,g,200,10,25.0,15.0,Yellow
-4,sapProductB,EAN0987654321,20.0,15.0,10.0,600.0,liter,kg,piece,Sports,"Durable sports equipment for outdoor activities",2.5,kg,30,12,30.0,10.0,Grey
-5,sapProductC,EAN1122334455,12.0,8.0,6.0,300.0,liter,g,piece,Kitchen,"Essential kitchen tool for everyday cooking",1.2,liter,150,8,9.6,12.0,Green
+
