@@ -117,16 +117,12 @@
                                 layout="ResponsiveGridLayout"
                                 backgroundDesign="Transparent"
                             >
-
                                 <VBox
                                     class="vboxAdd"
                                     id="idConfigSapSysVbox_InitialView"
                                     visible="true"
                                 >
                                     <HBox id="idhboxDescription">
-
-
-                                 
                                         <Label
                                             id="idLableDescription_InitialView"
                                             text="Product Number:"
@@ -403,6 +399,19 @@
                                 icon="sap-icon://edit"
                             />
                             <Button
+                                id="idBtghcvbnjnHUvbnContentSaveBtn_AHUOBQ"
+                                text="Save"
+                                press="onEditContainer"
+                                visible="false"
+                            />
+                            <Button
+                                id="idBtghcvbnjnHUvbnContentCancelBtn_AHUOBQ"
+                                text="Cancel"
+                                press="onCancelBtnContainer"
+                                icon="sap-icon://decline"
+                                visible="false"
+                            />
+                            <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
                                 text="Delete"
                                 press="onContainerDel"
@@ -592,12 +601,27 @@
                                         icon="sap-icon://add"
                                     /> -->
                                     <Button
-                                        id="idBtghjnHUContentBtn_AHUOBQ"
+                                        id="idEditBtnIcon4_ProductsTable"
                                         text="Edit"
-                                         icon="sap-icon://edit"
+                                        icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
-                                    
                                         tooltip="Edit"
+                                    />
+                                    <Button
+                                        id="idSaveBtnIcon4_ProductsTable"
+                                        text="Save"
+                                        icon="sap-icon://save"
+                                        press="onPressSaveBtn_ProductsDetailsTable"
+                                        tooltip="Save"
+                                        visible="false"
+                                    />
+                                    <Button
+                                        id="idCancelBtnIcon4_ProductsTable"
+                                        text="Cancel"
+                                        icon="sap-icon://decline"
+                                        press="onPressCancelBtnEdit_ProductsDetailsTable"
+                                        tooltip="Cancel"
+                                        visible="false"
                                     />
                                     <Button
                                         id="idBtnProductDescription_AHUOBQ"
@@ -621,7 +645,7 @@
                                         fileType="XLSX,xlsx"
                                         icon="sap-icon://upload"
                                         iconFirst="true"
-                                      style="Transparent"
+                                        style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     />
@@ -712,47 +736,118 @@
                                             id="_ID"
                                             text="{sapProductno}"
                                         />
-                                        <Text
-                                            id="_Iexte8"
-                                            text="{description}"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="_Iexte8"
+                                                text="{description}"
+                                            />
+                                            <Input
+                                                id="idInputdescriptionValue_ProductDetailsUpdate"
+                                                value="{=${description}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
                                         <Text
                                             id="_Iedfxte8"
                                             text="{EAN}"
                                         />
-                                        <Text
-                                            id="_Iext8"
-                                            text="{mCategory}"
-                                        />
-                                        <Text
-                                            id="_Iext89"
-                                            text="{quantity}"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="_Iext8"
+                                                text="{mCategory}"
+                                            />
+                                            <Input
+                                                id="idInputMCatogoryValue_ProductDetailsUpdate"
+                                                value="{=${mCategory}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="_Iext89"
+                                                text="{quantity}"
+                                            />
+                                            <Input
+                                                id="idInputquantityValue_ProductDetailsUpdate"
+                                                value="{=${quantity}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
 
-                                        <Text
-                                            id="_IDGt9"
-                                            text="{length}"
-                                        />
-                                        <Text
-                                            id="_IDG10"
-                                            text="{width}"
-                                        />
-                                        <Text
-                                            id="_IDG3310"
-                                            text="{height}"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="_IDGt9"
+                                                text="{length}"
+                                            />
+                                            <Input
+                                                id="idInputlengthValue_ProductDetailsUpdate"
+                                                value="{=${length}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="_IDG10"
+                                                text="{width}"
+                                            />
+                                            <Input
+                                                id="idInputwidthValue_ProductDetailsUpdate"
+                                                value="{=${width}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="_IDG3310"
+                                                text="{height}"
+                                            />
+                                            <Input
+                                                id="idInputheightValue_ProductDetailsUpdate"
+                                                value="{=${height}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
                                         <Text
                                             id="_ID23Gt9"
                                             text="{volume}"
                                         />
-                                        <Text
-                                            id="idkjlee"
-                                            text="{uom}"
-                                        />
-                                        <Text
-                                            id="okd"
-                                            text="{weight}"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="idkjlee"
+                                                text="{uom}"
+                                            />
+                                            <ComboBox
+                                                placeholder="UOM..."
+                                                visible="false"
+                                            >
+                                                <core:Item
+                                                    key="M"
+                                                    text="M"
+                                                />
+                                                <core:Item
+                                                    key="CM"
+                                                    text="CM"
+                                                />
+                                            </ComboBox>
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="okd"
+                                                text="{weight}"
+                                            />
+                                            <Input
+                                                id="idInputWeightValue_ProductDetailsUpdate"
+                                                value="{=${weight}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -847,7 +942,6 @@
                                             />
                                             <ToolbarSpacer id="as" />
 
-                                          
                                             <u:FileUploader
                                                 id="EditId"
                                                 sameFilenameAllowed="true"
@@ -867,7 +961,7 @@
                                                 text="Delete"
                                                 icon="sap-icon://delete"
                                             />
-                                              <u:FileUploader
+                                            <u:FileUploader
                                                 id="FileUploaderId"
                                                 sameFilenameAllowed="true"
                                                 iconOnly="false"
@@ -1059,7 +1153,6 @@
                                         wrap="Wrap"
                                         fitContainer="true"
                                         class="sapUiResponsoiveMargin"
-                                        
                                     >
                                         <HBox
                                             id="idHBoxInVehicleType3"
@@ -1074,10 +1167,7 @@
                                             />
                                         </HBox>
                                         <!-- <Label id="idLabel1EmptyLabel" width="70%" ></Label> -->
-                                        <VBox
-                                            id="idHBoxInVehicleType5"
-                                          
-                                        >
+                                        <VBox id="idHBoxInVehicleType5">
                                             <suite:ChartContainer
                                                 id="chartContainer"
                                                 width="100%"
@@ -1085,7 +1175,6 @@
                                                 <suite:content>
                                                     <suite:ChartContainerContent
                                                         id="chartContainerContent"
-                                                        
                                                     >
                                                         <suite:content>
                                                             <viz:VizFrame
@@ -1099,12 +1188,11 @@
                                                                   dataLabel: { visible: true }
                                                                                            }
                                                                                                     }"
-                                                               
                                                             >
                                                                 <viz:dataset>
-                                                                    <viz.data:FlattenedDataset  data="{ChartData>/chartData}"
+                                                                    <viz.data:FlattenedDataset
+                                                                        data="{ChartData>/chartData}"
                                                                     >
-                                                                    
                                                                         <viz.data:dimensions
                                                                         >
                                                                             <viz.data:DimensionDefinition

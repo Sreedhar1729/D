@@ -59,7 +59,7 @@ sap.ui.define(
         //   sapProductno: "",
         //   length: "",
         //   width: "",
-        
+
         //   height: "",
         //   volume: "",
         //   uom: "",
@@ -127,7 +127,7 @@ sap.ui.define(
         this.getView().setModel(oCombinedJsonModel, "CombinedModel")
 
       },
-      
+
       _createGenericTile: async function () {
 
         console.log("Called")
@@ -914,8 +914,8 @@ sap.ui.define(
         try {
           await this.createData(oModel, oPayload, oPath);
           this.getView().getModel("CombinedModel"),
-          oPayloadModel.setProperty("/Vehicle",{}),
-          this.byId("idContainerTypeTable").getBinding("items").refresh();
+            oPayloadModel.setProperty("/Vehicle", {}),
+            this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idFreezedInput").setSelectedKey("");
           this.byId("idContainerTypeUOM").setSelectedKey("");
@@ -959,9 +959,9 @@ sap.ui.define(
           this.getView().byId("idContainerTypeTable").getBinding("items").refresh();
           MessageToast.show('Successfully Deleted')
         } catch (error) {
-          if(error){
-          MessageBox.error('Error Occurs');
-          return;
+          if (error) {
+            MessageBox.error('Error Occurs');
+            return;
           }
         }
       },
@@ -1063,27 +1063,178 @@ sap.ui.define(
         this.byId("editCapacityInput").setValue("");
       },
 
-      /**Editing Product Details */
-      onPressEditInProductsTable: async function () {
-        var oSelectedItem = this.byId("ProductsTable").getSelectedItem();
-        if (!oSelectedItem) {
-          MessageBox.information("Please select at least one Row for edit!");
+      /**Editing Product Details  for fragment*/
+      // onPressEditInProductsTable: async function () {
+      //   var oSelectedItem = this.byId("ProductsTable").getSelectedItem();
+      //   if (!oSelectedItem) {
+      //     MessageBox.information("Please select at least one Row for edit!");
+      //     return;
+      //   }
+      //   const oData = oSelectedItem.getBindingContext().getObject();
+      //   await this.oOpenProductEdit();
+      //   this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
+      //   this.byId("editDescriptionInput").setValue(oData.description); // Description
+      //   this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
+      //   this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
+      //   this.byId("editproLengthInput").setValue(oData.length); // Length
+      //   this.byId("editprodWidthInput").setValue(oData.width); // Width
+      //   this.byId("editprodHeightInput").setValue(oData.height); // Height
+      //   // this.byId("editVolumeInput").setValue(oData.volume); // Volume
+      //   this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
+      //   this.byId("editWeightInput").setValue(oData.weight); // Weight
+      //   this.byId("editQuantityInput").setValue(oData.quantity);
+      // },
+  /**Editing Product Details for editable table */
+      onPressEditInProductsTable: function () {
+        debugger
+        var oTable = this.byId("ProductsTable");
+        var aSelectedItem = oTable.getSelectedItems();
+
+        if (aSelectedItem.length === 0) {
+          sap.m.MessageToast.show("Please select atleast one row to edit.");
           return;
         }
-        const oData = oSelectedItem.getBindingContext().getObject();
-        await this.oOpenProductEdit();
-        this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
-        this.byId("editDescriptionInput").setValue(oData.description); // Description
-        this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
-        this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
-        this.byId("editproLengthInput").setValue(oData.length); // Length
-        this.byId("editprodWidthInput").setValue(oData.width); // Width
-        this.byId("editprodHeightInput").setValue(oData.height); // Height
-        // this.byId("editVolumeInput").setValue(oData.volume); // Volume
-        this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
-        this.byId("editWeightInput").setValue(oData.weight); // Weight
-        this.byId("editQuantityInput").setValue(oData.quantity);
+        if (aSelectedItem.length > 1) {
+          sap.m.MessageToast.show("Please select only one row to edit.");
+          return;
+        }
+        this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
+        this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
+        this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
+
+        var oSelectedItem = aSelectedItem[0];
+        var aCells = oSelectedItem.getCells();
+
+        this.pastDescription = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
+        this.pastMCategory = aCells[3].getItems()[0].getText();
+        this.pastQuantity = aCells[4].getItems()[0].getText();
+        this.pastLength = aCells[5].getItems()[0].getText();
+        this.pastWidth = aCells[6].getItems()[0].getText();
+        this.pastHeight = aCells[7].getItems()[0].getText();
+        this.pastUOM = aCells[9].getItems()[0].getText();
+        this.pastWeight = aCells[10].getItems()[0].getText();
+        // Loop through selected items
+        aSelectedItem.forEach(function (oItem) {
+          var aCells = oItem.getCells();
+
+          // Loop through the cells to find HBox elements
+          aCells.forEach(function (oCell) {
+            if (oCell.isA("sap.m.HBox")) {
+              var aChildren = oCell.getItems();
+
+              if (aChildren.length === 2) {
+                aChildren[0].setVisible(false);
+                aChildren[1].setVisible(true);
+              }
+            }
+          });
+        });
       },
+
+
+      onPressCancelBtnEdit_ProductsDetailsTable: function () {
+        debugger;
+        var oTable = this.byId("ProductsTable");
+        var aSelectedItem = oTable.getSelectedItems();
+
+        var oSelectedItem = aSelectedItem[0];
+        var aCells = oSelectedItem.getCells();
+
+        // Restore past values to the corresponding cells
+        aCells[1].getItems()[0].setText(this.pastDescription);
+        aCells[3].getItems()[0].setText(this.pastMCategory);
+        aCells[4].getItems()[0].setText(this.pastQuantity);
+        aCells[5].getItems()[0].setText(this.pastLength);
+        aCells[6].getItems()[0].setText(this.pastWidth);
+        aCells[7].getItems()[0].setText(this.pastHeight);
+        aCells[9].getItems()[0].setText(this.pastUOM);
+        aCells[10].getItems()[0].setText(this.pastWeight);
+
+        // Toggle visibility back to original state
+        aCells.forEach(function (oCell) {
+          if (oCell.isA("sap.m.HBox")) {
+            var aChildren = oCell.getItems();
+            if (aChildren.length === 2) {
+              aChildren[0].setVisible(true);  // Show text
+              aChildren[1].setVisible(false); // Hide input
+            }
+          }
+        });
+        this.byId("ProductsTable").getBinding("items").refresh();
+        // Toggle button visibility
+        this.byId("idEditBtnIcon4_ProductsTable").setVisible(true);
+        this.byId("idSaveBtnIcon4_ProductsTable").setVisible(false);
+        this.byId("idCancelBtnIcon4_ProductsTable").setVisible(false);
+        sap.m.MessageToast.show("Canceled editing of a record!");
+      },
+
+      onsaveContainer: function () {
+        var oTable = this.byId("ProductsTable");
+        var aSelectedItems = oTable.getSelectedItems();
+
+        if (aSelectedItems.length === 0) {
+          sap.m.MessageToast.show("No row selected for saving.");
+          return;
+        }
+
+        // Loop through selected items to save changes
+        aSelectedItems.forEach(function (oItem) {
+          var aCells = oItem.getCells();
+
+          // Loop through cells to find HBox elements and save values
+          aCells.forEach(function (oCell) {
+            if (oCell.isA("sap.m.HBox")) {
+              var aChildren = oCell.getItems();
+
+              if (aChildren.length === 2) {
+                // Get value from Input field (second child)
+                var oInputField = aChildren[1]; // Assuming it's an Input field
+                var newValue = oInputField.getValue();
+
+                // Here you would typically update your model or data source with newValue
+                // Example: updateModel(oItem.getBindingContext().getPath(), { property: newValue });
+              }
+            }
+          });
+        });
+
+        // Optionally, reset UI elements after saving
+        this.onResetEditingState();
+      },
+
+      onResetEditingState: function () {
+        // Enable Edit button again
+        this.byId("idBtghjnHUContentBtn_AHUOBQ").setEnabled(true);
+
+        // Hide Save and Cancel buttons
+        this.byId("idsaveContentBtn_AHUOBQ").setVisible(false);
+        this.byId("idcancelntentBtn_AHUOBQ").setVisible(false);
+
+        // Reset visibility of input fields back to original state
+        var oTable = this.byId("ProductsTable");
+        var aItems = oTable.getItems();
+
+        aItems.forEach(function (oItem) {
+          var aCells = oItem.getCells();
+
+          aCells.forEach(function (oCell) {
+            if (oCell.isA("sap.m.HBox")) {
+              var aChildren = oCell.getItems();
+
+              if (aChildren.length === 2) {
+                // Show Text again and hide Input field
+                aChildren[0].setVisible(true);
+                aChildren[1].setVisible(false);
+              }
+            }
+          });
+        });
+      },
+
+
+
+
+
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
         const updatedData = {
@@ -1942,144 +2093,144 @@ sap.ui.define(
         let currentY = 0;
         const positionMap = []; // Reset position map
         const chartData = [];
-    
+
         let totalQuantity = 0;
         let totalVolume = 0;
         let totalWeight = 0;
-    
+
         const containerMaxVolume = containerHeight * containerLength * containerWidth;
         const containerMaxWeight = 1000; // Example max weight in kg
-    
+
         selectedProducts.forEach(product => {
-            const SelectedQuantity = parseInt(product.SelectedQuantity);
-            const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-            const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-            const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-            const productColor = product.Productno.color;
-            const productWeight = parseFloat(product.Productno.weight);
-            const productName = product.Productno.description;
-    
-            let totalChartVolume = 0;
-            let totalChartWeight = 0;
-    
-            for (let i = 0; i < SelectedQuantity; i++) {
-                let isOverlap = true;
-    
-                while (isOverlap) {
-                    // Reset positions when bounds are reached
-                    if (currentX + productLength > containerLength / 2) {
-                        currentX = -containerLength / 2;
-                        currentZ += productWidth;
-    
-                        if (currentZ + productWidth > containerWidth / 2) {
-                            currentZ = -containerWidth / 2;
-                            currentY += productHeight;
-                        }
-                    }
-    
-                    // Check for overlaps
-                    isOverlap = positionMap.some(position => (
-                        currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                        currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-                        currentY < position.yTop
-                    ));
-    
-                    if (isOverlap) {
-                        currentX += productLength; // Adjust position to avoid overlap
-                    }
+          const SelectedQuantity = parseInt(product.SelectedQuantity);
+          const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+          const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+          const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+          const productColor = product.Productno.color;
+          const productWeight = parseFloat(product.Productno.weight);
+          const productName = product.Productno.description;
+
+          let totalChartVolume = 0;
+          let totalChartWeight = 0;
+
+          for (let i = 0; i < SelectedQuantity; i++) {
+            let isOverlap = true;
+
+            while (isOverlap) {
+              // Reset positions when bounds are reached
+              if (currentX + productLength > containerLength / 2) {
+                currentX = -containerLength / 2;
+                currentZ += productWidth;
+
+                if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2;
+                  currentY += productHeight;
                 }
-    
-                if (!isOverlap) {
-                    // Create 3D product representation
-                    const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-                    const productMaterial = new THREE.MeshStandardMaterial({
-                        color: new THREE.Color(productColor),
-                        metalness: 0.5,
-                        roughness: 0.5
-                    });
-    
-                    const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-                    productMesh.position.set(
-                        currentX + productLength / 2,
-                        currentY + productHeight / 2,
-                        currentZ + productWidth / 2
-                    );
-                    this.scene.add(productMesh);
-    
-                    // Add wireframe for visualization
-                    const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-                    const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-                    const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-                    edges.position.copy(productMesh.position);
-                    this.scene.add(edges);
-    
-                    // Update position map
-                    positionMap.push({
-                        xStart: currentX,
-                        xEnd: currentX + productLength,
-                        zStart: currentZ,
-                        zEnd: currentZ + productWidth,
-                        yTop: currentY + productHeight
-                    });
-    
-                    totalQuantity++;
-                    const productVolume = productLength * productHeight * productWidth;
-                    totalVolume += productVolume;
-                    totalWeight += productWeight;
-                    totalChartVolume += productVolume;
-                    totalChartWeight += productWeight;
-    
-                    currentX += productLength; // Move to the next position
-                }
+              }
+
+              // Check for overlaps
+              isOverlap = positionMap.some(position => (
+                currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+                currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                currentY < position.yTop
+              ));
+
+              if (isOverlap) {
+                currentX += productLength; // Adjust position to avoid overlap
+              }
             }
-    
-            // Add product data to chart
-            chartData.push({
-                Name: productName,
-                Packages: SelectedQuantity,
-                Volume: totalChartVolume.toFixed(1),
-                Weight: totalChartWeight.toFixed(1),
-                Color: productColor
-            });
+
+            if (!isOverlap) {
+              // Create 3D product representation
+              const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+              const productMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(productColor),
+                metalness: 0.5,
+                roughness: 0.5
+              });
+
+              const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+              productMesh.position.set(
+                currentX + productLength / 2,
+                currentY + productHeight / 2,
+                currentZ + productWidth / 2
+              );
+              this.scene.add(productMesh);
+
+              // Add wireframe for visualization
+              const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+              const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+              const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              edges.position.copy(productMesh.position);
+              this.scene.add(edges);
+
+              // Update position map
+              positionMap.push({
+                xStart: currentX,
+                xEnd: currentX + productLength,
+                zStart: currentZ,
+                zEnd: currentZ + productWidth,
+                yTop: currentY + productHeight
+              });
+
+              totalQuantity++;
+              const productVolume = productLength * productHeight * productWidth;
+              totalVolume += productVolume;
+              totalWeight += productWeight;
+              totalChartVolume += productVolume;
+              totalChartWeight += productWeight;
+
+              currentX += productLength; // Move to the next position
+            }
+          }
+
+          // Add product data to chart
+          chartData.push({
+            Name: productName,
+            Packages: SelectedQuantity,
+            Volume: totalChartVolume.toFixed(1),
+            Weight: totalChartWeight.toFixed(1),
+            Color: productColor
+          });
         });
-    
+
         // Calculate remaining volume and weight
         const remainingVolume = containerMaxVolume - totalVolume;
         const remainingWeight = containerMaxWeight - totalWeight;
-    
+
         // Add empty space data to chart
         chartData.push({
-            Name: "Empty",
-            Packages: 0,
-            Volume: remainingVolume.toFixed(1),
-            Weight: 0,
-            Color: "#cccccc" // Gray color for "Empty"
+          Name: "Empty",
+          Packages: 0,
+          Volume: remainingVolume.toFixed(1),
+          Weight: 0,
+          Color: "#cccccc" // Gray color for "Empty"
         });
-    
+
         // Update view models with calculated data
         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
         this.getView().getModel("Calculation").setProperty("/", {
-            TotalQuantity: totalQuantity,
-            TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
-            TotalWeight: `${totalWeight.toFixed(1)} kg`,
-            RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
+          TotalQuantity: totalQuantity,
+          TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+          TotalWeight: `${totalWeight.toFixed(1)} kg`,
+          RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
         });
-    
+
         // Update pie chart visualization
         const oVizFrame = this.getView().byId("idPieChart");
         oVizFrame.setVizProperties({
-            plotArea: {
-                colorPalette: chartData.map(item => item.Color), // Dynamically set colors
-                dataLabel: {
-                    visible: true
-                }
-            },
-            title: {
-                text: "Cargo Volume Breakdown"
+          plotArea: {
+            colorPalette: chartData.map(item => item.Color), // Dynamically set colors
+            dataLabel: {
+              visible: true
             }
+          },
+          title: {
+            text: "Cargo Volume Breakdown"
+          }
         });
-    },
-    
+      },
+
 
 
 
@@ -2153,6 +2304,6 @@ sap.ui.define(
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
 
-   
+
     });
   });

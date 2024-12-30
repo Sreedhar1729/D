@@ -15,7 +15,7 @@
         <beginButton>
             <Button
                 id="_IDGenButton11"
-                text="cancel"
+                text="Cancel"
                 press="oncancelbtn"
             />
         </beginButton>
@@ -24,17 +24,7 @@
                 id="idc1onnecttosapDetailsForm_CS"
                 editable="true"
                 layout="ResponsiveGridLayout"
-                labelSpanXL="4"
-                labelSpanL="4"
-                labelSpanM="4"
-                labelSpanS="12"
-                emptySpanXL="1"
-                emptySpanL="1"
-                emptySpanM="1"
-                emptySpanS="0"
-                columnsXL="2"
-                columnsL="2"
-                columnsM="1"
+                
             >
                 <VBox
                     id="_IDGenVBox22"
@@ -82,7 +72,7 @@
                         id="_IDGenButt22n2"
                         class="sapUiSmallMarginTop"
                         type="Emphasized"
-                        width="100%"
+                        width="90%"
                         text="Login"
                         press="onLoginBtnPressInLoginDialog"
                     />
@@ -90,6 +80,7 @@
                     <HBox
                         id="_IDGenHBo33x2"
                         justifyContent="SpaceBetween"
+                        width="90%"
                     >
                         <CheckBox
                             id="_IDGenChe22ckBox"
