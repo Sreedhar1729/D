@@ -651,7 +651,7 @@
                                         text="UUID"
                                     />
                                 </Column>
-                                <Column id="_IDGenn2">
+                                <Column id="_IDGenn2"
                                     class="backgroundColour"
                                 >
 
