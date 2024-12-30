@@ -40,6 +40,19 @@ sap.ui.define([
             var oRouter = UIComponent.getRouterFor(this);
             oRouter.navTo("MainPage");
 
-        }
+        },
+        //  change password fragment loading
+  onChangePasswordBtn: async function () {
+    this.oLoginDialog.close();
+    if (!this.oChangePasswordDialog) {
+      this.oChangePasswordDialog = await this.loadFragment("ChangePassword");
+    }
+    this.oChangePasswordDialog.open();
+  },
+  onPressCancelInChangePassword: function () {
+    this.byId("idChangePasswordDialog").close();
+    this.byId("idconnectsapdialogbox_CS1").open();
+
+  }
     });
 });
