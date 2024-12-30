@@ -173,8 +173,7 @@ sap.ui.define(
               },
               error: function (err) {
                 // Handle error for individual item
-                aErrors.push({ row: `Record number,${index+1} creation failed`, error:`a field ${JSON.parse(err.responseText).error.message.value}`})
-                MessageBox.error(aErrors[0].row + aErrors[0].error);
+                aErrors.push(JSON.parse(err.responseText).error.message.value)
                 console.error("Error creating material:", err);
               }
             })
@@ -1034,7 +1033,7 @@ sap.ui.define(
         } catch (error) {
           console.error(error);
           if (error.statusCode === "400" && JSON.parse(error.responseText).error.message.value.toLowerCase() === "entity already exists") {
-            MessageBox.information("Product Number and EAN Should be unique enter different values")
+            MessageBox.information("Product Number Should be unique enter different value")
           } else {
             MessageToast.show("Facing technical issue");
           }
