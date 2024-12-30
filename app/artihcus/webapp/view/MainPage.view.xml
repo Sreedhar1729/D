@@ -303,18 +303,45 @@
                                     <HBox id="idHboxWeight_InitialView">
                                         <Label
                                             id="idLableWeight_InitialView"
-                                            text="Weight:"
+                                            text="Net Weight:"
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
-                                        <HBox id="idks">
+                                       
                                             <Input
                                                 id="idWeightinput_InitialView"
-                                                value="{CombinedModel>/Product/weight}"
-                                                placeholder="Enter Weight"
-                                                width="70px"
+                                                value="{CombinedModel>/Product/netWeight}"
+                                                placeholder="Enter Net Weight"
+                                                width="100%"
                                             />
-                                            <Select id="uomSelect">
+                                            
+                                       
+                                    </HBox>
+                                    <HBox id="idHboxGWeight_InitialView">
+                                        <Label
+                                            id="idLableGWeight_InitialView"
+                                            text="Gross Weight:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                      
+                                            <Input
+                                                id="idGWeightinput_InitialView"
+                                                value="{CombinedModel>/Product/grossWeight}"
+                                                placeholder="Enter Gross Weight"
+                                                width="100%"
+                                            />
+                                            
+                                       
+                                    </HBox>
+                                     <HBox id="idhboxUom_InitialView">
+                                        <Label
+                                            id="idLableUom_InitialView"
+                                            text="UOM:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                       <Select id="uomSelect" width="174px">
                                                 <items>
                                                     <core:Item
                                                         id="_IDGenIt"
@@ -332,10 +359,16 @@
                                                         text="Grams"
                                                     />
 
-                                                    <!-- Add more UOM options as needed -->
+                                                   
                                                 </items>
                                             </Select>
-                                        </HBox>
+                                        <!-- <Input
+                                        id="idServiceInput_InitialView"
+                                        value="{CombinedModel>/Product/uom}"
+                                        placeholder="Enter UOM"
+                                        class="customInput"
+                                        width="100%"
+                                    /> -->
                                     </HBox>
 
                                     <Label id="idEmptyLabel" />
@@ -713,19 +746,25 @@
                                 <Column id="_IDGenC">
                                     <Text
                                         id="_IDGe1"
-                                        text="Volume"
+                                        text="Volume(M³)"
                                     />
                                 </Column>
-                                <Column id="_IDGenC1">
+                                <!-- <Column id="_IDGenC1">
                                     <Text
                                         id="_IDGe21"
                                         text="UOM"
                                     />
-                                </Column>
+                                </Column> -->
                                 <Column id="_IDGenC2">
                                     <Text
                                         id="_IDGe12"
-                                        text="Weight"
+                                        text="Net Weight"
+                                    />
+                                </Column>
+                                 <Column id="id_grossWeight">
+                                    <Text
+                                        id="id_grossWeight_text"
+                                        text="Gross Weight"
                                     />
                                 </Column>
                             </columns>
@@ -763,29 +802,34 @@
                                             text="{quantity}"
                                         />
 
-                                        <Text
+                                       <Text
                                             id="_IDGt9"
-                                            text="{length}"
+                                            text="{= ${length} + ' ' + ${uom} }"
                                         />
+ 
                                         <Text
                                             id="_IDG10"
-                                            text="{width}"
+                                            text="{= ${width} + ' ' + ${uom}}"
                                         />
                                         <Text
                                             id="_IDG3310"
-                                            text="{height}"
+                                            text="{= ${height} + ' ' + ${uom}}"
                                         />
                                         <Text
                                             id="_ID23Gt9"
                                             text="{volume}"
                                         />
-                                        <Text
+                                        <!-- <Text
                                             id="idkjlee"
                                             text="{uom}"
-                                        />
+                                        /> -->
                                         <Text
                                             id="okd"
-                                            text="{weight}"
+                                            text="{= ${netWeight} +' '+${wuom}}"
+                                        />
+                                         <Text
+                                            id="id_grossWeight_cell"
+                                            text="{= ${grossWeight} +' '+${wuom}}"
                                         />
                                     </cells>
                                 </ColumnListItem>
@@ -950,7 +994,13 @@
                                         <Column id="_IDGenColumn5">
                                             <Text
                                                 id="_IDGesdfnText3"
-                                                text="Weight"
+                                                text="Net Weight"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumnGweight">
+                                            <Text
+                                                id="_IDGesdfnText3GW"
+                                                text="Gross Weight"
                                             />
                                         </Column>
                                         <Column id="_IDGenColumn47yu">
@@ -1009,7 +1059,11 @@
                                                 />
                                                 <Text
                                                     id="_IDGenText10"
-                                                    text="{Productno/weight}"
+                                                    text="{Productno/netWeight}"
+                                                />
+                                                 <Text
+                                                    id="id_GrossWeight_cell_simulate"
+                                                    text="{Productno/grossWeight}"
                                                 />
                                                 <Text
                                                     id="_IDGenTe6xt8"
