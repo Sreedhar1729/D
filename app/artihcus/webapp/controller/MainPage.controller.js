@@ -33,6 +33,11 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+
+        // Material upload
+        this.MaterialModel = new JSONModel();
+        this.getView().setModel(this.MaterialModel, "MaterialModel");
+
         this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
@@ -72,7 +77,8 @@ sap.ui.define(
             mCategory: "",
             description: "",
             EAN: "",
-            weight: "",
+            netWeight: "",
+            grossWeight: "",
             color: ""
           },
           Vehicle: {
@@ -104,7 +110,212 @@ sap.ui.define(
         const calculationModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(chartDataModel, "ChartData");
       },
-      
+
+      onbatchUpload: async function (e) {
+        if (!this.oFragment) {
+          this.oFragment = await this.loadFragment("MaterialXlData");
+        }
+        this.oFragment.open();
+        await this._importData(e.getParameter("files") && e.getParameter("files")[0]);
+      },
+
+      _importData: function (file) {
+        var that = this;
+        var excelData = {};
+        if (file && window.FileReader) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {
+              type: 'array'
+            });
+            workbook.SheetNames.forEach(function (sheetName) {
+              // Here is your object for every sheet in workbook
+              excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            });
+            // Setting the data to the local model
+            that.MaterialModel.setData({
+              items: excelData
+            });
+            that.MaterialModel.refresh(true);
+          };
+          reader.onerror = function (ex) {
+            console.log(ex);
+          };
+          reader.readAsArrayBuffer(file);
+        }
+      },
+      onBatchSave: async function () {
+        var that = this;
+        var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
+        var batchChanges = [];
+        var oDataModel = this.getView().getModel("ModelV2");
+        var batchGroupId = "batchCreateGroup";
+        let aErrors = []
+
+                
+        addedProdCodeModel.items.forEach((item,index) => {
+          item.length = String(item.length).trim();
+          item.width = String(item.width).trim();
+          item.height = String(item.height).trim();
+          item.weight = String(item.weight).trim();
+          item.quantity = String(item.quantity).trim();
+          item.volume = String(item.volume).trim();
+
+          // Create individual batch request
+          batchChanges.push(
+            oDataModel.create("/Materials", item, {
+              method: "POST",
+              groupId: batchGroupId, // Specify the batch group ID here
+              success: function (data, response) {
+                // Handle success for individual item
+                // MessageBox.success("Materials created successfully");
+                // You can also perform other operations here based on the success response
+              },
+              error: function (err) {
+                // Handle error for individual item
+                aErrors.push(JSON.parse(err.responseText).error.message.value)
+                console.error("Error creating material:", err);
+              }
+            })
+          );
+        });
+
+        // Now send the batch request using batch group
+        oDataModel.submitChanges({
+          batchGroupId: batchGroupId,
+          success: function (oData, response) {
+            MessageBox.success("Materials batch created successfully");
+            console.log("Batch request submitted successfully", oData);
+            // Perform any final operations if needed after all batch operations succeed
+          },
+          error: function (err) {
+            MessageBox.success("Error creating material batch");
+            console.error("Error in batch request:", err);
+            // Handle any failure in the batch submission (e.g., server issues)
+          }
+        });
+
+        // working
+        // var that = this;
+        // var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
+        // var batchChanges = [];
+        // var oDataModel = this.getView().getModel("ModelV2");
+
+        // var batchGroupId = "batchCreateGroup";
+
+        // // Collect all create operations into the batchChanges array
+        //   addedProdCodeModel.items.forEach(async item => {
+        //   item.length = String(item.length).trim();
+        //   item.width = String(item.width).trim();
+        //   item.height = String(item.height).trim();
+        //   item.weight = String(item.weight).trim();
+        //   item.quantity = String(item.quantity).trim();
+        //   item.volume = String(item.volume).trim();
+
+        //   // Create individual batch request
+        //   await oDataModel.create("/Materials", item, {
+        //     method: "POST",
+        //     groupId: batchGroupId // Specify the batch group ID here
+        //   });
+        // });
+
+
+        // // Submit all changes in the batch
+        // oDataModel.submitChanges({
+        //   groupId: batchGroupId,
+        //   success: function (data, response) {
+        //     MessageBox.show("Batch create operation successful.");
+        //   },
+        //   error: function (e) {
+        //     // Parse the error response and show a meaningful message
+        //     var errorMessage = e.message || "An error occurred";
+        //     MessageBox.show("Error: " + errorMessage);
+        //   }
+        // });
+        if (this.oFragment) {
+          this.oFragment.close();
+          this.byId("ProductsTable").getBinding("items").refresh();
+        }
+      },
+      onClosePressXlData: function () {
+        if (this.oFragment.isOpen()) {
+          this.oFragment.close();
+        }
+      },
+      // _createGenericTile: async function () {
+
+      //   console.log("Called")
+      //   // Get the container where the tile will be placed
+      //   var oTileContainer = this.byId("idVBoxInSelectVehicleType");
+      //   //getting model
+      //   var that = this;
+      //   const oModel = this.getOwnerComponent().getModel("ModelV2"),
+      //     oPath = "/TruckTypes";
+      //   var oObject = {
+      //     "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+      //     "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+      //     "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+      //     "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+      //   }
+      //   try {
+      //     const oSuccessData = await this.readData(oModel, oPath, [])
+      //     oSuccessData.results.forEach(
+      //       function (item) {
+      //         if (item.freezed) {
+      //           var oId = item.truckType + "_f"
+      //           var oImage = oObject[`${item.truckType}F`]
+      //         }
+      //         else {
+      //           var oId = item.truckType
+      //           var oImage = oObject[`${item.truckType}`]
+      //         }
+      //         var oGenericTile = new GenericTile({
+      //           id: `id_generictile_${oId}`,
+      //           class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+      //           header: `${item.truckType}`,   // The tile's header
+      //           width: "150px",    // The tile's width
+
+      //           press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+      //         });
+
+      //         // Create the TileContent control
+      //         var oTileContent = new TileContent({
+      //           id: `id_idTileContent_${oId}`
+      //         });
+
+      //         // Create the ImageContent inside the TileContent
+      //         var oImageContent = new ImageContent({
+      //           id: `id_idImageContentN_${oId}`,
+      //           src: `${oImage}`
+      //         });
+
+      //         // Add the ImageContent to the TileContent
+      //         oTileContent.setContent(oImageContent);
+
+      //         // Add the TileContent to the GenericTile
+      //         oGenericTile.addTileContent(oTileContent);
+
+      //         // Now, add the GenericTile to the container
+      //         oTileContainer.addItem(oGenericTile);
+      //         oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+      //       }
+      //     )
+
+      //   } catch (error) {
+      //     console.log(error)
+      //     MessageToast.show(error)
+      //   }
+
+      //   // Create the GenericTile control dynamically
+
+      // },
+
+
       _createGenericTile: async function () {
 
         console.log("Called")
@@ -762,14 +973,14 @@ sap.ui.define(
         };
 
         const aUserInputs = [
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idWeightinput_InitialView", value: oPayload.weight, regex: /^\d+$/, message: "Weight should be numeric" },
+          { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex:  /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+          { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex:  /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" }
         ]
 
@@ -797,7 +1008,7 @@ sap.ui.define(
         }
         oPayload.muom = 'PC';
         oPayload.vuom = "M³";
-        oPayload.wuom = oSelectedItem1 ? oSelectedItem1 : "";
+        oPayload.wuom = oSelectedItem1;
         var oVolume;
         oPayload.color = randomHexColor
 
@@ -805,7 +1016,12 @@ sap.ui.define(
           // If UOM is in centimeters, convert to meters before calculating
           oVolume = (oPayload.length / 100) * (oPayload.width / 100) * (oPayload.height / 100);
           oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
-        } else {
+        }
+        else if(oPayload.uom === 'mm'){
+          oVolume = (oPayload.length / 1000) * (oPayload.width / 1000) * (oPayload.height / 1000);
+          oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
+        }
+        else {
           // If UOM is in meters, calculate normally in cubic meters
           oVolume = oPayload.length * oPayload.width * oPayload.height;
           oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
@@ -823,7 +1039,7 @@ sap.ui.define(
         } catch (error) {
           console.error(error);
           if (error.statusCode === "400" && JSON.parse(error.responseText).error.message.value.toLowerCase() === "entity already exists") {
-            MessageBox.information("Product Number and EAN Should be unique enter different values")
+            MessageBox.information("Product Number Should be unique enter different value")
           } else {
             MessageToast.show("Facing technical issue");
           }
@@ -906,6 +1122,7 @@ sap.ui.define(
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
         try {
           await this.createData(oModel, oPayload, oPath);
+
           this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
@@ -1005,6 +1222,7 @@ sap.ui.define(
         const oModel = this.getView().getModel("ModelV2");
         const oPath = `/TruckTypes(truckType='${otruckType}',freezed='${ofreezed}')`;
         try {
+
           await this.updateData(oModel, oPayload, oPath);
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
