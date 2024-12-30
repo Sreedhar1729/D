@@ -1,3 +1,4 @@
+
 sap.ui.define(
   [
     "./BaseController",
@@ -32,6 +33,11 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+
+        // Material upload
+        this.MaterialModel = new JSONModel();
+        this.getView().setModel(this.MaterialModel, "MaterialModel");
+
         this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
@@ -103,7 +109,212 @@ sap.ui.define(
         const calculationModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(chartDataModel, "ChartData");
       },
-      
+
+      onbatchUpload: async function (e) {
+        if (!this.oFragment) {
+          this.oFragment = await this.loadFragment("MaterialXlData");
+        }
+        this.oFragment.open();
+        await this._importData(e.getParameter("files") && e.getParameter("files")[0]);
+      },
+
+      _importData: function (file) {
+        var that = this;
+        var excelData = {};
+        if (file && window.FileReader) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {
+              type: 'array'
+            });
+            workbook.SheetNames.forEach(function (sheetName) {
+              // Here is your object for every sheet in workbook
+              excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            });
+            // Setting the data to the local model
+            that.MaterialModel.setData({
+              items: excelData
+            });
+            that.MaterialModel.refresh(true);
+          };
+          reader.onerror = function (ex) {
+            console.log(ex);
+          };
+          reader.readAsArrayBuffer(file);
+        }
+      },
+      onBatchSave: async function () {
+        var that = this;
+        var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
+        var batchChanges = [];
+        var oDataModel = this.getView().getModel("ModelV2");
+        var batchGroupId = "batchCreateGroup";
+        let aErrors = []
+
+                
+        addedProdCodeModel.items.forEach((item,index) => {
+          item.length = String(item.length).trim();
+          item.width = String(item.width).trim();
+          item.height = String(item.height).trim();
+          item.weight = String(item.weight).trim();
+          item.quantity = String(item.quantity).trim();
+          item.volume = String(item.volume).trim();
+
+          // Create individual batch request
+          batchChanges.push(
+            oDataModel.create("/Materials", item, {
+              method: "POST",
+              groupId: batchGroupId, // Specify the batch group ID here
+              success: function (data, response) {
+                // Handle success for individual item
+                // MessageBox.success("Materials created successfully");
+                // You can also perform other operations here based on the success response
+              },
+              error: function (err) {
+                // Handle error for individual item
+                aErrors.push(JSON.parse(err.responseText).error.message.value)
+                console.error("Error creating material:", err);
+              }
+            })
+          );
+        });
+
+        // Now send the batch request using batch group
+        oDataModel.submitChanges({
+          batchGroupId: batchGroupId,
+          success: function (oData, response) {
+            MessageBox.success("Materials batch created successfully");
+            console.log("Batch request submitted successfully", oData);
+            // Perform any final operations if needed after all batch operations succeed
+          },
+          error: function (err) {
+            MessageBox.success("Error creating material batch");
+            console.error("Error in batch request:", err);
+            // Handle any failure in the batch submission (e.g., server issues)
+          }
+        });
+
+        // working
+        // var that = this;
+        // var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
+        // var batchChanges = [];
+        // var oDataModel = this.getView().getModel("ModelV2");
+
+        // var batchGroupId = "batchCreateGroup";
+
+        // // Collect all create operations into the batchChanges array
+        //   addedProdCodeModel.items.forEach(async item => {
+        //   item.length = String(item.length).trim();
+        //   item.width = String(item.width).trim();
+        //   item.height = String(item.height).trim();
+        //   item.weight = String(item.weight).trim();
+        //   item.quantity = String(item.quantity).trim();
+        //   item.volume = String(item.volume).trim();
+
+        //   // Create individual batch request
+        //   await oDataModel.create("/Materials", item, {
+        //     method: "POST",
+        //     groupId: batchGroupId // Specify the batch group ID here
+        //   });
+        // });
+
+
+        // // Submit all changes in the batch
+        // oDataModel.submitChanges({
+        //   groupId: batchGroupId,
+        //   success: function (data, response) {
+        //     MessageBox.show("Batch create operation successful.");
+        //   },
+        //   error: function (e) {
+        //     // Parse the error response and show a meaningful message
+        //     var errorMessage = e.message || "An error occurred";
+        //     MessageBox.show("Error: " + errorMessage);
+        //   }
+        // });
+        if (this.oFragment) {
+          this.oFragment.close();
+          this.byId("ProductsTable").getBinding("items").refresh();
+        }
+      },
+      onClosePressXlData: function () {
+        if (this.oFragment.isOpen()) {
+          this.oFragment.close();
+        }
+      },
+      // _createGenericTile: async function () {
+
+      //   console.log("Called")
+      //   // Get the container where the tile will be placed
+      //   var oTileContainer = this.byId("idVBoxInSelectVehicleType");
+      //   //getting model
+      //   var that = this;
+      //   const oModel = this.getOwnerComponent().getModel("ModelV2"),
+      //     oPath = "/TruckTypes";
+      //   var oObject = {
+      //     "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
+      //     "14FTF": "https://www.searates.com/design/images/apps/load-calculator/20ref.svg",
+      //     "17FT": "https://www.searates.com/design/images/apps/load-calculator/40st.svg",
+      //     "17FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "22FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "22FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg",
+      //     "32FT": "https://www.searates.com/design/images/apps/load-calculator/40hq.svg",
+      //     "32FTF": "https://www.searates.com/design/images/apps/load-calculator/40ref.svg"
+      //   }
+      //   try {
+      //     const oSuccessData = await this.readData(oModel, oPath, [])
+      //     oSuccessData.results.forEach(
+      //       function (item) {
+      //         if (item.freezed) {
+      //           var oId = item.truckType + "_f"
+      //           var oImage = oObject[`${item.truckType}F`]
+      //         }
+      //         else {
+      //           var oId = item.truckType
+      //           var oImage = oObject[`${item.truckType}`]
+      //         }
+      //         var oGenericTile = new GenericTile({
+      //           id: `id_generictile_${oId}`,
+      //           class: "sapUiLargeMarginTop sapUiTinyMarginEnd tileLayout",
+      //           header: `${item.truckType}`,   // The tile's header
+      //           width: "150px",    // The tile's width
+
+      //           press: that.onPressGenericTilePress.bind(that)  // Event handler for press
+      //         });
+
+      //         // Create the TileContent control
+      //         var oTileContent = new TileContent({
+      //           id: `id_idTileContent_${oId}`
+      //         });
+
+      //         // Create the ImageContent inside the TileContent
+      //         var oImageContent = new ImageContent({
+      //           id: `id_idImageContentN_${oId}`,
+      //           src: `${oImage}`
+      //         });
+
+      //         // Add the ImageContent to the TileContent
+      //         oTileContent.setContent(oImageContent);
+
+      //         // Add the TileContent to the GenericTile
+      //         oGenericTile.addTileContent(oTileContent);
+
+      //         // Now, add the GenericTile to the container
+      //         oTileContainer.addItem(oGenericTile);
+      //         oTileContainer.addItem(new Text({ text: "", width: "10Px" }));
+      //       }
+      //     )
+
+      //   } catch (error) {
+      //     console.log(error)
+      //     MessageToast.show(error)
+      //   }
+
+      //   // Create the GenericTile control dynamically
+
+      // },
+
+
       _createGenericTile: async function () {
 
         console.log("Called")
@@ -227,20 +438,44 @@ sap.ui.define(
         }
       },
       onDeletePressInSimulate: async function () {
-        var oModel = this.getOwnerComponent().getModel("ModelV2");
-        await oModel.read("/SelectedProduct", {
-          success: function (oData) {
-            oData.results.forEach((item) => {
-              var sId = item.ID;
-              this.deleteData(oModel, `/SelectedProduct('${sId}')`)
-            })
+        const oModel = this.getView().getModel("ModelV2");
+        const oSelectedItems = this.byId("idAddProductsTableIn_simulate").getSelectedItems();
+        if (!oSelectedItems) {
+          return MessageBox.error("Please select atleast one item for deletion")
+        }
+        oSelectedItems.forEach(ele => {
+          let oPath = ele.getBindingContext().getPath();
+          oModel.remove(oPath, {
+            success: function () {
+              this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+              MessageToast.show("Deleted successfully")
+            }.bind(this), error: function (oError) {
+              this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+              MessageBox.error(oError);
 
-          }.bind(this),
-          error: function () {
 
-          }
-        });
-        this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+            }.bind(this)
+          })
+        })
+
+        // var oModel = this.getOwnerComponent().getModel("ModelV2");
+
+
+        // await oModel.read("/SelectedProduct", {
+        //   success: function (oData) {
+        //     oData.results.forEach(async (item) => {
+        //       var sId = item.ID;
+        //       await this.deleteData(oModel, `/SelectedProduct('${sId}')`)
+        //       this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
+        //       this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
+        //     })
+
+        //   }.bind(this),
+        //   error: function () {
+
+        //   }
+        // });
+
 
       },
 
@@ -656,6 +891,7 @@ sap.ui.define(
           this.oCreateContainerDialog = await this.loadFragment("CreateContainer");
         }
         this.oCreateContainerDialog.open();
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{});
       },
       onCancelInCreateVehicleDialog: function () {
         this.byId("idCreateInContainerDialog").close();
@@ -670,6 +906,8 @@ sap.ui.define(
       },
       onCancelInEditProductDialog: function () {
         this.byId("idEditProductDssialog").close();
+        this.getView().getModel("CombinedModel").setProperty("/Product",{});
+
       },
       // edit  fragment in Add equipment table
       onPressEditInAddEquipmentTable: async function () {
@@ -680,6 +918,7 @@ sap.ui.define(
       },
       onCancelInEditVehicleDialog: function () {
         this.byId("idEditContainerDialog").close();
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
       },
 
       //create dialog in list 
@@ -794,7 +1033,7 @@ sap.ui.define(
         } catch (error) {
           console.error(error);
           if (error.statusCode === "400" && JSON.parse(error.responseText).error.message.value.toLowerCase() === "entity already exists") {
-            MessageBox.information("Product Number and EAN Should be unique enter different values")
+            MessageBox.information("Product Number Should be unique enter different value")
           } else {
             MessageToast.show("Facing technical issue");
           }
@@ -804,19 +1043,8 @@ sap.ui.define(
       /**Clearing Properties after creation */
       ClearingModel: function () {
         const oPayloadModel = this.getView().getModel("CombinedModel");
-        oPayloadModel.setProperty("/Product", {
-          sapProductno: "",
-          length: "",
-          width: "",
-          height: "",
-          volume: "",
-          uom: "",
-          mCategory: "",
-          description: "",
-          EAN: "",
-          weight: "",
-          quantity: ""
-        })
+        oPayloadModel.setProperty("/Product", {})
+
       },
 
       /**Deleting Products */
@@ -851,7 +1079,6 @@ sap.ui.define(
           const truckfilter = new Filter("truckType", FilterOperator.Contains, sQuery),
             capacityfilter = new Filter("capacity", FilterOperator.Contains, sQuery);
           //  freezfilter = new Filter("freezed", FilterOperator.Contains, sQuery);
-
           var allFilter = new Filter([truckfilter, capacityfilter]);
         }
 
@@ -889,8 +1116,8 @@ sap.ui.define(
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
         try {
           await this.createData(oModel, oPayload, oPath);
-          this.getView().getModel("CombinedModel"),
-          oPayloadModel.setProperty("/Vehicle",{}),
+
+          this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idFreezedInput").setSelectedKey("");
@@ -898,6 +1125,7 @@ sap.ui.define(
           MessageToast.show("Successfully Created!");
         } catch (error) {
           this.byId("idFreezedInput").setSelectedKey("");
+          this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
           this.onCancelInCreateVehicleDialog();
           MessageToast.show("Error at the time of creation");
         }
@@ -906,16 +1134,9 @@ sap.ui.define(
       /**Clearing Vehicle Model */
       ClearVeh: function () {
         const oPayloadModel = this.getView().getModel("CombinedModel");
-        oPayloadModel.setProperty("/Vehicle", {
-          truckType: "",
-          length: "",
-          width: "",
-          height: "",
-          uom: "",
-          volume: "",
-          truckWeight: "",
-          capacity: "",
-        })
+
+        oPayloadModel.setProperty("/Vehicle", {})
+
       },
 
       /**Deleting Vehicles */
@@ -935,9 +1156,9 @@ sap.ui.define(
           this.getView().byId("idContainerTypeTable").getBinding("items").refresh();
           MessageToast.show('Successfully Deleted')
         } catch (error) {
-          if(error){
-          MessageBox.error('Error Occurs');
-          return;
+          if (error) {
+            MessageBox.error('Error Occurs');
+            return;
           }
         }
       },
@@ -946,7 +1167,7 @@ sap.ui.define(
       },
 
       /**Editing Container types */
-      onEditContainerContainer: async function () {
+      onEditContainer: async function () {
         var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItem();
         if (!oSelectedItem) {
           MessageBox.information("Please select at least one Row for edit!");
@@ -954,21 +1175,13 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
-        this.byId("editTruckTypeInput").setValue(oData.truckType);
-        this.byId("editLengthInput").setValue(oData.length);
-        this.byId("editWidthInput").setValue(oData.width);
-        this.byId("editHeightInput").setValue(oData.height);
-        this.byId("editTruckWeightInput").setValue(oData.truckWeight);
-        this.byId("editCapacityInput").setValue(oData.capacity);
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",oData);
       },
 
       /**Updading Edited Values */
       onSave: async function () {
-        const currentFreezStatus = this.byId("idContainerTypeTable").getSelectedItem().getBindingContext().getObject().freezed,
-          updatedFreexStatus = this.byId("idSlectOPt").getSelectedKey() === "Yes" ? true : false,
-          oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
-          oView = this.getView();
-
+        const oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
+        oView = this.getView();
         // validations
         const aUserInput = [
           { Id: "idVehInplength", value: oData.length, regex: /^\d+(\.\d+)?$/, message: "Enter length as a numeric value" },
@@ -993,50 +1206,34 @@ sap.ui.define(
             return;
           }
         }
-        let Freezed = this.byId("idSlectOPt").getSelectedKey();
-        if (Freezed === "Select") {
-          MessageBox.information("Please select container type");
-          return;
-        }
 
-        const oPayload = {
-          truckType: oData.truckType,
-          length: oData.length,
-          width: oData.width,
-          height: oData.height,
-          volume: "",
-          truckWeight: this.byId("editTruckWeightInput").getValue(),
-          capacity: this.byId("editCapacityInput").getValue()
-        };
+         const updatedData = oData;
+        const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        const truckType = this.byId("editTruckTypeInput").getValue();
+        const otruckType = oPayload.truckType,
+              ofreezed = oPayload.freezed;
         const oModel = this.getView().getModel("ModelV2");
-        const oPath = `/TruckTypes('${truckType}')`;
+        const oPath = `/TruckTypes(truckType='${otruckType}',freezed='${ofreezed}')`;
         try {
+
           await this.updateData(oModel, oPayload, oPath);
-          this.byId("idTruckTypeTable").getBinding("items").refresh();
+          this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.onClearEditDialog();
+          this.getView().getModel("ModelV2").setProperty("/Vehicle",{})
           MessageToast.show('Successfully Updated');
         } catch (error) {
           MessageToast.show('Error');
         } finally {
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.onClearEditDialog();
-          MessageToast.show('Error');
+          this.getView().getModel("ModelV2").setProperty("/Vehicle",{});
         }
       },
 
-      /**Clearing Container Editing Values */
-      idContainerTypeTable: function () {
-        this.byId("editTruckTypeInput").setValue(""); // Set to empty string
-        this.byId("editLengthInput").setValue(""); // Set to empty string
-        this.byId("editWidthInput").setValue(""); // Set to empty string
-        this.byId("editHeightInput").setValue(""); // Set to empty strin
-        this.byId("editTruckWeightInput").setValue(""); // Set to empty string
-        this.byId("editCapacityInput").setValue("");
+      /**Clearing Vehicle Editing Values */
+      idTruckTypeTable: function () {
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", {})
       },
 
       /**Editing Product Details */
@@ -1048,39 +1245,24 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.oOpenProductEdit();
-        this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
-        this.byId("editDescriptionInput").setValue(oData.description); // Description
-        this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
-        this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
-        this.byId("editproLengthInput").setValue(oData.length); // Length
-        this.byId("editprodWidthInput").setValue(oData.width); // Width
-        this.byId("editprodHeightInput").setValue(oData.height); // Height
-        // this.byId("editVolumeInput").setValue(oData.volume); // Volume
-        this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
-        this.byId("editWeightInput").setValue(oData.weight); // Weight
-        this.byId("editQuantityInput").setValue(oData.quantity);
+        /**Getting the model and setting data */
+        var DummyModel = this.getView().getModel("CombinedModel");
+        DummyModel.setProperty("/Product", oData);
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-        const updatedData = {
-          sapProductno: this.byId("editProductNoInput").getValue(), // SAP Product Number
-          description: this.byId("editDescriptionInput").getValue(), // Description
-          EAN: this.byId("editEANInput").getValue(),          // EAN/UPC Code
-          mCategory: this.byId("editCategoryInput").getValue(),      // Material Category
-          length: this.byId("editproLengthInput").getValue(),        // Length
-          width: this.byId("editprodWidthInput").getValue(),         // Width
-          height: this.byId("editprodHeightInput").getValue(),       // Height
-          volume: "",                                                // Volume (currently set to an empty string)
-          uom: this.byId("editUOMInput").getValue(),                                                   // Unit of Measure (UOM, currently set to an empty string)
-          weight: this.byId("editWeightInput").getValue(),
-          quantity: this.byId("editQuantityInput").getValue()           // Weight
-        };
+          const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        const sapProductno = this.byId("editProductNoInput").getValue();
+        var oID = updatedData.ID;
+        /**If key is missing returns error */
+        if (!oID) {
+          sap.m.MessageBox.error("ID is not Found/Key Missing");
+          return;
+        }
         const oModel = this.getView().getModel("ModelV2");
-        const oPath = `/Materials('${sapProductno}')`;
+        const oPath = `/Materials('${oID}')`;
         try {
           await this.updateData(oModel, oPayload, oPath);
           this.getView().byId("ProductsTable").getBinding("items").refresh();
@@ -1092,21 +1274,10 @@ sap.ui.define(
           this.onClearEditProdDialog();
           MessageToast.show('Error');
         }
-
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.byId("editProductNoInput").setValue(""); // SAP Product Number
-        this.byId("editDescriptionInput").setValue(""); // Description
-        this.byId("editEANInput").setValue(""); // EAN/UPC Code
-        this.byId("editCategoryInput").setValue(""); // Material Category
-        this.byId("editproLengthInput").setValue(""); // Length
-        this.byId("editprodWidthInput").setValue(""); // Width
-        this.byId("editprodHeightInput").setValue(""); // Height
-        // this.byId("editVolumeInput").setValue(""); // Volume (currently commented out)
-        this.byId("editUOMInput").setValue(""); // Unit of Measure (UOM, currently commented out)
-        this.byId("editWeightInput").setValue(""); // Weight
-        this.byId("editQuantityInput").setValue("");
+        this.getView().getModel("CombinedModel").setProperty("/Product",{});
       },
 
       /**Product Simulation */
@@ -1363,14 +1534,13 @@ sap.ui.define(
         oBinding.filter(aFilter);
       },
 
+
       /**For creating n number of products at a time */
       onUploadMaterialCreation: function (e) {
         this._import1(e.getParameter("files") && e.getParameter("files")[0]);
       },
-
       _import1: function (file) {
         var that = this;
-
         if (file && window.FileReader) {
           var reader = new FileReader();
           reader.onload = function (e) {
@@ -1384,10 +1554,9 @@ sap.ui.define(
               excelData = excelData.concat(sheetData); // Combine data from all sheets
             });
 
-            console.log(excelData);
-            // Call createProducts with the parsed excel data
-            that.createProducts(excelData);
+            console.log(excelData)
 
+            that.createProducts(excelData);
             // Refresh the local model if necessary
             that.localModel.refresh(true);
           };
@@ -2057,12 +2226,6 @@ sap.ui.define(
         });
     },
     
-
-
-
-
-
-
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
@@ -2131,5 +2294,120 @@ sap.ui.define(
       },
 
    
+
+      /**logic for material upload and simulation */
+      onSelectedProductSimulations: function (e) {
+        this._ProductUploads(e.getParameter("files") && e.getParameter("files")[0]);
+      },
+      _ProductUploads: function (file) {
+        var that = this;
+        if (file && window.FileReader) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, { type: 'binary' });
+            var excelData = []; // Initialize an array to hold the data
+            workbook.SheetNames.forEach(function (sheetName) {
+              // Convert each sheet to an array of objects
+              const sheetData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+              excelData = excelData.concat(sheetData); // Combine data from all sheets
+            });
+            console.log("Products table data for Simulation:", excelData);
+
+            that.onMaterialRead(excelData);
+          };
+          reader.onerror = function (ex) {
+            console.error("Error reading file:", ex);
+          };
+          reader.readAsBinaryString(file);
+        } else {
+          console.error("No file selected or FileReader not supported.");
+        }
+      },
+      /**Reading products */
+      onMaterialRead: async function (excelData) {
+        const oModel = this.getView().getModel('ModelV2');
+        const oPath = "/Materials";
+        let oFilter = [];
+
+        try {
+          // Fetch product data from the model
+          const oProductData = await this.readData(oModel, oPath, oFilter);
+          console.log("oProduct Data:", oProductData);
+
+          // Extract Productno values from excelData
+          const oTempData = excelData.map(item => item["Productno"]); // Assuming "Productno " has a trailing space
+          console.log("TempData:", oTempData);
+
+          // Extract sapProductno values from fetched product data
+          const oTest = oProductData.results.map(ele => ele.sapProductno);
+          console.log("oTest Data:", oTest);
+
+          // Check if all elements in excelData exist in oTest
+          const allExist = oTempData.every(item => oTest.includes(item));
+          if (!allExist) {
+            return MessageBox.error("Some products do not exist.");
+          }
+
+          // If all products exist, filter IDs based on excelData and include SelectedQuantity
+          const filteredIDs = excelData
+            .filter(item => oTest.includes(item["Productno"])); // Filter based on Productno
+
+          const result = filteredIDs.map(item => {
+            const product = oProductData.results.find(product => product.sapProductno === item["Productno"]);
+            return {
+              ID: product ? product.ID : null, // Get ID if product exists
+              SelectedQuantity: item["SelectedQuantity"] // Get corresponding SelectedQuantity
+            };
+          });
+          this.onCreateSelProduct(result);
+
+          console.log("Filtered IDs with Selected Quantities:", result); // Log the filtered IDs with quantities
+
+        } catch (error) {
+          // Handle errors and display error message
+          MessageBox.error("An error occurred");
+        }
+      },
+
+      /**Creating  selected Products*/
+      onCreateSelProduct: async function (oEvent) {
+        const oModel = this.getView().getModel("ModelV2"),
+          sPath = "/SelectedProduct";
+
+
+        try {
+          // Initialize an empty array for the payload
+          let oPayload = [];
+
+          // Iterate over each element in oEvent
+          oEvent.forEach(ele => {
+            // Log the current element for debugging
+            console.log("Processing element:", ele);
+
+            // Create an object for the payload based on the current element
+            const payloadItem = {
+              Productno_ID: ele.ID, // Adjust property names as necessary
+              SelectedQuantity: String(ele.SelectedQuantity) // Adjust property names as necessary
+            };        // Push the created object into the payload array
+            oPayload.push(payloadItem);
+          });
+          // Log the complete payload for debugging
+          console.log("Payload to be sent:", oPayload);
+          // Create data using the constructed payload
+          await this.createData(oModel, oPayload, sPath);
+          // Refresh the binding of the items in the table
+          this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+          // Show success message
+          MessageToast.show("Created Successfully");
+        } catch (oError) {
+          // Refresh the binding of the items in case of error as well
+          this.byId("idAddProductsTableIn_simulate").getBinding("items").refresh();
+
+          // Show error message
+          MessageBox.error(oError.message || "An error occurred");
+        }
+
+      }
     });
   });
