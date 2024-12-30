@@ -146,95 +146,95 @@ sap.ui.define(
       },
       onBatchSave: async function () {
         var that = this;
-        var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
-        var batchChanges = [];
+        var addedProdCodeModel = this.getView().getModel("MaterialModel").getData();
+        // var batchChanges = [];
         var oDataModel = this.getView().getModel("ModelV2");
         var batchGroupId = "batchCreateGroup";
-        let aErrors = []
+        const oView = this.getView();
 
-                
-        addedProdCodeModel.items.forEach((item,index) => {
-          item.length = String(item.length).trim();
-          item.width = String(item.width).trim();
-          item.height = String(item.height).trim();
-          item.weight = String(item.weight).trim();
-          item.quantity = String(item.quantity).trim();
-          item.volume = String(item.volume).trim();
+        // test
+        // excel Validations
 
-          // Create individual batch request
-          batchChanges.push(
-            oDataModel.create("/Materials", item, {
+        let raisedErrors = []
+        addedProdCodeModel.items.forEach(async (item, index) => {
+
+          const aExcelInputs = [
+            { value: item.sapProductno, regex: null, message: "Enter SAP product number" },
+            { value: item.EAN, regex: null, message: "Please enter EAN" },
+            { value: item.description, regex: null, message: "Enter description" },
+            { value: item.mCategory, regex: null, message: "Enter category" },
+            { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
+            { value: item.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
+            { value: item.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
+            { value: item.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+            { value: item.weight, regex: /^\d+$/, message: "Weight should be numeric" }
+          ]
+          for (let input of aExcelInputs) {
+            let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
+            if (aValidations.length > 0) {
+              raisedErrors.push({ index: index ,errorMsg:aValidations[0]}) // pushning error into empty array
+            }
+          }
+        })
+
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(`Check record number ${error.index + 1} ${error.errorMsg}`) // showing error msg 
+            return;
+          }
+        }
+        // test
+        try {
+          addedProdCodeModel.items.forEach(async (item, index) => {
+            item.length = String(item.length).trim();
+            item.width = String(item.width).trim();
+            item.height = String(item.height).trim();
+            item.weight = String(item.weight).trim();
+            item.quantity = String(item.quantity).trim();
+            item.volume = String(item.volume).trim();
+
+            // Create individual batch request 
+            await oDataModel.create("/Materials", item, {
               method: "POST",
               groupId: batchGroupId, // Specify the batch group ID here
               success: function (data, response) {
-                // Handle success for individual item
-                // MessageBox.success("Materials created successfully");
-                // You can also perform other operations here based on the success response
+                if (addedProdCodeModel.items.length === index + 1) {
+                  MessageBox.success("Materials created successfully");
+                  if (that.oFragment) {
+                    that.oFragment.close();
+                    that.byId("ProductsTable").getBinding("items").refresh();
+                  }
+                }
               },
               error: function (err) {
                 // Handle error for individual item
-                aErrors.push(JSON.parse(err.responseText).error.message.value)
+                if (JSON.parse(err.responseText).error.message.value.toLowerCase() === "entity already exists") {
+                  MessageBox.error("You are trying to upload a material which is already exists");
+                } else {
+                  MessageBox.error("Please check the uploaded file and upload correct data");
+                }
                 console.error("Error creating material:", err);
               }
             })
-          );
-        });
+          });
 
-        // Now send the batch request using batch group
-        oDataModel.submitChanges({
-          batchGroupId: batchGroupId,
-          success: function (oData, response) {
-            MessageBox.success("Materials batch created successfully");
-            console.log("Batch request submitted successfully", oData);
-            // Perform any final operations if needed after all batch operations succeed
-          },
-          error: function (err) {
-            MessageBox.success("Error creating material batch");
-            console.error("Error in batch request:", err);
-            // Handle any failure in the batch submission (e.g., server issues)
-          }
-        });
-
-        // working
-        // var that = this;
-        // var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
-        // var batchChanges = [];
-        // var oDataModel = this.getView().getModel("ModelV2");
-
-        // var batchGroupId = "batchCreateGroup";
-
-        // // Collect all create operations into the batchChanges array
-        //   addedProdCodeModel.items.forEach(async item => {
-        //   item.length = String(item.length).trim();
-        //   item.width = String(item.width).trim();
-        //   item.height = String(item.height).trim();
-        //   item.weight = String(item.weight).trim();
-        //   item.quantity = String(item.quantity).trim();
-        //   item.volume = String(item.volume).trim();
-
-        //   // Create individual batch request
-        //   await oDataModel.create("/Materials", item, {
-        //     method: "POST",
-        //     groupId: batchGroupId // Specify the batch group ID here
-        //   });
-        // });
-
-
-        // // Submit all changes in the batch
-        // oDataModel.submitChanges({
-        //   groupId: batchGroupId,
-        //   success: function (data, response) {
-        //     MessageBox.show("Batch create operation successful.");
-        //   },
-        //   error: function (e) {
-        //     // Parse the error response and show a meaningful message
-        //     var errorMessage = e.message || "An error occurred";
-        //     MessageBox.show("Error: " + errorMessage);
-        //   }
-        // });
-        if (this.oFragment) {
-          this.oFragment.close();
-          this.byId("ProductsTable").getBinding("items").refresh();
+          // Now send the batch request using batch group
+          await oDataModel.submitChanges({
+            batchGroupId: batchGroupId,
+            success: function (oData, response) {
+              // MessageBox.success("Materials batch created successfully");
+              console.log("Batch request submitted", oData);
+              // Perform any final operations if needed after all batch operations succeed
+            },
+            error: function (err) {
+              MessageBox.success("Error creating material batch");
+              console.error("Error in batch request:", err);
+              // Handle any failure in the batch submission (e.g., server issues)
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          MessageToast.show("Facing technical issue")
         }
       },
       onClosePressXlData: function () {
@@ -891,7 +891,7 @@ sap.ui.define(
           this.oCreateContainerDialog = await this.loadFragment("CreateContainer");
         }
         this.oCreateContainerDialog.open();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{});
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", {});
       },
       onCancelInCreateVehicleDialog: function () {
         this.byId("idCreateInContainerDialog").close();
@@ -906,7 +906,7 @@ sap.ui.define(
       },
       onCancelInEditProductDialog: function () {
         this.byId("idEditProductDssialog").close();
-        this.getView().getModel("CombinedModel").setProperty("/Product",{});
+        this.getView().getModel("CombinedModel").setProperty("/Product", {});
 
       },
       // edit  fragment in Add equipment table
@@ -918,7 +918,7 @@ sap.ui.define(
       },
       onCancelInEditVehicleDialog: function () {
         this.byId("idEditContainerDialog").close();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", {})
       },
 
       //create dialog in list 
@@ -1118,7 +1118,7 @@ sap.ui.define(
           await this.createData(oModel, oPayload, oPath);
 
           this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
-          this.byId("idContainerTypeTable").getBinding("items").refresh();
+            this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idFreezedInput").setSelectedKey("");
           this.byId("idContainerTypeUOM").setSelectedKey("");
@@ -1126,7 +1126,7 @@ sap.ui.define(
         } catch (error) {
           this.byId("idFreezedInput").setSelectedKey("");
           this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
-          this.onCancelInCreateVehicleDialog();
+            this.onCancelInCreateVehicleDialog();
           MessageToast.show("Error at the time of creation");
         }
       },
@@ -1175,13 +1175,13 @@ sap.ui.define(
         }
         const oData = oSelectedItem.getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",oData);
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", oData);
       },
 
       /**Updading Edited Values */
       onSave: async function () {
         const oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
-        oView = this.getView();
+          oView = this.getView();
         // validations
         const aUserInput = [
           { Id: "idVehInplength", value: oData.length, regex: /^\d+(\.\d+)?$/, message: "Enter length as a numeric value" },
@@ -1207,12 +1207,12 @@ sap.ui.define(
           }
         }
 
-         const updatedData = oData;
+        const updatedData = oData;
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         const otruckType = oPayload.truckType,
-              ofreezed = oPayload.freezed;
+          ofreezed = oPayload.freezed;
         const oModel = this.getView().getModel("ModelV2");
         const oPath = `/TruckTypes(truckType='${otruckType}',freezed='${ofreezed}')`;
         try {
@@ -1220,14 +1220,14 @@ sap.ui.define(
           await this.updateData(oModel, oPayload, oPath);
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.getView().getModel("ModelV2").setProperty("/Vehicle",{})
+          this.getView().getModel("ModelV2").setProperty("/Vehicle", {})
           MessageToast.show('Successfully Updated');
         } catch (error) {
           MessageToast.show('Error');
         } finally {
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.getView().getModel("ModelV2").setProperty("/Vehicle",{});
+          this.getView().getModel("ModelV2").setProperty("/Vehicle", {});
         }
       },
 
@@ -1251,7 +1251,7 @@ sap.ui.define(
       },
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-          const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
+        const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
@@ -1277,7 +1277,7 @@ sap.ui.define(
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.getView().getModel("CombinedModel").setProperty("/Product",{});
+        this.getView().getModel("CombinedModel").setProperty("/Product", {});
       },
 
       /**Product Simulation */
@@ -1857,22 +1857,22 @@ sap.ui.define(
         debugger;
         var oWizard = this.byId("idWizardIn_simulate");
         var oCurrentStep = oWizard.getCurrentStep();
- 
+
         oWizard.nextStep();
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
- 
- 
- 
- 
+
+
+
+
         // Reinitialize the 3D scene
         this._init3DScene();
- 
+
         // Fetch dimensions based on truck type
         const oModel = this.getOwnerComponent().getModel("ModelV2");
         const sPath = "/TruckTypes";
         const oFilter = new Filter("truckType", FilterOperator.EQ, header);
- 
+
         oModel.read(sPath, {
           filters: [oFilter],
           success: function (odata) {
@@ -1880,7 +1880,7 @@ sap.ui.define(
               const height = parseFloat(odata.results[0].height);
               const length = parseFloat(odata.results[0].length);
               const width = parseFloat(odata.results[0].width);
- 
+
               // Create a new container
               this._createContainer(height, length, width);
             } else {
@@ -1892,7 +1892,7 @@ sap.ui.define(
           }
         });
       },
- 
+
 
 
       onPressAddProductInSimulate: async function () {
@@ -2088,144 +2088,144 @@ sap.ui.define(
         let currentY = 0;
         const positionMap = []; // Reset position map
         const chartData = [];
-    
+
         let totalQuantity = 0;
         let totalVolume = 0;
         let totalWeight = 0;
-    
+
         const containerMaxVolume = containerHeight * containerLength * containerWidth;
         const containerMaxWeight = 1000; // Example max weight in kg
-    
+
         selectedProducts.forEach(product => {
-            const SelectedQuantity = parseInt(product.SelectedQuantity);
-            const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-            const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-            const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-            const productColor = product.Productno.color;
-            const productWeight = parseFloat(product.Productno.weight);
-            const productName = product.Productno.description;
-    
-            let totalChartVolume = 0;
-            let totalChartWeight = 0;
-    
-            for (let i = 0; i < SelectedQuantity; i++) {
-                let isOverlap = true;
-    
-                while (isOverlap) {
-                    // Reset positions when bounds are reached
-                    if (currentX + productLength > containerLength / 2) {
-                        currentX = -containerLength / 2;
-                        currentZ += productWidth;
-    
-                        if (currentZ + productWidth > containerWidth / 2) {
-                            currentZ = -containerWidth / 2;
-                            currentY += productHeight;
-                        }
-                    }
-    
-                    // Check for overlaps
-                    isOverlap = positionMap.some(position => (
-                        currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                        currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-                        currentY < position.yTop
-                    ));
-    
-                    if (isOverlap) {
-                        currentX += productLength; // Adjust position to avoid overlap
-                    }
+          const SelectedQuantity = parseInt(product.SelectedQuantity);
+          const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+          const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+          const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+          const productColor = product.Productno.color;
+          const productWeight = parseFloat(product.Productno.weight);
+          const productName = product.Productno.description;
+
+          let totalChartVolume = 0;
+          let totalChartWeight = 0;
+
+          for (let i = 0; i < SelectedQuantity; i++) {
+            let isOverlap = true;
+
+            while (isOverlap) {
+              // Reset positions when bounds are reached
+              if (currentX + productLength > containerLength / 2) {
+                currentX = -containerLength / 2;
+                currentZ += productWidth;
+
+                if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2;
+                  currentY += productHeight;
                 }
-    
-                if (!isOverlap) {
-                    // Create 3D product representation
-                    const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-                    const productMaterial = new THREE.MeshStandardMaterial({
-                        color: new THREE.Color(productColor),
-                        metalness: 0.5,
-                        roughness: 0.5
-                    });
-    
-                    const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-                    productMesh.position.set(
-                        currentX + productLength / 2,
-                        currentY + productHeight / 2,
-                        currentZ + productWidth / 2
-                    );
-                    this.scene.add(productMesh);
-    
-                    // Add wireframe for visualization
-                    const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-                    const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-                    const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-                    edges.position.copy(productMesh.position);
-                    this.scene.add(edges);
-    
-                    // Update position map
-                    positionMap.push({
-                        xStart: currentX,
-                        xEnd: currentX + productLength,
-                        zStart: currentZ,
-                        zEnd: currentZ + productWidth,
-                        yTop: currentY + productHeight
-                    });
-    
-                    totalQuantity++;
-                    const productVolume = productLength * productHeight * productWidth;
-                    totalVolume += productVolume;
-                    totalWeight += productWeight;
-                    totalChartVolume += productVolume;
-                    totalChartWeight += productWeight;
-    
-                    currentX += productLength; // Move to the next position
-                }
+              }
+
+              // Check for overlaps
+              isOverlap = positionMap.some(position => (
+                currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+                currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                currentY < position.yTop
+              ));
+
+              if (isOverlap) {
+                currentX += productLength; // Adjust position to avoid overlap
+              }
             }
-    
-            // Add product data to chart
-            chartData.push({
-                Name: productName,
-                Packages: SelectedQuantity,
-                Volume: totalChartVolume.toFixed(1),
-                Weight: totalChartWeight.toFixed(1),
-                Color: productColor
-            });
+
+            if (!isOverlap) {
+              // Create 3D product representation
+              const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+              const productMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(productColor),
+                metalness: 0.5,
+                roughness: 0.5
+              });
+
+              const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+              productMesh.position.set(
+                currentX + productLength / 2,
+                currentY + productHeight / 2,
+                currentZ + productWidth / 2
+              );
+              this.scene.add(productMesh);
+
+              // Add wireframe for visualization
+              const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+              const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+              const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              edges.position.copy(productMesh.position);
+              this.scene.add(edges);
+
+              // Update position map
+              positionMap.push({
+                xStart: currentX,
+                xEnd: currentX + productLength,
+                zStart: currentZ,
+                zEnd: currentZ + productWidth,
+                yTop: currentY + productHeight
+              });
+
+              totalQuantity++;
+              const productVolume = productLength * productHeight * productWidth;
+              totalVolume += productVolume;
+              totalWeight += productWeight;
+              totalChartVolume += productVolume;
+              totalChartWeight += productWeight;
+
+              currentX += productLength; // Move to the next position
+            }
+          }
+
+          // Add product data to chart
+          chartData.push({
+            Name: productName,
+            Packages: SelectedQuantity,
+            Volume: totalChartVolume.toFixed(1),
+            Weight: totalChartWeight.toFixed(1),
+            Color: productColor
+          });
         });
-    
+
         // Calculate remaining volume and weight
         const remainingVolume = containerMaxVolume - totalVolume;
         const remainingWeight = containerMaxWeight - totalWeight;
-    
+
         // Add empty space data to chart
         chartData.push({
-            Name: "Empty",
-            Packages: 0,
-            Volume: remainingVolume.toFixed(1),
-            Weight: 0,
-            Color: "#cccccc" // Gray color for "Empty"
+          Name: "Empty",
+          Packages: 0,
+          Volume: remainingVolume.toFixed(1),
+          Weight: 0,
+          Color: "#cccccc" // Gray color for "Empty"
         });
-    
+
         // Update view models with calculated data
         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
         this.getView().getModel("Calculation").setProperty("/", {
-            TotalQuantity: totalQuantity,
-            TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
-            TotalWeight: `${totalWeight.toFixed(1)} kg`,
-            RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
+          TotalQuantity: totalQuantity,
+          TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+          TotalWeight: `${totalWeight.toFixed(1)} kg`,
+          RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
         });
-    
+
         // Update pie chart visualization
         const oVizFrame = this.getView().byId("idPieChart");
         oVizFrame.setVizProperties({
-            plotArea: {
-                colorPalette: chartData.map(item => item.Color), // Dynamically set colors
-                dataLabel: {
-                    visible: true
-                }
-            },
-            title: {
-                text: "Cargo Volume Breakdown"
+          plotArea: {
+            colorPalette: chartData.map(item => item.Color), // Dynamically set colors
+            dataLabel: {
+              visible: true
             }
+          },
+          title: {
+            text: "Cargo Volume Breakdown"
+          }
         });
-    },
-    
+      },
+
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
@@ -2293,7 +2293,7 @@ sap.ui.define(
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
 
-   
+
 
       /**logic for material upload and simulation */
       onSelectedProductSimulations: function (e) {

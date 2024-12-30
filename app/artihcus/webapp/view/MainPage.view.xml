@@ -651,7 +651,7 @@
                                         text="UUID"
                                     />
                                 </Column>
-                                <Column id="_IDGenn2">
+                                <Column id="_IDGenn2"
                                     class="backgroundColour"
                                 >
 
@@ -1131,19 +1131,19 @@
                                                                
                                                             >
                                                                 <viz:dataset>
-                                                                    <viz.data:FlattenedDataset  data="{ChartData>/chartData}"
+                                                                    <viz.data:FlattenedDataset id="_IDGenFlattenedDataset1"  data="{ChartData>/chartData}"
                                                                     >
                                                                     
                                                                         <viz.data:dimensions
                                                                         >
-                                                                            <viz.data:DimensionDefinition
+                                                                            <viz.data:DimensionDefinition id="_IDGenDimensionDefinition"
                                                                                 name="Name"
                                                                                 value="{ChartData>Name}"
                                                                             />
                                                                         </viz.data:dimensions>
                                                                         <viz.data:measures
                                                                         >
-                                                                            <viz.data:MeasureDefinition
+                                                                            <viz.data:MeasureDefinition id="_IDGenMeasureDefinition"
                                                                                 name="Volume"
                                                                                 value="{ChartData>Volume}"
                                                                             />
@@ -1151,12 +1151,12 @@
                                                                     </viz.data:FlattenedDataset>
                                                                 </viz:dataset>
                                                                 <viz:feeds>
-                                                                    <viz.feeds:FeedItem
+                                                                    <viz.feeds:FeedItem id="_IDGenFeedItem"
                                                                         uid="size"
                                                                         type="Measure"
                                                                         values="Volume"
                                                                     />
-                                                                    <viz.feeds:FeedItem
+                                                                    <viz.feeds:FeedItem id="_IDGenFeedItem1"
                                                                         uid="color"
                                                                         type="Dimension"
                                                                         values="Name"
