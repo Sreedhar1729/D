@@ -285,6 +285,11 @@
                                                 key="CM"
                                                 text="CM"
                                             />
+                                            <core:Item
+                                                id="idselit5"
+                                                key="mm"
+                                                text="mm"
+                                            />
                                         </Select>
                                         <!-- <Input
                                         id="idServiceInput_InitialView"
