@@ -1,0 +1,158 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idCreateInContainerDialog"
+        resizable="true"
+        draggable="true"
+        contentWidth="40%"
+        contentHeight="35%"
+        title="Create Container"
+    >
+        <beginButton>
+            <Button
+                id="idCreatnwwjkeButton"
+                text="Create"
+                press="onCreateContainer"
+                type="Success"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                id="idCancwwkelButton"
+                text="Cancel"
+                press="onCancelInCreateVehicleDialog"
+                type="Negative"
+            />
+        </endButton>
+        <content>
+            <form:SimpleForm
+                id="idStabnrDwwetanmilsForm"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="3"
+                labelSpanL="3"
+                labelSpanM="3"
+                labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="4"
+                emptySpanL="4"
+                emptySpanM="4"
+                emptySpanS="0"
+                columnsXL="1"
+                columnsL="1"
+                columnsM="1"
+                singleContainerFullSize="false"
+            >
+                <Label
+                    id="idTruckTypeLabel"
+                    text="Truck Type"
+                />
+
+                <Input
+                    id="idTruckTypeInput"
+                    value="{CombinedModel>/Vehicle/truckType}"
+                    type="Number"
+                />
+
+                <Label
+                    id="idLengthLabelveh"
+                    text="Length"
+                />
+
+                <Input
+                    id="idLengthInputVeh"
+                    value="{CombinedModel>/Vehicle/length}"
+                />
+
+                <Label
+                    id="idWidthLabelVeh"
+                    text="Width"
+                />
+
+                <Input
+                    id="idWidthInputveh"
+                    value="{CombinedModel>/Vehicle/width}"
+                />
+
+                <Label
+                    id="idHeightLabelveh"
+                    text="Height"
+                />
+
+                <Input
+                    id="idHeightInputveh"
+                    value="{CombinedModel>/Vehicle/height}"
+                />
+
+                <Label
+                    id="idUomLabelveh"
+                    text="Unit of Measure (UOM)"
+                />
+
+                <!-- <Input
+                    id="idUomInputveh"
+                    value="{CombinedModel>/Vehicle/uom}"
+                /> -->
+                <Select id="idContainerTypeUOM">
+                    <core:Item
+                        id="id0"
+                        key=""
+                        text=""
+                    />
+                    <core:Item
+                        id="id1"
+                        key="M"
+                        text="M"
+                    />
+                </Select>
+
+              
+
+                <Label
+                    id="idTruckWeightLabel"
+                    text="Truck Weight"
+                />
+
+                <Input
+                    id="idTruckWeightInput"
+                    value="{CombinedModel>/Vehicle/truckWeight}"
+                />
+
+                <Label
+                    id="idCapacityLabel"
+                    text="Capacity"
+                />
+
+                <Input
+                    id="idCapacityInput"
+                    value="{CombinedModel>/Vehicle/capacity}"
+                />
+
+                <Label
+                    id="idFreezedLabel"
+                    text="Freezed"
+                />
+                <ComboBox id="idFreezedInput">
+                    <core:Item
+                        id="idforflags"
+                        text="Yes"
+                        key="Yes"
+                    />
+                    <core:Item
+                        id="idforflags1"
+                        text="No"
+                        key="No"
+                    />
+                </ComboBox>
+                <!-- <Input
+                    id="idFreezedInput"
+                    
+                    value="{CombinedModel>/Vehicle/freezed}"
+                /> -->
+            </form:SimpleForm>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>

@@ -133,10 +133,10 @@
           ]
         },
         {
-          "name": "ReqTruck",
-          "pattern": "ReqTruck",
+          "name": "ManuvalSimulation",
+          "pattern": "ManuvalSimulation",
           "target": [
-            "TargetReqTruck"
+            "TargetManuvalSimulation"
           ]
         }
       ],
@@ -152,12 +152,12 @@
           "viewId": "MainPage",
           "viewName": "MainPage"
         },
-        "TargetReqTruck": {
+        "TargetManuvalSimulation": {
           "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
-          "viewId": "ReqTruck",
-          "viewName": "ReqTruck"
+          "viewId": "ManuvalSimulation",
+          "viewName": "ManuvalSimulation"
         }
       }
     },
