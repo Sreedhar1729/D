@@ -681,6 +681,7 @@ sap.ui.define(
           this.oCreateContainerDialog = await this.loadFragment("CreateContainer");
         }
         this.oCreateContainerDialog.open();
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{});
       },
       onCancelInCreateVehicleDialog: function () {
         this.byId("idCreateInContainerDialog").close();
@@ -695,6 +696,8 @@ sap.ui.define(
       },
       onCancelInEditProductDialog: function () {
         this.byId("idEditProductDssialog").close();
+        this.getView().getModel("CombinedModel").setProperty("/Product",{});
+
       },
       // edit  fragment in Add equipment table
       onPressEditInAddEquipmentTable: async function () {
@@ -705,6 +708,7 @@ sap.ui.define(
       },
       onCancelInEditVehicleDialog: function () {
         this.byId("idEditContainerDialog").close();
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
       },
 
       //create dialog in list 
