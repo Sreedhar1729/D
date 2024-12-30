@@ -135,7 +135,7 @@
                                         />
                                         <Input
                                             id="idDescriptionInput_InitialView"
-                                            value="{ProductModel>/sapProductno}"
+                                            value="{CombinedModel>/Product/sapProductno}"
                                             placeholder="Enter Productno"
                                             class="customInput"
                                             width="100%"
@@ -166,7 +166,7 @@
                                         />
                                         <Input
                                             id="idInputDes_InitialView"
-                                            value="{ProductModel>/description}"
+                                            value="{CombinedModel>/Product/description}"
                                             placeholder="Enter Description"
                                             class="customInput"
                                             width="100%"
@@ -183,7 +183,7 @@
                                         />
                                         <Input
                                             id="idSystemIdInput_InitialView"
-                                            value="{ProductModel>/mCategory}"
+                                            value="{CombinedModel>/Product/mCategory}"
                                             placeholder="Material Category"
                                             width="100%"
                                             liveChange="ongetSAPPress"
@@ -199,7 +199,7 @@
                                         />
                                         <Input
                                             id="idInstanceNumberInput_InitialView"
-                                            value="{ProductModel>/length}"
+                                            value="{CombinedModel>/Product/length}"
                                             placeholder="Enter Length"
                                             width="100%"
                                         />
@@ -214,7 +214,7 @@
                                         />
                                         <Input
                                             id="idClientInput_InitialView"
-                                            value="{ProductModel>/width}"
+                                            value="{CombinedModel>/Product/width}"
                                             placeholder="Enter Width"
                                             maxLength="5"
                                             width="100%"
@@ -233,7 +233,7 @@
                                         />
                                         <Input
                                             id="idApplicationServerInput_InitialView"
-                                            value="{ProductModel>/height}"
+                                            value="{CombinedModel>/Product/height}"
                                             placeholder="Enter Height"
                                             class="customInput"
                                             width="100%"
@@ -249,7 +249,7 @@
                                         />
                                         <Input
                                             id="idApplicationServerInput_MainPage"
-                                            value="{ProductModel>/quantity}"
+                                            value="{CombinedModel>/Product/quantity}"
                                             placeholder="Enter Quantity"
                                             class="customInput"
                                             width="100%"
@@ -288,7 +288,7 @@
                                         </Select>
                                         <!-- <Input
                                         id="idServiceInput_InitialView"
-                                        value="{ProductModel>/uom}"
+                                        value="{CombinedModel>/Product/uom}"
                                         placeholder="Enter UOM"
                                         class="customInput"
                                         width="100%"
@@ -305,7 +305,7 @@
                                         <HBox id="idks">
                                             <Input
                                                 id="idWeightinput_InitialView"
-                                                value="{ProductModel>/weight}"
+                                                value="{CombinedModel>/Product/weight}"
                                                 placeholder="Enter Weight"
                                                 width="70px"
                                             />

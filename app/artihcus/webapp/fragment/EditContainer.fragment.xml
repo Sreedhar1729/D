@@ -116,27 +116,7 @@
                     id="_IDGenLabel9"
                     text="Freezed"
                 />
-                <Select id="idSlectOPt">
-                    <items>
-                        <core:Item
-                            id="_IDenIt"
-                            key="Select"
-                            text="Select"
-                        />
-                        <core:Item
-                            id="_IGenItem1"
-                            key="Yes"
-                            text="Yes"
-                        />
-                        <core:Item
-                            id="_DGenItem2"
-                            key="No"
-                            text="No"
-                        />
-
-                        <!-- Add more UOM options as needed -->
-                    </items>
-                </Select>
+                <Input id="idVehInFreezed" value="{CombinedModel>/Vehicle/freezed}"></Input>
             </form:SimpleForm>
         </content>
     </Dialog>
