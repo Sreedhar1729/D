@@ -1014,7 +1014,12 @@ sap.ui.define(
           // If UOM is in centimeters, convert to meters before calculating
           oVolume = (oPayload.length / 100) * (oPayload.width / 100) * (oPayload.height / 100);
           oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
-        } else {
+        }
+        else if(oPayload.uom === 'mm'){
+          oVolume = (oPayload.length / 1000) * (oPayload.width / 1000) * (oPayload.height / 1000);
+          oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
+        }
+        else {
           // If UOM is in meters, calculate normally in cubic meters
           oVolume = oPayload.length * oPayload.width * oPayload.height;
           oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
