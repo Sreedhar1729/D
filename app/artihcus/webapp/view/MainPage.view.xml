@@ -549,7 +549,7 @@
                             backgroundDesign="Transparent"
                             items="{/Materials}"
                             width="80%"
-                            noDataText="No Products Available"
+                            noDataText="No products available"
                             growing="true"
                             growingScrollToLoad="true"
                             class="backgroundColour"
@@ -580,7 +580,7 @@
                                     <SearchField
                                         id="idSearchFieldBinnumberTable_AHUOBQ"
                                         liveChange="onLiveBinNumberTAble"
-                                        placeholder="Search Anything..."
+                                        placeholder="Search by product number"
                                         width="25%"
                                     />
 
@@ -613,7 +613,7 @@
                                         class="line-md--download-outline-loop"
                                     />
 
-                                    <u:FileUploader
+                                    <!-- <u:FileUploader
                                         id="FileUploaderIds"
                                         sameFilenameAllowed="true"
                                         iconOnly="false"
@@ -624,14 +624,37 @@
                                       style="Transparent"
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
+                                    /> -->
+                                    <u:FileUploader
+                                        id="FileUploader"
+                                        sameFilenameAllowed="true"
+                                        iconOnly="false"
+                                        buttonOnly="false"
+                                        fileType="XLSX,xlsx"
+                                        icon="sap-icon://upload"
+                                        iconFirst="true"
+                                        style="Emphasized"
+                                        change="onbatchUpload"
+                                        buttonText="Upload File"
                                     />
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>
                                 <Column
-                                    id="_IDGenn2"
+
+                                    id="_IDGenn11"
+                                    class="backgroundColour"
+                                    visible="false"
+                                >
+                                    <Text
+                                        id="idUUID"
+                                        text="UUID"
+                                    />
+                                </Column>
+                                <Column id="_IDGenn2">
                                     class="backgroundColour"
                                 >
+
                                     <Text
                                         id="_IDGnText2"
                                         text="SAP Productno"
@@ -708,6 +731,12 @@
                                     class="backgroundColour"
                                 >
                                     <cells>
+                                        <Text
+                                            id="iduID"
+                                            text="{ID}"
+                                            visible="false"
+                                        />
+
                                         <Text
                                             id="_ID"
                                             text="{sapProductno}"
