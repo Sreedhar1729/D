@@ -76,11 +76,14 @@ sap.ui.define([
 
         validateField: function (oView, fieldId, value, regex, errorMessage) {
             const validationErrors = [];
+
             if (!fieldId) {
+
                 if (!value || (regex && !regex.test(value))) {
                     validationErrors.push(errorMessage);
                 }
                 return validationErrors
+
             } else {
                 // Validation
                 const oField = oView.byId(fieldId);
