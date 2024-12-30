@@ -27,7 +27,8 @@ define entity Materials {
         uom             : String;
         mCategory       : string;
         description     : String;
-        weight          : String;
+        netWeight          : String;
+        grossWeight:String;
         wuom            : String;
         quantity        : String;
         layers          : String;
