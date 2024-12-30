@@ -643,12 +643,12 @@
                                         text="Description"
                                     />
                                 </Column>
-                                <Column id="_IDGenColun4">
+                                <!-- <Column id="_IDGenColun4">
                                     <Text
                                         id="_IDGe4"
                                         text="EAN"
                                     />
-                                </Column>
+                                </Column> -->
 
                                 <Column id="_IDGenCcvbnmo">
                                     <Text
@@ -716,10 +716,10 @@
                                             id="_Iexte8"
                                             text="{description}"
                                         />
-                                        <Text
+                                        <!-- <Text
                                             id="_Iedfxte8"
                                             text="{EAN}"
-                                        />
+                                        /> -->
                                         <Text
                                             id="_Iext8"
                                             text="{mCategory}"
