@@ -54,7 +54,45 @@ sap.ui.define(
 
         this.localModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(this.localModel, "localModel");
+<<<<<<< HEAD
 
+=======
+        /**Constructing Product Model and set the model to the view */
+        // const oJsonModel = new JSONModel({
+        //   sapProductno: "",
+        //   length: "",
+        //   width: "",
+        
+        //   height: "",
+        //   volume: "",
+        //   uom: "",
+        //   vuom: "",
+        //   wuom: "",
+        //   muom: "",
+        //   mCategory: "",
+        //   description: "",
+        //   EAN: "",
+        //   weight: "",
+        //   color: ""
+        // })
+        // this.getView().setModel(oJsonModel, "ProductModel");
+
+        // /**Constructing JSON Model and set the model to the view*/
+        // const oJsonModelVeh = new JSONModel({
+        //   truckType: "",
+        //   length: "",
+        //   width: "",
+        //   height: "",
+        //   uom: "",
+        //   tvuom: "M³",
+        //   tuom: "M",
+        //   volume: "",
+        //   truckWeight: "",
+        //   capacity: "",
+        //   freezed: "",
+        // });
+        // this.getView().setModel(oJsonModelVeh, "VehModel");
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
 
         // Constructing a combined JSON Model
         const oCombinedJsonModel = new JSONModel({
@@ -91,6 +129,7 @@ sap.ui.define(
 
         // Set the combined model to the view
         this.getView().setModel(oCombinedJsonModel, "CombinedModel")
+<<<<<<< HEAD
         const oJsonModelCal = new JSONModel({
 
           TotalQuantity: "",
@@ -102,6 +141,9 @@ sap.ui.define(
         const chartDataModel = new sap.ui.model.json.JSONModel({ chartData: [] });
         const calculationModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(chartDataModel, "ChartData");
+=======
+
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
       },
       
       _createGenericTile: async function () {
@@ -386,6 +428,7 @@ sap.ui.define(
 
 
 
+<<<<<<< HEAD
       // onPressGenericTilePress: function () {
 
       //   var oWizard = this.byId("idWizardIn_simulate");
@@ -394,6 +437,16 @@ sap.ui.define(
       //   oWizard.nextStep();
 
       // },
+=======
+      onPressGenericTilePress: function () {
+
+        var oWizard = this.byId("idWizardIn_simulate");
+        var oCurrentStep = oWizard.getCurrentStep();
+
+        oWizard.nextStep();
+
+      },
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
 
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
@@ -713,8 +766,13 @@ sap.ui.define(
           }
           return color;
         })();
+<<<<<<< HEAD
         const oPayloadModel = this.getView().getModel("CombinedModel"),
           oPayload = oPayloadModel.getProperty("/Product"),
+=======
+        const oPayloadModel = this.getView().getModel("ProductModel"),
+          oPayload = oPayloadModel.getProperty("/"),
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
@@ -788,7 +846,11 @@ sap.ui.define(
           this.byId("idselectuom").setSelectedKey("");
           this.byId("uomSelect").setSelectedKey("");
           MessageToast.show("Successfully Created!");
+<<<<<<< HEAD
           this.getView().getModel("CombinedModel").setProperty("/Product", {}) // clear data after successful creation
+=======
+          this.getView().getModel("ProductModel").setProperty("/", {}) // clear data after successful creation
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
           // this.ClearingModel(true);
           MessageToast.show("Successfully Created!");
         } catch (error) {
@@ -803,8 +865,13 @@ sap.ui.define(
 
       /**Clearing Properties after creation */
       ClearingModel: function () {
+<<<<<<< HEAD
         const oPayloadModel = this.getView().getModel("CombinedModel");
         oPayloadModel.setProperty("/Product", {
+=======
+        const oPayloadModel = this.getView().getModel("ProductModel");
+        oPayloadModel.setProperty("/", {
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
           sapProductno: "",
           length: "",
           width: "",
@@ -1688,6 +1755,7 @@ sap.ui.define(
         debugger;
         var oWizard = this.byId("idWizardIn_simulate");
         var oCurrentStep = oWizard.getCurrentStep();
+<<<<<<< HEAD
  
         oWizard.nextStep();
         const oTile = oEvent.getSource();
@@ -1699,11 +1767,28 @@ sap.ui.define(
         // Reinitialize the 3D scene
         this._init3DScene();
  
+=======
+
+        oWizard.nextStep();
+        const oTile = oEvent.getSource();
+        const header = oTile.getHeader();
+
+
+
+
+        // Reinitialize the 3D scene
+        this._init3DScene();
+
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
         // Fetch dimensions based on truck type
         const oModel = this.getOwnerComponent().getModel("ModelV2");
         const sPath = "/TruckTypes";
         const oFilter = new Filter("truckType", FilterOperator.EQ, header);
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
         oModel.read(sPath, {
           filters: [oFilter],
           success: function (odata) {
@@ -1711,7 +1796,11 @@ sap.ui.define(
               const height = parseFloat(odata.results[0].height);
               const length = parseFloat(odata.results[0].length);
               const width = parseFloat(odata.results[0].width);
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
               // Create a new container
               this._createContainer(height, length, width);
             } else {
@@ -1723,7 +1812,10 @@ sap.ui.define(
           }
         });
       },
+<<<<<<< HEAD
  
+=======
+>>>>>>> 02579363be5d17e2d9727e24d53b917c531b6f12
 
 
       onPressAddProductInSimulate: async function () {
