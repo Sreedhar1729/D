@@ -32,6 +32,11 @@ sap.ui.define(
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
+
+        // Material upload
+        this.MaterialModel = new JSONModel();
+        this.getView().setModel(this.MaterialModel, "MaterialModel");
+
         this.ogenerictitesIdarray = []
         this.oObject = {
           "14FT": "https://www.searates.com/design/images/apps/load-calculator/20st.svg",
@@ -125,6 +130,139 @@ sap.ui.define(
         // Set the combined model to the view
         this.getView().setModel(oCombinedJsonModel, "CombinedModel")
 
+      },
+      onbatchUpload: async function (e) {
+        if (!this.oFragment) {
+          this.oFragment = await this.loadFragment("MaterialXlData");
+        }
+        this.oFragment.open();
+        await this._importData(e.getParameter("files") && e.getParameter("files")[0]);
+      },
+
+      _importData: function (file) {
+        var that = this;
+        var excelData = {};
+        if (file && window.FileReader) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {
+              type: 'array'
+            });
+            workbook.SheetNames.forEach(function (sheetName) {
+              // Here is your object for every sheet in workbook
+              excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            });
+            // Setting the data to the local model
+            that.MaterialModel.setData({
+              items: excelData
+            });
+            that.MaterialModel.refresh(true);
+          };
+          reader.onerror = function (ex) {
+            console.log(ex);
+          };
+          reader.readAsArrayBuffer(file);
+        }
+      },
+      onBatchSave: async function () {
+        var that = this;
+        var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
+        var batchChanges = [];
+        var oDataModel = this.getView().getModel("ModelV2");
+        var batchGroupId = "batchCreateGroup";
+        let aErrors = []
+
+                
+        addedProdCodeModel.items.forEach((item,index) => {
+          item.length = String(item.length).trim();
+          item.width = String(item.width).trim();
+          item.height = String(item.height).trim();
+          item.weight = String(item.weight).trim();
+          item.quantity = String(item.quantity).trim();
+          item.volume = String(item.volume).trim();
+
+          // Create individual batch request
+          batchChanges.push(
+            oDataModel.create("/Materials", item, {
+              method: "POST",
+              groupId: batchGroupId, // Specify the batch group ID here
+              success: function (data, response) {
+                // Handle success for individual item
+                // MessageBox.success("Materials created successfully");
+                // You can also perform other operations here based on the success response
+              },
+              error: function (err) {
+                // Handle error for individual item
+                aErrors.push({ row: `Record number,${index+1} creation failed`, error:`a field ${JSON.parse(err.responseText).error.message.value}`})
+                MessageBox.error(aErrors[0].row + aErrors[0].error);
+                console.error("Error creating material:", err);
+              }
+            })
+          );
+        });
+
+        // Now send the batch request using batch group
+        oDataModel.submitChanges({
+          batchGroupId: batchGroupId,
+          success: function (oData, response) {
+            MessageBox.success("Materials batch created successfully");
+            console.log("Batch request submitted successfully", oData);
+            // Perform any final operations if needed after all batch operations succeed
+          },
+          error: function (err) {
+            MessageBox.success("Error creating material batch");
+            console.error("Error in batch request:", err);
+            // Handle any failure in the batch submission (e.g., server issues)
+          }
+        });
+
+        // working
+        // var that = this;
+        // var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
+        // var batchChanges = [];
+        // var oDataModel = this.getView().getModel("ModelV2");
+
+        // var batchGroupId = "batchCreateGroup";
+
+        // // Collect all create operations into the batchChanges array
+        //   addedProdCodeModel.items.forEach(async item => {
+        //   item.length = String(item.length).trim();
+        //   item.width = String(item.width).trim();
+        //   item.height = String(item.height).trim();
+        //   item.weight = String(item.weight).trim();
+        //   item.quantity = String(item.quantity).trim();
+        //   item.volume = String(item.volume).trim();
+
+        //   // Create individual batch request
+        //   await oDataModel.create("/Materials", item, {
+        //     method: "POST",
+        //     groupId: batchGroupId // Specify the batch group ID here
+        //   });
+        // });
+
+
+        // // Submit all changes in the batch
+        // oDataModel.submitChanges({
+        //   groupId: batchGroupId,
+        //   success: function (data, response) {
+        //     MessageBox.show("Batch create operation successful.");
+        //   },
+        //   error: function (e) {
+        //     // Parse the error response and show a meaningful message
+        //     var errorMessage = e.message || "An error occurred";
+        //     MessageBox.show("Error: " + errorMessage);
+        //   }
+        // });
+        if (this.oFragment) {
+          this.oFragment.close();
+          this.byId("ProductsTable").getBinding("items").refresh();
+        }
+      },
+      onClosePressXlData: function () {
+        if (this.oFragment.isOpen()) {
+          this.oFragment.close();
+        }
       },
       // _createGenericTile: async function () {
 
@@ -974,8 +1112,8 @@ sap.ui.define(
         try {
           await this.createData(oModel, oPayload, oPath);
           this.getView().getModel("CombinedModel"),
-          oPayloadModel.setProperty("/Vehicle",{}),
-          this.byId("idTruckTypeTable").getBinding("items").refresh();
+            oPayloadModel.setProperty("/Vehicle", {}),
+            this.byId("idTruckTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
           this.byId("idvehtypeUOM").setSelectedKey("");
           MessageToast.show("Successfully Created!");
@@ -1103,7 +1241,6 @@ sap.ui.define(
             await this.updateData(oModel, oPayload, oPath);
             MessageToast.show('Successfully Updated');
           }
-
         } catch (error) {
           MessageToast.show('Error');
         } finally {

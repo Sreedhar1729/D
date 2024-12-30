@@ -1,1 +1,6 @@
 ID,sapProductno,EAN,length,width,height,volume,vuom,muom,uom,mCategory,description,weight,wuom,quantity,layers,mass,layersHeight,color
+f047b302-57b5-4e79-9d63-0dcbf4f67f22,1001,1234567890123,30,15,10,4500,cm,kg,pcs,Electronics,32-inch LED TV,5.5,kg,20,4,22,40,Black
+25a4c57c-b68d-45ff-90f0-611a8c4db20e,1002,9876543219876,10,10,5,500,cm,g,pcs,Furniture,Wooden Chair,2.2,kg,50,5,110,25,Brown
+689ed09b-2765-4639-a5c5-1a61ec72e0b7,1003,7894561230123,25,20,5,2500,cm,g,box,Appliances,Blender,1.8,kg,15,3,5,20,Silver
+b143f503-27bc-4db6-a4f9-474b3c5e4c99,1004,4561237896543,40,25,30,30000,cm,kg,pcs,Kitchenware,5-piece Cookware Set,7.4,kg,10,2,15,35,Silver
+319a38b0-57fe-45f1-90ed-b2fa706b8391,1005,3216549876543,50,40,15,30000,cm,kg,pcs,Furniture,Sofa Set,40,kg,5,3,120,60,Gray
