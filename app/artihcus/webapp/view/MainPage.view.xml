@@ -1145,11 +1145,7 @@
                                     <HBox id="idVBoxInSelectVehicleType" />
                                 </VBox>
 
-                                <Button
-                                    id="idNext2Btn_changeQueue"
-                                    press="onNextPressInSeconsSrInAddVehicleType"
-                                    text="Next"
-                                />
+                              
                             </WizardStep>
                             <!-- Queue wizard -->
                             <WizardStep
