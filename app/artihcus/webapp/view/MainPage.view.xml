@@ -304,6 +304,7 @@
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
+
                                       
                                             <Input
                                                 id="idStackinput_InitialView"
@@ -322,6 +323,7 @@
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
+
 
                                         <Input
                                             id="idWeightinput_InitialView"
@@ -753,9 +755,9 @@
                                     <Text
                                         id="_IDGe4"
                                         text="EAN"
+                                        visible="false"
                                     />
                                 </Column> -->
-
                                 <Column id="_IDGenCcvbnmo">
                                     <Text
                                         id="_IDGenxcvj"
@@ -788,18 +790,16 @@
                                         text="Height"
                                     />
                                 </Column>
+                                <Column>
+                                    <Text text="UOM" />
+                                </Column>
                                 <Column id="_IDGenC">
                                     <Text
                                         id="_IDGe1"
                                         text="Volume(M³)"
                                     />
                                 </Column>
-                                <!-- <Column id="_IDGenC1">
-                                    <Text
-                                        id="_IDGe21"
-                                        text="UOM"
-                                    />
-                                </Column> -->
+
                                 <Column id="_IDGenC2">
                                     <Text
                                         id="_IDGe12"
@@ -812,10 +812,17 @@
                                         text="Gross Weight"
                                     />
                                 </Column>
+
+                                <Column>
+                                    <Text
+                                        id="id_UOM_text"
+                                        text="UOM"
+
                                  <Column id="id_stack">
                                     <Text
                                         id="id_stack_text"
                                         text="Stack"
+
                                     />
                                 </Column>
                             </columns>
@@ -831,15 +838,22 @@
                                             text="{ID}"
                                             visible="false"
                                         />
-
                                         <Text
                                             id="_ID"
                                             text="{model}"
                                         />
-                                        <Text
-                                            id="_Iexte8"
-                                            text="{description}"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="_Iexte8"
+                                                text="{description}"
+                                            />
+                                            <Input
+                                                id="idInputdescriptionValue_ProductDetailsUpdate"
+                                                value="{=${description}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
                                         <!-- <Text
                                             id="_Iedfxte8"
                                             text="{EAN}"
@@ -848,44 +862,126 @@
                                             id="_Iext8"
                                             text="{mCategory}"
                                         />
-                                        <Text
-                                            id="_Iext89"
-                                            text="{quantity}"
-                                        />
 
-                                        <Text
-                                            id="_IDGt9"
-                                            text="{= ${length} + ' ' + ${uom} }"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="_Iext89"
+                                                text="{quantity}"
+                                            />
+                                            <Input
+                                                id="idInputQuanrityValue_ProductDetailsUpdate"
+                                                value="{quantity}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="_IDGt9"
+                                                text="{= ${length} + ' ' + ${uom} }"
+                                            />
+                                            <Input
+                                                id="idInputlengthValue_ProductDetailsUpdate"
+                                                value="{= ${length} + ' ' + ${uom} }"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="_IDG10"
+                                                text="{= ${width} + ' ' + ${uom}}"
+                                            />
+                                            <Input
+                                                id="idInputwidthValue_ProductDetailsUpdate"
+                                                value="{= ${width} + ' ' + ${uom}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="_IDG3310"
+                                                text="{= ${height} + ' ' + ${uom}}"
+                                            />
+                                            <Input
+                                                id="idInputheightValue_ProductDetailsUpdate"
+                                                value="{= ${height} + ' ' + ${uom}}"
+                                                visible="false"
+                                                width="3.5rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="idkjlee"
+                                                text="{=${uom}}"
+                                                width="3rem"
+                                            />
+                                            <ComboBox id="idComboboxForVolume"
+                                                placeholder="UOM..."
+                                                visible="false"
+                                                width="3rem"
+                                            >
+                                                <core:Item
+                                                    key="M"
+                                                    text="M"
+                                                />
+                                                <core:Item
+                                                    key="CM"
+                                                    text="CM"
+                                                />
+                                                <core:Item
+                                                    key="mm"
+                                                    text="mm"
+                                                />
+                                            </ComboBox>
+                                        </HBox>
 
-                                        <Text
-                                            id="_IDG10"
-                                            text="{= ${width} + ' ' + ${uom}}"
-                                        />
-                                        <Text
-                                            id="_IDG3310"
-                                            text="{= ${height} + ' ' + ${uom}}"
-                                        />
                                         <Text
                                             id="_ID23Gt9"
                                             text="{volume}"
                                         />
-                                        <!-- <Text
-                                            id="idkjlee"
-                                            text="{uom}"
-                                        /> -->
-                                        <Text
-                                            id="okd"
-                                            text="{= ${netWeight} +' '+${wuom}}"
-                                        />
-                                        <Text
-                                            id="id_grossWeight_cell"
-                                            text="{= ${grossWeight} +' '+${wuom}}"
-                                        />
-                                         <Text
-                                            id="id_stackt_cell"
-                                            text="{stack}"
-                                        />
+                                        <HBox>
+                                            <Text
+                                                id="okd"
+                                                text="{= ${netWeight} +' '+${wuom}}"
+                                            />
+                                            <Input
+                                                id="idInputNetWeightValue_ProductDetailsUpdate"
+                                                value="{= ${netWeight} +' '+${wuom}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text
+                                                id="id_grossWeight_cell"
+                                                text="{= ${grossWeight} +' '+${wuom}}"
+                                            />
+                                            <Input
+                                                id="idInputGrossWeightValue_ProductDetailsUpdate"
+                                                value="{= ${grossWeight} +' '+${wuom}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                        </HBox>
+                                        <HBox>
+                                            <Text text="{=${wuom}}" />
+                                            <ComboBox
+                                                placeholder="UOM..."
+                                                visible="false"
+                                                width="3rem"
+                                            >
+                                                <core:Item
+                                                    key="KG"
+                                                    text="Kilograms"
+                                                />
+                                                <core:Item
+                                                    key="G"
+                                                    text="Grams"
+                                                />
+                                            </ComboBox>
+                                        </HBox>
                                     </cells>
                                 </ColumnListItem>
                             </items>
