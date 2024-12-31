@@ -1050,6 +1050,7 @@
                                     wrap="Wrap"
                                     alignContent="Stretch"
                                     alignItems="Stretch"
+                                  
                                 >
                                     <HBox
                                         id="idHBoxInVehicleType1"
@@ -1214,6 +1215,12 @@
                                                         text="{Calculation>/RemainingCapacity}"
                                                     />
                                                 </HBox>
+                                                <Button
+                                                    id="idDownloadSimButton"
+                                                    text="Download Simulation"
+                                                    press="onDownloadSimulation"
+                                                    class="sapUiSmallMarginTop"
+                                                />
                                             </form:SimpleForm>
                                         </VBox>
                                     </HBox>

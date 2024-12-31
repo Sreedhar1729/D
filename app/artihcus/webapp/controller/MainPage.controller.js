@@ -457,14 +457,14 @@ sap.ui.define(
 
 
 
-      onPressGenericTilePress: function () {
+      // onPressGenericTilePress: function () {
 
-        var oWizard = this.byId("idWizardIn_simulate");
-        var oCurrentStep = oWizard.getCurrentStep();
+      //   var oWizard = this.byId("idWizardIn_simulate");
+      //   var oCurrentStep = oWizard.getCurrentStep();
 
-        oWizard.nextStep();
+      //   oWizard.nextStep();
 
-      },
+      // },
 
       onCancelPress_valueHelp: function () {
         this.oValueDialog.close();
@@ -1956,19 +1956,27 @@ sap.ui.define(
         this._createProducts(aSelectedData, height, length, width);
       },
 
+      
+
+     
+      
       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
         let currentX = -containerLength / 2;
         let currentZ = -containerWidth / 2;
         let currentY = 0;
-        const positionMap = []; // Reset position map
+    
+        const positionMap = []; // Keeps track of occupied positions
         const chartData = [];
+    
+        let maxHeight = 0; // Max height for the current level (Y-axis tracking)
+        let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
     
         let totalQuantity = 0;
         let totalVolume = 0;
         let totalWeight = 0;
     
         const containerMaxVolume = containerHeight * containerLength * containerWidth;
-        const containerMaxWeight = 1000; // Example max weight in kg
+        const containerMaxWeight = 1000; // Example container max weight (kg)
     
         selectedProducts.forEach(product => {
             const SelectedQuantity = parseInt(product.SelectedQuantity);
@@ -1983,34 +1991,57 @@ sap.ui.define(
             let totalChartWeight = 0;
     
             for (let i = 0; i < SelectedQuantity; i++) {
-                let isOverlap = true;
+                let isPlaced = false;
     
-                while (isOverlap) {
-                    // Reset positions when bounds are reached
+                while (!isPlaced) {
+                    console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+                    
+                    // Check if product fits within the container along the X axis (length)
                     if (currentX + productLength > containerLength / 2) {
                         currentX = -containerLength / 2;
-                        currentZ += productWidth;
+                        currentZ += maxWidth; // Move to the next row (Z axis)
+                        console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
     
+                        maxWidth = 0; // Reset maxWidth for new row
+    
+                        // Check if product fits within the container along the Z axis (width)
                         if (currentZ + productWidth > containerWidth / 2) {
                             currentZ = -containerWidth / 2;
-                            currentY += productHeight;
+                            currentY += maxHeight; // Move to the next height level (Y axis)
+                            console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
+    
+                            maxHeight = 0; // Reset maxHeight for new level
+    
+                            // Check if product fits within the height
+                            if (currentY + productHeight > containerHeight) {
+                                console.log(`  Product "${productName}" cannot fit in the container.`);
+                                alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
+                                return; // Skip product if it cannot fit
+                            }
                         }
                     }
     
-                    // Check for overlaps
-                    isOverlap = positionMap.some(position => (
-                        currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                        currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                    // Check for overlap with previously placed products
+                    const isOverlap = positionMap.some(position => (
+                        currentX < position.xEnd &&
+                        (currentX + productLength) > position.xStart &&
+                        currentZ < position.zEnd &&
+                        (currentZ + productWidth) > position.zStart &&
                         currentY < position.yTop
                     ));
     
+                    // If there's overlap, move currentX to the next available space in X direction
                     if (isOverlap) {
-                        currentX += productLength; // Adjust position to avoid overlap
+                        currentX += productLength;
+                        console.log(`  Overlap detected, moving X to: ${currentX}`);
+                    } else {
+                        isPlaced = true; // Place product if there's no overlap
+                        console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
                     }
                 }
     
-                if (!isOverlap) {
-                    // Create 3D product representation
+                if (isPlaced) {
+                    // Create the product's 3D representation
                     const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
                     const productMaterial = new THREE.MeshStandardMaterial({
                         color: new THREE.Color(productColor),
@@ -2033,7 +2064,7 @@ sap.ui.define(
                     edges.position.copy(productMesh.position);
                     this.scene.add(edges);
     
-                    // Update position map
+                    // Update the occupied positions in the positionMap
                     positionMap.push({
                         xStart: currentX,
                         xEnd: currentX + productLength,
@@ -2042,6 +2073,11 @@ sap.ui.define(
                         yTop: currentY + productHeight
                     });
     
+                    // Update maximum height and width for the row/level
+                    maxHeight = Math.max(maxHeight, productHeight);
+                    maxWidth = Math.max(maxWidth, productWidth);
+    
+                    // Update totals
                     totalQuantity++;
                     const productVolume = productLength * productHeight * productWidth;
                     totalVolume += productVolume;
@@ -2049,34 +2085,38 @@ sap.ui.define(
                     totalChartVolume += productVolume;
                     totalChartWeight += productWeight;
     
-                    currentX += productLength; // Move to the next position
+                    // Move to the next available position in the X axis for the next product
+                    currentX += productLength;
+                    console.log(`  Moving to next X position: ${currentX}`);
                 }
             }
     
-            // Add product data to chart
-            chartData.push({
-                Name: productName,
-                Packages: SelectedQuantity,
-                Volume: totalChartVolume.toFixed(1),
-                Weight: totalChartWeight.toFixed(1),
-                Color: productColor
-            });
+            // Collect the product data for chart visualization
+            if (totalChartVolume > 0) {
+                chartData.push({
+                    Name: productName,
+                    Packages: SelectedQuantity,
+                    Volume: totalChartVolume.toFixed(1),
+                    Weight: totalChartWeight.toFixed(1),
+                    Color: productColor
+                });
+            }
         });
     
-        // Calculate remaining volume and weight
+        // Calculate remaining available volume and weight in the container
         const remainingVolume = containerMaxVolume - totalVolume;
         const remainingWeight = containerMaxWeight - totalWeight;
     
-        // Add empty space data to chart
+        // Add empty space (unused space) in the chart data
         chartData.push({
             Name: "Empty",
             Packages: 0,
             Volume: remainingVolume.toFixed(1),
             Weight: 0,
-            Color: "#cccccc" // Gray color for "Empty"
+            Color: "#cccccc" // Gray color for empty space
         });
     
-        // Update view models with calculated data
+        // Update the view models with total values and chart data
         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
         this.getView().getModel("Calculation").setProperty("/", {
             TotalQuantity: totalQuantity,
@@ -2085,11 +2125,11 @@ sap.ui.define(
             RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
         });
     
-        // Update pie chart visualization
+        // Update pie chart visualization based on filled/empty spaces
         const oVizFrame = this.getView().byId("idPieChart");
         oVizFrame.setVizProperties({
             plotArea: {
-                colorPalette: chartData.map(item => item.Color), // Dynamically set colors
+                colorPalette: chartData.map(item => item.Color), // Use dynamic colors
                 dataLabel: {
                     visible: true
                 }
@@ -2099,6 +2139,27 @@ sap.ui.define(
             }
         });
     },
+    
+    
+        
+
+      
+
+    
+    
+    
+   
+    
+    
+    
+    
+       
+   
+
+    
+    
+    
+    
     
 
 
@@ -2171,6 +2232,70 @@ sap.ui.define(
 
         // Generate and download the Excel file
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
+      },
+
+         /****************************************************Download Simulation Logic**************************************************************************************************/
+
+      onDownloadSimulation: function () {
+        // Define the predefined views with zoomed-in camera positions
+        const views = [
+          { name: 'Front', position: new THREE.Vector3(0, 10, 20), lookAt: new THREE.Vector3(0, 0, 0) },
+          { name: 'Back', position: new THREE.Vector3(0, 10, -20), lookAt: new THREE.Vector3(0, 0, 0) },
+          { name: 'Top', position: new THREE.Vector3(0, 20, 0), lookAt: new THREE.Vector3(0, 0, 0) },
+          { name: 'Bottom', position: new THREE.Vector3(0, -20, 0), lookAt: new THREE.Vector3(0, 0, 0) },
+          { name: 'Left', position: new THREE.Vector3(-20, 10, 0), lookAt: new THREE.Vector3(0, 0, 0) },
+          { name: 'Right', position: new THREE.Vector3(20, 10, 0), lookAt: new THREE.Vector3(0, 0, 0) }
+        ];
+ 
+        // Initialize a new jsPDF instance
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+ 
+        // Capture each view and add it to the PDF
+        const images = [];
+ 
+        views.forEach(view => {
+          this._captureView(view.name, view.position, view.lookAt, (imageData) => {
+            images.push({ name: view.name, data: imageData });
+ 
+            // If all images are captured, create the PDF
+            if (images.length === views.length) {
+              // Add images to PDF with titles
+              images.forEach((img, index) => {
+                if (index > 0) {
+                  pdf.addPage(); // Add a new page for each view
+                }
+                pdf.text(img.name, 10, 10); // Add the heading (view name)
+                pdf.addImage(img.data, 'PNG', 10, 20, 180, 160); // Add the image to the PDF
+              });
+ 
+              // Save the PDF file
+              pdf.save('simulation_views.pdf');
+            }
+          });
+        });
+      },
+ 
+      _captureView: function (viewName, cameraPosition, cameraLookAt, callback) {
+        // Move the camera to the desired position and look at the center of the scene
+        this.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        this.camera.lookAt(cameraLookAt);
+ 
+        // Increase camera zoom (adjust FOV) for better product visibility
+        this.camera.fov = 10; // You can adjust this value for more zoomed-in effect
+        this.camera.updateProjectionMatrix();
+ 
+        // Update the controls for smooth transition (if you're using orbit controls)
+        this.controls.update();
+ 
+        // Render the scene
+        this.renderer.render(this.scene, this.camera);
+ 
+        // Capture the current canvas content as a base64 image (higher resolution)
+        const imageData = this.renderer.domElement.toDataURL('image/png');
+ 
+        // Pass the captured image to the callback function
+        callback(imageData);
       },
   
     });
