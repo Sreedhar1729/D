@@ -131,7 +131,7 @@
                                         />
                                         <Input
                                             id="idDescriptionInput_InitialView"
-                                            value="{CombinedModel>/Product/sapProductno}"
+                                            value="{CombinedModel>/Product/model}"
                                             placeholder="Enter Productno"
                                             class="customInput"
                                             width="100%"
@@ -296,6 +296,26 @@
                                     /> -->
                                     </HBox>
 
+                                    <!-- Stack levels -->
+                                      <!-- <HBox id="idHboxStcok_InitialView">
+                                        <Label
+                                            id="idLabelStack_InitialView"
+                                            text="Stack Level:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+
+                                      
+                                            <Input
+                                                id="idStackinput_InitialView"
+                                                value="{CombinedModel>/Product/stack}"
+                                                placeholder="Enter Stack"
+                                                width="100%"
+                                            />
+                                            
+                                       
+                                    </HBox> -->
+
                                     <HBox id="idHboxWeight_InitialView">
                                         <Label
                                             id="idLableWeight_InitialView"
@@ -303,6 +323,7 @@
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
+
 
                                         <Input
                                             id="idWeightinput_InitialView"
@@ -363,7 +384,22 @@
                                         width="100%"
                                     /> -->
                                     </HBox>
-
+                                    <HBox id="idhboxStackr_MainPage">
+                                        <Label
+                                            id="idLableStack_MainPage"
+                                            text="Stack:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                        <Input
+                                            id="idStackInput_MainPage"
+                                            value="{CombinedModel>/Product/stack}"
+                                            placeholder="Enter Stack"
+                                            class="customInput"
+                                            width="100%"
+                                            maxLength="200"
+                                        />
+                                    </HBox>
                                     <Label id="idEmptyLabel" />
                                     <Button
                                         id="idconnectsapcancelButton_InitialView"
@@ -519,12 +555,7 @@
                                         text="Container Weight"
                                     />
                                 </Column>
-                                <Column id="_IvbnDbnmvbnGenCoFre">
-                                    <Text
-                                        id="_IcvbnmDbvbnmnGenfre"
-                                        text="Freezed"
-                                    />
-                                </Column>
+                                
                             </columns>
 
                             <items>
@@ -563,10 +594,6 @@
                                         <Text
                                             id="_IDsvbdfvG10"
                                             text="{truckWeight}"
-                                        />
-                                        <Text
-                                            id="_IDsvbdfvG11"
-                                            text="{freezed}"
                                         />
                                     </cells>
                                 </ColumnListItem>
@@ -785,10 +812,17 @@
                                         text="Gross Weight"
                                     />
                                 </Column>
+
                                 <Column>
                                     <Text
                                         id="id_UOM_text"
                                         text="UOM"
+
+                                 <Column id="id_stack">
+                                    <Text
+                                        id="id_stack_text"
+                                        text="Stack"
+
                                     />
                                 </Column>
                             </columns>
@@ -806,7 +840,7 @@
                                         />
                                         <Text
                                             id="_ID"
-                                            text="{sapProductno}"
+                                            text="{model}"
                                         />
                                         <HBox>
                                             <Text
@@ -828,6 +862,7 @@
                                             id="_Iext8"
                                             text="{mCategory}"
                                         />
+
                                         <HBox>
                                             <Text
                                                 id="_Iext89"
@@ -901,6 +936,7 @@
                                                 />
                                             </ComboBox>
                                         </HBox>
+
                                         <Text
                                             id="_ID23Gt9"
                                             text="{volume}"
@@ -1157,7 +1193,7 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5"
-                                                    text="{Productno/sapProductno}"
+                                                    text="{Productno/model}"
                                                 />
                                                 <Text
                                                     id="_IDGenText6"
@@ -1195,11 +1231,15 @@
                                                     id="_IDGenTextert11"
                                                     text="{Productno/color}"
                                                 />
-                                                <Button
+                                                <!-- <Button
                                                     id="_IDGenTextert12"
                                                     text=""
                                                     icon="sap-icon://action-settings"
                                                     press="onPressStackBtn"
+                                                /> -->
+                                                 <Text
+                                                    id="id_stack_wizardTable"
+                                                    text="{Productno/stack}"
                                                 />
                                             </cells>
                                         </ColumnListItem>
@@ -1236,11 +1276,7 @@
                                     <HBox id="idVBoxInSelectVehicleType" />
                                 </VBox>
 
-                                <Button
-                                    id="idNext2Btn_changeQueue"
-                                    press="onNextPressInSeconsSrInAddVehicleType"
-                                    text="Next"
-                                />
+                              
                             </WizardStep>
                             <!-- Queue wizard -->
                             <WizardStep
@@ -1248,11 +1284,26 @@
                                 title="Simulated Result"
                                 icon="sap-icon://collections-management"
                             >
+                            <Toolbar id="idToolbarInSimulatedResult">
+                                 
+                               
+                             <Button
+                                                id="idManuvalSimulateBtnIn_Simulate"
+                                                press="onPressManuvalSimulate"
+                                                tooltip="ManuvalSimulate"
+                                                text="Manuval simulation"
+                                                icon="sap-icon://collections-management"
+                                             
+                                               
+                                            />
+                                     
+                                    </Toolbar>
                                 <VBox
                                     id="idVBoxInVehicleType1"
                                     wrap="Wrap"
                                     alignContent="Stretch"
                                     alignItems="Stretch"
+                                    class="sapUiTinyMarginTop"
                                 >
                                     <HBox
                                         id="idHBoxInVehicleType1"
@@ -1298,19 +1349,19 @@
                                                                                                     }"
                                                             >
                                                                 <viz:dataset>
-                                                                    <viz.data:FlattenedDataset
+                                                                    <viz.data:FlattenedDataset id="_IDGenFlattenedDataset"
                                                                         data="{ChartData>/chartData}"
                                                                     >
                                                                         <viz.data:dimensions
                                                                         >
-                                                                            <viz.data:DimensionDefinition
+                                                                            <viz.data:DimensionDefinition id="_IDGenDimensionDefinition1"
                                                                                 name="Name"
                                                                                 value="{ChartData>Name}"
                                                                             />
                                                                         </viz.data:dimensions>
                                                                         <viz.data:measures
                                                                         >
-                                                                            <viz.data:MeasureDefinition
+                                                                            <viz.data:MeasureDefinition id="_IDGenMeasureDefinition"
                                                                                 name="Volume"
                                                                                 value="{ChartData>Volume}"
                                                                             />
@@ -1318,12 +1369,12 @@
                                                                     </viz.data:FlattenedDataset>
                                                                 </viz:dataset>
                                                                 <viz:feeds>
-                                                                    <viz.feeds:FeedItem
+                                                                    <viz.feeds:FeedItem id="_IDGenFeedItem"
                                                                         uid="size"
                                                                         type="Measure"
                                                                         values="Volume"
                                                                     />
-                                                                    <viz.feeds:FeedItem
+                                                                    <viz.feeds:FeedItem id="_IDGenFeedItem1"
                                                                         uid="color"
                                                                         type="Dimension"
                                                                         values="Name"
@@ -1411,6 +1462,12 @@
                                                         text="{Calculation>/RemainingCapacity}"
                                                     />
                                                 </HBox>
+                                                <Button
+                                                    id="idDownloadSimButton"
+                                                    text="Download Simulation"
+                                                    press="onDownloadSimulation"
+                                                    class="sapUiSmallMarginTop"
+                                                />
                                             </form:SimpleForm>
                                         </VBox>
                                     </HBox>

@@ -130,28 +130,6 @@
                     id="idCapacityInput"
                     value="{CombinedModel>/Vehicle/capacity}"
                 />
-
-                <Label
-                    id="idFreezedLabel"
-                    text="Freezed"
-                />
-                <ComboBox id="idFreezedInput">
-                    <core:Item
-                        id="idforflags"
-                        text="Yes"
-                        key="Yes"
-                    />
-                    <core:Item
-                        id="idforflags1"
-                        text="No"
-                        key="No"
-                    />
-                </ComboBox>
-                <!-- <Input
-                    id="idFreezedInput"
-                    
-                    value="{CombinedModel>/Vehicle/freezed}"
-                /> -->
             </form:SimpleForm>
         </content>
     </Dialog>

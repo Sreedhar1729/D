@@ -112,11 +112,6 @@
                     id="idVehInpcapacity"
                     value="{CombinedModel>/Vehicle/capacity}"
                 />
-                <Label
-                    id="_IDGenLabel9"
-                    text="Freezed"
-                />
-                <Input id="idVehInFreezed" value="{CombinedModel>/Vehicle/freezed}"></Input>
             </form:SimpleForm>
         </content>
     </Dialog>
