@@ -944,7 +944,84 @@ sap.ui.define(
       onRow: function (oEvent) {
         var path = oEvent.getSource();
       },
-
+      /*** edit table for container */
+      onpressEditContainer: function () {
+        debugger
+        var oTable = this.byId("idContainerTypeTable");
+        var aSelectedItem = oTable.getSelectedItems();
+ 
+        if (aSelectedItem.length === 0) {
+          sap.m.MessageToast.show("Please select atleast one row to edit.");
+          return;
+        }
+        if (aSelectedItem.length > 1) {
+          sap.m.MessageToast.show("Please select only one row to edit.");
+          return;
+        }
+        this.byId("ideditbtn_ContainerTable").setVisible(false);
+        this.byId("idSaveBtnIcon4_ContainerTable").setVisible(true);
+        this.byId("idCancelBtnIcon4_containerTable").setVisible(true);
+ 
+        var oSelectedItem = aSelectedItem[0];
+        var aCells = oSelectedItem.getCells();
+ 
+        this.pastlength = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
+        this.pastwidth = aCells[2].getItems()[0].getText();
+        this.pastheight = aCells[3].getItems()[0].getText();
+        this.pastcapacity = aCells[5].getItems()[0].getText();
+        this.pasttruckWeight = aCells[6].getItems()[0].getText();
+      
+        // Loop through selected items
+        aSelectedItem.forEach(function (oItem) {
+          var aCells = oItem.getCells();
+ 
+          // Loop through the cells to find HBox elements
+          aCells.forEach(function (oCell) {
+            if (oCell.isA("sap.m.HBox")) {
+              var aChildren = oCell.getItems();
+ 
+              if (aChildren.length === 2) {
+                aChildren[0].setVisible(false);
+                aChildren[1].setVisible(true);
+              }
+            }
+          });
+        });
+      },
+      /**** cancel button functionality in container table  */
+      onPressCancelBtnEdit_containerTable: function () {
+        debugger;
+        var oTable = this.byId("idContainerTypeTable");
+        var aSelectedItem = oTable.getSelectedItems();
+ 
+        var oSelectedItem = aSelectedItem[0];
+        var aCells = oSelectedItem.getCells();
+ 
+        // Restore past values to the corresponding cells
+        aCells[1].getItems()[0].setText(this.pastlength);
+        aCells[2].getItems()[0].setText(this.pastwidth);
+        aCells[3].getItems()[0].setText(this.pastheight);
+        aCells[5].getItems()[0].setText(this.pastcapacity);
+        aCells[6].getItems()[0].setText(this.pasttruckWeight);
+        
+ 
+        // Toggle visibility back to original state
+        aCells.forEach(function (oCell) {
+          if (oCell.isA("sap.m.HBox")) {
+            var aChildren = oCell.getItems();
+            if (aChildren.length === 2) {
+              aChildren[0].setVisible(true);  // Show text
+              aChildren[1].setVisible(false); // Hide input
+            }
+          }
+        });
+        this.byId("idContainerTypeTable").getBinding("items").refresh();
+        // Toggle button visibility
+        this.byId("ideditbtn_ContainerTable").setVisible(true);
+        this.byId("idSaveBtnIcon4_ContainerTable").setVisible(false);
+        this.byId("idCancelBtnIcon4_containerTable").setVisible(false);
+        sap.m.MessageToast.show("Canceled editing of a record!");
+      },
       /**Editing Container types */
       onEditContainerContainer: async function () {
         var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItem();

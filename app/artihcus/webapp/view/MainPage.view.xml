@@ -396,16 +396,32 @@
                                 icon="sap-icon://add"
                             />
                             <Button
-                                id="idBtghcvbnjnHUvbnContentBtn_AHUOBQ"
+                                id="ideditbtn_ContainerTable"
                                 text="Edit"
-                                press="onEditContainer"
+                                press="onpressEditContainer"
                                 tooltip="Edit"
                                 icon="sap-icon://edit"
                             />
                             <Button
+                                        id="idSaveBtnIcon4_ContainerTable"
+                                        text="Save"
+                                        icon="sap-icon://save"
+                                        press="onPressSaveBtn_containerTable"
+                                        tooltip="Save"
+                                        visible="false"
+                                    />
+                                    <Button
+                                        id="idCancelBtnIcon4_containerTable"
+                                        text="Cancel"
+                                        icon="sap-icon://decline"
+                                        press="onPressCancelBtnEdit_containerTable"
+                                        tooltip="Cancel"
+                                        visible="false"
+                                    />
+                            <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
                                 text="Delete"
-                                press="onContainerDel"
+                                press="onpressContainerDel"
                                 tooltip="Delete"
                                 icon="sap-icon://delete"
                             />
@@ -493,33 +509,71 @@
                                             id="_IasdghfDG6"
                                             text="{truckType}"
                                         />
+                                        <HBox>
                                         <Text
                                             id="_IasdghffgDG6"
                                             text="{length}"
                                         />
+                                        <Input
+                                                id="idlength_container"
+                                                value="{=${length}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                          </HBox>
+                                           <HBox>
                                         <Text
                                             id="_IasdvbnffghDG6"
                                             text="{width}"
                                         />
-
+                                         <Input
+                                                id="idwidth_container"
+                                                value="{=${width}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                          </HBox>
+ <HBox>
                                         <Text
                                             id="_IsdxcffDGt9"
                                             text="{height}"
                                         />
+                                        <Input
+                                                id="idheight_container"
+                                                value="{=${height}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                          </HBox>
 
                                         <Text
                                             id="_ID2vghsdfv3Gt9"
                                             text="{volume}"
                                         />
-
+ <HBox>
                                         <Text
                                             id="_IDsvcvbnmdfG3310"
                                             text="{capacity}"
                                         />
+                                         <Input
+                                                id="idcapacity_container"
+                                                value="{=${capacity}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                          </HBox>
+                                           <HBox>
                                         <Text
                                             id="_IDsvbdfvG10"
                                             text="{truckWeight}"
                                         />
+                                         <Input
+                                                id="idtruckWeight_container"
+                                                value="{=${truckWeight}}"
+                                                visible="false"
+                                                width="6rem"
+                                            />
+                                          </HBox>
                                         <Text
                                             id="_IDsvbdfvG11"
                                             text="{freezed}"
