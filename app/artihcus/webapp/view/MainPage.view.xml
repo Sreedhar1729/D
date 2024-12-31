@@ -131,7 +131,7 @@
                                         />
                                         <Input
                                             id="idDescriptionInput_InitialView"
-                                            value="{CombinedModel>/Product/sapProductno}"
+                                            value="{CombinedModel>/Product/model}"
                                             placeholder="Enter Productno"
                                             class="customInput"
                                             width="100%"
@@ -294,6 +294,25 @@
                                         class="customInput"
                                         width="100%"
                                     /> -->
+                                    </HBox>
+
+                                    <!-- Stack levels -->
+                                      <HBox id="idHboxStcok_InitialView">
+                                        <Label
+                                            id="idLabelStack_InitialView"
+                                            text="Stack Level:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                      
+                                            <Input
+                                                id="idStackinput_InitialView"
+                                                value="{CombinedModel>/Product/stack}"
+                                                placeholder="Enter Stack"
+                                                width="100%"
+                                            />
+                                            
+                                       
                                     </HBox>
 
                                     <HBox id="idHboxWeight_InitialView">
@@ -522,12 +541,7 @@
                                         text="Container Weight"
                                     />
                                 </Column>
-                                <Column id="_IvbnDbnmvbnGenCoFre">
-                                    <Text
-                                        id="_IcvbnmDbvbnmnGenfre"
-                                        text="Freezed"
-                                    />
-                                </Column>
+                                
                             </columns>
 
                             <items>
@@ -566,10 +580,6 @@
                                         <Text
                                             id="_IDsvbdfvG10"
                                             text="{truckWeight}"
-                                        />
-                                        <Text
-                                            id="_IDsvbdfvG11"
-                                            text="{freezed}"
                                         />
                                     </cells>
                                 </ColumnListItem>
@@ -807,7 +817,7 @@
 
                                         <Text
                                             id="_ID"
-                                            text="{sapProductno}"
+                                            text="{model}"
                                         />
                                         <Text
                                             id="_Iexte8"
@@ -1207,19 +1217,19 @@
                                                                                                     }"
                                                             >
                                                                 <viz:dataset>
-                                                                    <viz.data:FlattenedDataset
+                                                                    <viz.data:FlattenedDataset id="_IDGenFlattenedDataset"
                                                                         data="{ChartData>/chartData}"
                                                                     >
                                                                         <viz.data:dimensions
                                                                         >
-                                                                            <viz.data:DimensionDefinition
+                                                                            <viz.data:DimensionDefinition id="_IDGenDimensionDefinition1"
                                                                                 name="Name"
                                                                                 value="{ChartData>Name}"
                                                                             />
                                                                         </viz.data:dimensions>
                                                                         <viz.data:measures
                                                                         >
-                                                                            <viz.data:MeasureDefinition
+                                                                            <viz.data:MeasureDefinition id="_IDGenMeasureDefinition"
                                                                                 name="Volume"
                                                                                 value="{ChartData>Volume}"
                                                                             />
@@ -1227,12 +1237,12 @@
                                                                     </viz.data:FlattenedDataset>
                                                                 </viz:dataset>
                                                                 <viz:feeds>
-                                                                    <viz.feeds:FeedItem
+                                                                    <viz.feeds:FeedItem id="_IDGenFeedItem"
                                                                         uid="size"
                                                                         type="Measure"
                                                                         values="Volume"
                                                                     />
-                                                                    <viz.feeds:FeedItem
+                                                                    <viz.feeds:FeedItem id="_IDGenFeedItem1"
                                                                         uid="color"
                                                                         type="Dimension"
                                                                         values="Name"
