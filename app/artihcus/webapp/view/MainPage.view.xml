@@ -297,7 +297,7 @@
                                     </HBox>
 
                                     <!-- Stack levels -->
-                                      <HBox id="idHboxStcok_InitialView">
+                                      <!-- <HBox id="idHboxStcok_InitialView">
                                         <Label
                                             id="idLabelStack_InitialView"
                                             text="Stack Level:"
@@ -313,7 +313,7 @@
                                             />
                                             
                                        
-                                    </HBox>
+                                    </HBox> -->
 
                                     <HBox id="idHboxWeight_InitialView">
                                         <Label
@@ -1097,7 +1097,7 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5"
-                                                    text="{Productno/sapProductno}"
+                                                    text="{Productno/model}"
                                                 />
                                                 <Text
                                                     id="_IDGenText6"

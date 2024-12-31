@@ -160,7 +160,7 @@
                                             <cells>
                                                 <Text
                                                     id="_IDGenText5_manuvalsimulate"
-                                                    text="{Productno/sapProductno}"
+                                                    text="{Productno/model}"
                                                 />
                                                 <Text
                                                     id="_IDGenText6_manuvalsimulate"
@@ -198,11 +198,15 @@
                                                     id="_IDGenTextert11_manuvalsimulate"
                                                     text="{Productno/color}"
                                                 />
-                                                <Button
+                                                <!-- <Button
                                                     id="_IDGenTextert12_manuvalsimulate"
                                                     text=""
                                                     icon="sap-icon://action-settings"
                                                     press="onPressStackBtn"
+                                                /> -->
+                                                <Text
+                                                    id="id_stack_MS"
+                                                    text="{Productno/stack}"
                                                 />
                                             </cells>
                                         </ColumnListItem>
