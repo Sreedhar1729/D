@@ -303,15 +303,13 @@
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
-                                       
-                                            <Input
-                                                id="idWeightinput_InitialView"
-                                                value="{CombinedModel>/Product/netWeight}"
-                                                placeholder="Enter Net Weight"
-                                                width="100%"
-                                            />
-                                            
-                                       
+
+                                        <Input
+                                            id="idWeightinput_InitialView"
+                                            value="{CombinedModel>/Product/netWeight}"
+                                            placeholder="Enter Net Weight"
+                                            width="100%"
+                                        />
                                     </HBox>
                                     <HBox id="idHboxGWeight_InitialView">
                                         <Label
@@ -320,44 +318,43 @@
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
-                                      
-                                            <Input
-                                                id="idGWeightinput_InitialView"
-                                                value="{CombinedModel>/Product/grossWeight}"
-                                                placeholder="Enter Gross Weight"
-                                                width="100%"
-                                            />
-                                            
-                                       
+
+                                        <Input
+                                            id="idGWeightinput_InitialView"
+                                            value="{CombinedModel>/Product/grossWeight}"
+                                            placeholder="Enter Gross Weight"
+                                            width="100%"
+                                        />
                                     </HBox>
-                                     <HBox id="idhboxUom_InitialView">
+                                    <HBox id="idhboxUom_InitialView">
                                         <Label
                                             id="idLableUom_InitialView"
                                             text="UOM:"
                                             width="125px"
                                             class="sapUiTinyMarginTop"
                                         />
-                                       <Select id="uomSelect" width="174px">
-                                                <items>
-                                                    <core:Item
-                                                        id="_IDGenIt"
-                                                        key="Select"
-                                                        text="Select"
-                                                    />
-                                                    <core:Item
-                                                        id="_IDGenItem1"
-                                                        key="KG"
-                                                        text="Kilograms"
-                                                    />
-                                                    <core:Item
-                                                        id="_IDGenItem2"
-                                                        key="G"
-                                                        text="Grams"
-                                                    />
-
-                                                   
-                                                </items>
-                                            </Select>
+                                        <Select
+                                            id="uomSelect"
+                                            width="174px"
+                                        >
+                                            <items>
+                                                <core:Item
+                                                    id="_IDGenIt"
+                                                    key="Select"
+                                                    text="Select"
+                                                />
+                                                <core:Item
+                                                    id="_IDGenItem1"
+                                                    key="KG"
+                                                    text="Kilograms"
+                                                />
+                                                <core:Item
+                                                    id="_IDGenItem2"
+                                                    key="G"
+                                                    text="Grams"
+                                                />
+                                            </items>
+                                        </Select>
                                         <!-- <Input
                                         id="idServiceInput_InitialView"
                                         value="{CombinedModel>/Product/uom}"
@@ -366,7 +363,22 @@
                                         width="100%"
                                     /> -->
                                     </HBox>
-
+                                    <HBox id="idhboxStackr_MainPage">
+                                        <Label
+                                            id="idLableStack_MainPage"
+                                            text="Stack:"
+                                            width="125px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                        <Input
+                                            id="idStackInput_MainPage"
+                                            value="{CombinedModel>/Product/stack}"
+                                            placeholder="Enter Stack"
+                                            class="customInput"
+                                            width="100%"
+                                            maxLength="200"
+                                        />
+                                    </HBox>
                                     <Label id="idEmptyLabel" />
                                     <Button
                                         id="idconnectsapcancelButton_InitialView"
@@ -703,7 +715,6 @@
                             </headerToolbar>
                             <columns>
                                 <Column
-
                                     id="_IDGenn11"
                                     class="backgroundColour"
                                     visible="false"
@@ -713,10 +724,10 @@
                                         text="UUID"
                                     />
                                 </Column>
-                                <Column id="_IDGenn2"
+                                <Column
+                                    id="_IDGenn2"
                                     class="backgroundColour"
                                 >
-
                                     <Text
                                         id="_IDGnText2"
                                         text="SAP Productno"
@@ -785,10 +796,16 @@
                                         text="Net Weight"
                                     />
                                 </Column>
-                                 <Column id="id_grossWeight">
+                                <Column id="id_grossWeight">
                                     <Text
                                         id="id_grossWeight_text"
                                         text="Gross Weight"
+                                    />
+                                </Column>
+                                 <Column id="id_stack">
+                                    <Text
+                                        id="id_stack_text"
+                                        text="Stack"
                                     />
                                 </Column>
                             </columns>
@@ -826,11 +843,11 @@
                                             text="{quantity}"
                                         />
 
-                                       <Text
+                                        <Text
                                             id="_IDGt9"
                                             text="{= ${length} + ' ' + ${uom} }"
                                         />
- 
+
                                         <Text
                                             id="_IDG10"
                                             text="{= ${width} + ' ' + ${uom}}"
@@ -851,9 +868,13 @@
                                             id="okd"
                                             text="{= ${netWeight} +' '+${wuom}}"
                                         />
-                                         <Text
+                                        <Text
                                             id="id_grossWeight_cell"
                                             text="{= ${grossWeight} +' '+${wuom}}"
+                                        />
+                                         <Text
+                                            id="id_stackt_cell"
+                                            text="{stack}"
                                         />
                                     </cells>
                                 </ColumnListItem>
@@ -1084,7 +1105,7 @@
                                                     id="_IDGenText10"
                                                     text="{Productno/netWeight}"
                                                 />
-                                                 <Text
+                                                <Text
                                                     id="id_GrossWeight_cell_simulate"
                                                     text="{Productno/grossWeight}"
                                                 />
@@ -1104,11 +1125,15 @@
                                                     id="_IDGenTextert11"
                                                     text="{Productno/color}"
                                                 />
-                                                <Button
+                                                <!-- <Button
                                                     id="_IDGenTextert12"
                                                     text=""
                                                     icon="sap-icon://action-settings"
                                                     press="onPressStackBtn"
+                                                /> -->
+                                                 <Text
+                                                    id="id_stack_wizardTable"
+                                                    text="{Productno/stack}"
                                                 />
                                             </cells>
                                         </ColumnListItem>
