@@ -131,7 +131,13 @@ sap.ui.define(
             workbook.SheetNames.forEach(function (sheetName) {
               // Here is your object for every sheet in workbook
               excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+              // adding serial numbers
+              excelData.forEach(function (item, index) {
+                item.serialNumber = index + 1; // Serial number starts from 1
+              });
+
             });
+
             // Setting the data to the local model
             that.MaterialModel.setData({
               items: excelData
@@ -159,20 +165,22 @@ sap.ui.define(
         addedProdCodeModel.items.forEach(async (item, index) => {
 
           const aExcelInputs = [
-            { value: item.sapProductno, regex: null, message: "Enter SAP product number" },
-            { value: item.EAN, regex: null, message: "Please enter EAN" },
+            { value: item.model, regex: null, message: "Enter SAP product number" },
             { value: item.description, regex: null, message: "Enter description" },
             { value: item.mCategory, regex: null, message: "Enter category" },
             { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
             { value: item.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
             { value: item.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
             { value: item.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
-            { value: item.weight, regex: /^\d+$/, message: "Weight should be numeric" }
+            { value: item.grossWeight, regex: /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
+            { value: item.netWeight, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+            { value: item.wuom, regex: null, message: "Enter UOM for Weight" },
+            // { value: item.volume, regex: null, message: "Enter Volume" }
           ]
           for (let input of aExcelInputs) {
             let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
             if (aValidations.length > 0) {
-              raisedErrors.push({ index: index ,errorMsg:aValidations[0]}) // pushning error into empty array
+              raisedErrors.push({ index: index, errorMsg: aValidations[0] }) // pushning error into empty array
             }
           }
         })
@@ -186,10 +194,12 @@ sap.ui.define(
         // test
         try {
           addedProdCodeModel.items.forEach(async (item, index) => {
+            delete item.serialNumber
             item.length = String(item.length).trim();
             item.width = String(item.width).trim();
             item.height = String(item.height).trim();
-            item.weight = String(item.weight).trim();
+            item.netWeight = String(item.weight).trim();
+            item.grossWeight = String(item.weight).trim();
             item.quantity = String(item.quantity).trim();
             item.volume = String(item.volume).trim();
 
@@ -957,22 +967,22 @@ sap.ui.define(
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
-
-        // Validation
-        const validationErrors = [];
-        const validateField = (fieldId, value, regex, errorMessage) => {
-          const oField = oView.byId(fieldId);
-          if (!value || (regex && !regex.test(value))) {
-            oField.setValueState("Error");
-            oField.setValueStateText(errorMessage);
-            validationErrors.push(errorMessage);
-          } else {
-            oField.setValueState("None");
-          }
-        };
+          let raisedErrors = [];
+        // // Validation
+        // const validationErrors = [];
+        // const validateField = (fieldId, value, regex, errorMessage) => {
+        //   const oField = oView.byId(fieldId);
+        //   if (!value || (regex && !regex.test(value))) {
+        //     oField.setValueState("Error");
+        //     oField.setValueStateText(errorMessage);
+        //     validationErrors.push(errorMessage);
+        //   } else {
+        //     oField.setValueState("None");
+        //   }
+        // };
 
         const aUserInputs = [
-          { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
+          // { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
@@ -984,13 +994,19 @@ sap.ui.define(
         ]
 
         aUserInputs.forEach(async input => {
-          validateField(input.Id, input.value, input.regex, input.message)
+          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
+          if (aValidations.length > 0) {
+            raisedErrors.push(aValidations[0]) // pushning error into empty array
+          }
         })
 
-        if (validationErrors.length > 0) {
-          MessageBox.information("Please enter correct data");
-          return;
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(error) // showing error msg 
+            return;
+          }
         }
+
 
         // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idselectuom").getSelectedKey();
