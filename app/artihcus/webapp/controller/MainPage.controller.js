@@ -1,4 +1,3 @@
-
 sap.ui.define(
   [
     "./BaseController",
@@ -62,10 +61,10 @@ sap.ui.define(
         this.getView().setModel(this.localModel, "localModel");
         /**Constructing Product Model and set the model to the view */
         // const oJsonModel = new JSONModel({
-        //   sapProductno: "",
+        //   model: "",
         //   length: "",
         //   width: "",
-        
+
         //   height: "",
         //   volume: "",
         //   uom: "",
@@ -99,11 +98,12 @@ sap.ui.define(
         // Constructing a combined JSON Model
         const oCombinedJsonModel = new JSONModel({
           Product: {
-            sapProductno: "",
+            model: "",
             length: "",
             width: "",
             height: "",
             volume: "",
+            stack: "",
             uom: "",
             vuom: "",
             wuom: "",
@@ -127,7 +127,6 @@ sap.ui.define(
             volume: "",
             truckWeight: "",
             capacity: "",
-            freezed: ""
           }
         });
 
@@ -188,8 +187,8 @@ sap.ui.define(
         var batchGroupId = "batchCreateGroup";
         let aErrors = []
 
-                
-        addedProdCodeModel.items.forEach((item,index) => {
+
+        addedProdCodeModel.items.forEach((item, index) => {
           item.length = String(item.length).trim();
           item.width = String(item.width).trim();
           item.height = String(item.height).trim();
@@ -493,26 +492,6 @@ sap.ui.define(
             }.bind(this)
           })
         })
-
-        // var oModel = this.getOwnerComponent().getModel("ModelV2");
-
-
-        // await oModel.read("/SelectedProduct", {
-        //   success: function (oData) {
-        //     oData.results.forEach(async (item) => {
-        //       var sId = item.ID;
-        //       await this.deleteData(oModel, `/SelectedProduct('${sId}')`)
-        //       this.byId("idAddProductsTableIn_simulate")?.getBinding("items")?.refresh();
-        //       this.byId("idTableAddProduct")?.getBinding("items")?.refresh();
-        //     })
-
-        //   }.bind(this),
-        //   error: function () {
-
-        //   }
-        // });
-
-
       },
 
       onAddPress: function () {
@@ -594,11 +573,10 @@ sap.ui.define(
             };
             // var dummy2 = {
             //   Productno_ID: oData.ID,
-
             //   color: randomHexColor
             // };
             selectedData.push({
-              product: oData.sapProductno,
+              product: oData.model,
               description: oData.description,
               actualQuantity: oData.quantity, // Replace with the correct field name from the data
               pickingQuantity: sPickingQty,
@@ -923,11 +901,18 @@ sap.ui.define(
 
       // create fragment in add Eqipment page
       onPressInAddEquipment: async function () {
+        var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItems();
+
+        if(oSelectedItem.length>0){
+
+          return MessageBox.error("Please unselect selected Items");
+
+        }
         if (!this.oCreateContainerDialog) {
           this.oCreateContainerDialog = await this.loadFragment("CreateContainer");
         }
         this.oCreateContainerDialog.open();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{});
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", {});
       },
       onCancelInCreateVehicleDialog: function () {
         this.byId("idCreateInContainerDialog").close();
@@ -942,7 +927,7 @@ sap.ui.define(
       },
       onCancelInEditProductDialog: function () {
         this.byId("idEditProductDssialog").close();
-        this.getView().getModel("CombinedModel").setProperty("/Product",{});
+        this.getView().getModel("CombinedModel").setProperty("/Product", {});
 
       },
       // edit  fragment in Add equipment table
@@ -954,7 +939,7 @@ sap.ui.define(
       },
       onCancelInEditVehicleDialog: function () {
         this.byId("idEditContainerDialog").close();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",{})
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", {})
       },
 
       //create dialog in list 
@@ -978,7 +963,7 @@ sap.ui.define(
         this.byId("idListEdiwtDialog").close();
       },
 
-      /** ************************Creating New Product  ***************************************************/
+      /**************************   Creating New Product(Working Fine)  ***************************************************/
       onCreateProduct: async function () {
         const randomHexColor = (function () {
           const letters = '0123456789ABCDEF';
@@ -1008,16 +993,23 @@ sap.ui.define(
         };
 
         const aUserInputs = [
-          { Id: "idDescriptionInput_InitialView", value: oPayload.sapProductno, regex: null, message: "Enter SAP product number" },
+          { Id: "idDescriptionInput_InitialView", value: oPayload.model, regex: null, message: "Enter SAP product number" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex:  /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
-          { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex:  /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
+
+//           { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex:  /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+//           { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex:  /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
+//           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+//           { Id: "idStackInput_MainPage", value: oPayload.stack, regex: /^\d+$/, message: "Stack should be numeric" }
+
+          { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+          { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex: /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
-          { Id: "idStackInput_MainPage", value: oPayload.stack, regex: /^\d+$/, message: "Stack should be numeric" }
+          { Id: "idStackinput_InitialView", value: oPayload.stack, regex: /^\d+$/, message: "Stack should be numeric" }
+
         ]
 
         aUserInputs.forEach(async input => {
@@ -1047,13 +1039,12 @@ sap.ui.define(
         oPayload.wuom = oSelectedItem1;
         var oVolume;
         oPayload.color = randomHexColor
-
         if (oPayload.uom === 'CM') {
           // If UOM is in centimeters, convert to meters before calculating
           oVolume = (oPayload.length / 100) * (oPayload.width / 100) * (oPayload.height / 100);
           oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
         }
-        else if(oPayload.uom === 'mm'){
+        else if (oPayload.uom === 'mm') {
           oVolume = (oPayload.length / 1000) * (oPayload.width / 1000) * (oPayload.height / 1000);
           oPayload.volume = String(oVolume.toFixed(7)); // Volume in cubic meters with 7 decimal places
         }
@@ -1086,7 +1077,6 @@ sap.ui.define(
       ClearingModel: function () {
         const oPayloadModel = this.getView().getModel("CombinedModel");
         oPayloadModel.setProperty("/Product", {})
-
       },
 
       /**Deleting Products */
@@ -1096,7 +1086,7 @@ sap.ui.define(
           oModel = this.getView().getModel("ModelV2");
         if (aSelectedItems.length === 0) {
           MessageBox.information("Please select at least one product to delete.");
-          return; // Exit the function if no items are selected
+          return;
         }
         try {
           await Promise.all(aSelectedItems.map(async (oItem) => {
@@ -1110,8 +1100,8 @@ sap.ui.define(
         }
       },
 
-      onliveContainerSearch: function (oEvent) {
 
+      onliveContainerSearch: function (oEvent) {
         let sQuery = oEvent.getParameter("newValue");
         sQuery = sQuery.replace(/\s+/g, '');
         sQuery = sQuery.toUpperCase();
@@ -1128,8 +1118,9 @@ sap.ui.define(
         oTableBinding.filter(allFilter);
       },
 
-      /**Creating Containers */
+      /** Creating New Containers */
       onCreateContainer: async function () {
+      
         const oPayloadModel = this.getView().getModel("CombinedModel"),
           oPayload = oPayloadModel.getProperty("/Vehicle"),
           oModel = this.getView().getModel("ModelV2"),
@@ -1143,32 +1134,24 @@ sap.ui.define(
           MessageBox.warning("Please Enter all Values");
           return;
         }
-        const oFreeze = this.byId("idFreezedInput").getSelectedKey();
-        if (!oFreeze) {
-          MessageBox.warning("Please Enter all Values");
-          return;
-        }
-        const oFreezeVal = oFreeze === 'Yes' ? true : false;
-        oPayload.freezed = oFreezeVal;
         oPayload.truckType = `${oPayload.truckType}FT`
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idContainerTypeUOM").getSelectedItem();
+        if (!oSelectedItem.getKey()) {
+          return MessageBox.warning("Please Select UOM!!");
+        }
         oPayload.uom = oSelectedItem ? oSelectedItem.getKey() : "";
         try {
           await this.createData(oModel, oPayload, oPath);
-
           this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
-          this.byId("idContainerTypeTable").getBinding("items").refresh();
+            this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInCreateVehicleDialog();
-          this.byId("idFreezedInput").setSelectedKey("");
           this.byId("idContainerTypeUOM").setSelectedKey("");
           MessageToast.show("Successfully Created!");
         } catch (error) {
-          this.byId("idFreezedInput").setSelectedKey("");
           this.getView().getModel("CombinedModel").setProperty("/Vehicle", {}),
-          this.onCancelInCreateVehicleDialog();
+            this.onCancelInCreateVehicleDialog();
           MessageToast.show("Error at the time of creation");
         }
       },
@@ -1176,7 +1159,6 @@ sap.ui.define(
       /**Clearing Vehicle Model */
       ClearVeh: function () {
         const oPayloadModel = this.getView().getModel("CombinedModel");
-
         oPayloadModel.setProperty("/Vehicle", {})
 
       },
@@ -1210,20 +1192,24 @@ sap.ui.define(
 
       /**Editing Container types */
       onEditContainer: async function () {
-        var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItem();
-        if (!oSelectedItem) {
+        var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItems();
+        if (oSelectedItem.length<=0) {
           MessageBox.information("Please select at least one Row for edit!");
           return;
         }
-        const oData = oSelectedItem.getBindingContext().getObject();
+        if (oSelectedItem.length>1) {
+          MessageBox.information("Please select only  one Row for edit!");
+          return;
+        }
+        const oData = oSelectedItem[0].getBindingContext().getObject();
         await this.onPressEditInAddEquipmentTable();
-        this.getView().getModel("CombinedModel").setProperty("/Vehicle",oData);
+        this.getView().getModel("CombinedModel").setProperty("/Vehicle", oData);
       },
 
       /**Updading Edited Values */
       onSave: async function () {
         const oData = this.getView().getModel("CombinedModel").getProperty("/Vehicle"),
-        oView = this.getView();
+          oView = this.getView();
         // validations
         const aUserInput = [
           { Id: "idVehInplength", value: oData.length, regex: /^\d+(\.\d+)?$/, message: "Enter length as a numeric value" },
@@ -1248,28 +1234,25 @@ sap.ui.define(
             return;
           }
         }
-
-         const updatedData = oData;
+        const updatedData = oData;
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        const otruckType = oPayload.truckType,
-              ofreezed = oPayload.freezed;
+        const otruckType = oPayload.truckType;
         const oModel = this.getView().getModel("ModelV2");
-        const oPath = `/TruckTypes(truckType='${otruckType}',freezed='${ofreezed}')`;
+        const oPath = `/TruckTypes(truckType='${otruckType}')`;
         try {
-
           await this.updateData(oModel, oPayload, oPath);
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.getView().getModel("ModelV2").setProperty("/Vehicle",{})
+          this.getView().getModel("ModelV2").setProperty("/Vehicle", {})
           MessageToast.show('Successfully Updated');
         } catch (error) {
           MessageToast.show('Error');
         } finally {
           this.byId("idContainerTypeTable").getBinding("items").refresh();
           this.onCancelInEditVehicleDialog();
-          this.getView().getModel("ModelV2").setProperty("/Vehicle",{});
+          this.getView().getModel("ModelV2").setProperty("/Vehicle", {});
         }
       },
 
@@ -1278,77 +1261,56 @@ sap.ui.define(
         this.getView().getModel("CombinedModel").setProperty("/Vehicle", {})
       },
 
-      /**Editing Product Details  for fragment*/
-      // onPressEditInProductsTable: async function () {
-      //   var oSelectedItem = this.byId("ProductsTable").getSelectedItem();
-      //   if (!oSelectedItem) {
-      //     MessageBox.information("Please select at least one Row for edit!");
-      //     return;
-      //   }
-      //   const oData = oSelectedItem.getBindingContext().getObject();
-      //   await this.oOpenProductEdit();
-      //   this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
-      //   this.byId("editDescriptionInput").setValue(oData.description); // Description
-      //   this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
-      //   this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
-      //   this.byId("editproLengthInput").setValue(oData.length); // Length
-      //   this.byId("editprodWidthInput").setValue(oData.width); // Width
-      //   this.byId("editprodHeightInput").setValue(oData.height); // Height
-      //   // this.byId("editVolumeInput").setValue(oData.volume); // Volume
-      //   this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
-      //   this.byId("editWeightInput").setValue(oData.weight); // Weight
-      //   this.byId("editQuantityInput").setValue(oData.quantity);
-      // },
-  /**Editing Product Details for editable table */
-  onPressEditInProductsTable: function () {
-    debugger
-    var oTable = this.byId("ProductsTable");
-    var aSelectedItem = oTable.getSelectedItems();
+      /**Editing Product Details for editable table */
+      onPressEditInProductsTable: function () {
+        debugger
+        var oTable = this.byId("ProductsTable");
+        var aSelectedItem = oTable.getSelectedItems();
 
-    if (aSelectedItem.length === 0) {
-      sap.m.MessageToast.show("Please select atleast one row to edit.");
-      return;
-    }
-    if (aSelectedItem.length > 1) {
-      sap.m.MessageToast.show("Please select only one row to edit.");
-      return;
-    }
-    this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
-    this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
-    this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
-
-    var oSelectedItem = aSelectedItem[0];
-    var aCells = oSelectedItem.getCells();
-
-    this.pastDescription = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
-    this.pastMCategory = aCells[3].getItems()[0].getText();
-    this.pastQuantity = aCells[4].getItems()[0].getText();
-    this.pastLength = aCells[5].getItems()[0].getText();
-    this.pastWidth = aCells[6].getItems()[0].getText();
-    this.pastHeight = aCells[7].getItems()[0].getText();
-    this.pastUOM = aCells[9].getItems()[0].getText();
-    this.pastWeight = aCells[10].getItems()[0].getText();
-    // Loop through selected items
-    aSelectedItem.forEach(function (oItem) {
-      var aCells = oItem.getCells();
-
-      // Loop through the cells to find HBox elements
-      aCells.forEach(function (oCell) {
-        if (oCell.isA("sap.m.HBox")) {
-          var aChildren = oCell.getItems();
-
-          if (aChildren.length === 2) {
-            aChildren[0].setVisible(false);
-            aChildren[1].setVisible(true);
-          }
+        if (aSelectedItem.length === 0) {
+          sap.m.MessageToast.show("Please select atleast one row to edit.");
+          return;
         }
-      });
-    });
-  },
+        if (aSelectedItem.length > 1) {
+          sap.m.MessageToast.show("Please select only one row to edit.");
+          return;
+        }
+        this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
+        this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
+        this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
+
+        var oSelectedItem = aSelectedItem[0];
+        var aCells = oSelectedItem.getCells();
+
+        this.pastDescription = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
+        this.pastMCategory = aCells[3].getItems()[0].getText();
+        this.pastQuantity = aCells[4].getItems()[0].getText();
+        this.pastLength = aCells[5].getItems()[0].getText();
+        this.pastWidth = aCells[6].getItems()[0].getText();
+        this.pastHeight = aCells[7].getItems()[0].getText();
+        this.pastUOM = aCells[9].getItems()[0].getText();
+        this.pastWeight = aCells[10].getItems()[0].getText();
+        // Loop through selected items
+        aSelectedItem.forEach(function (oItem) {
+          var aCells = oItem.getCells();
+
+          // Loop through the cells to find HBox elements
+          aCells.forEach(function (oCell) {
+            if (oCell.isA("sap.m.HBox")) {
+              var aChildren = oCell.getItems();
+
+              if (aChildren.length === 2) {
+                aChildren[0].setVisible(false);
+                aChildren[1].setVisible(true);
+              }
+            }
+          });
+        });
+      },
 
       /**Updadting the Changed Product Value */
       onSaveProduct: async function () {
-          const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
+        const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
         const oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
@@ -1374,7 +1336,7 @@ sap.ui.define(
       },
       /**Clear Product Editing Dialog */
       onClearEditProdDialog: function () {
-        this.getView().getModel("CombinedModel").setProperty("/Product",{});
+        this.getView().getModel("CombinedModel").setProperty("/Product", {});
       },
 
       /**Product Simulation */
@@ -1407,7 +1369,7 @@ sap.ui.define(
           oModel = this.getView().getModel("ModelV2"),
           sPath = "/Materials";
         /**constructing Filter */
-        const oFilter = new Filter("sapProductno", FilterOperator.EQ, oProduct);
+        const oFilter = new Filter("model", FilterOperator.EQ, oProduct);
         var that = this;
         /**Reading data */
         oModel.read(sPath, {
@@ -1624,7 +1586,7 @@ sap.ui.define(
         sQuery = sQuery.replace(/\s+/g, '');
         sQuery = sQuery.toUpperCase();
         if (sQuery && sQuery.length > 1) {
-          aFilter.push(new Filter("sapProductno", FilterOperator.EQ, sQuery));
+          aFilter.push(new Filter("model", FilterOperator.EQ, sQuery));
         }
         var oTable = this.byId("ProductsTable");
         var oBinding = oTable.getBinding("items");
@@ -1682,7 +1644,7 @@ sap.ui.define(
             }
 
             const oPayload = {
-              sapProductno: String(product['SAP Productno']), // Ensure it's a string
+              model: String(product['SAP Productno']), // Ensure it's a string
               length: String(product.Length),                  // Ensure it's a string
               width: String(product.Width),                    // Ensure it's a string
               height: String(product.Height),                  // Ensure it's a string
@@ -1711,12 +1673,12 @@ sap.ui.define(
       },
 
       // Function to check if the product already exists in memory
-      checkProductExists: function (sapProductNo) {
+      checkProductExists: function (model) {
         if (!this.existingProducts || !Array.isArray(this.existingProducts)) {
           console.error("existingProducts is not initialized or not an array.");
           return false; // If not initialized, assume it doesn't exist.
         }
-        return this.existingProducts.some(product => product.sapProductno === sapProductNo);
+        return this.existingProducts.some(product => product.model === model);
       },
 
 
@@ -1774,7 +1736,7 @@ sap.ui.define(
       oProductRead: async function (oMat, oQuan) {
         const oPath = "/Materials",
           oModel = this.getView().getModel("ModelV2");
-        const sFilter = new Filter("sapProductno", FilterOperator.EQ, oMat);
+        const sFilter = new Filter("model", FilterOperator.EQ, oMat);
         try {
           const oSuccessData = await this.readData(oModel, oPath, sFilter);
           console.log("success");
@@ -1954,22 +1916,22 @@ sap.ui.define(
         debugger;
         var oWizard = this.byId("idWizardIn_simulate");
         var oCurrentStep = oWizard.getCurrentStep();
- 
+
         oWizard.nextStep();
         const oTile = oEvent.getSource();
         const header = oTile.getHeader();
- 
- 
- 
- 
+
+
+
+
         // Reinitialize the 3D scene
         this._init3DScene();
- 
+
         // Fetch dimensions based on truck type
         const oModel = this.getOwnerComponent().getModel("ModelV2");
         const sPath = "/TruckTypes";
         const oFilter = new Filter("truckType", FilterOperator.EQ, header);
- 
+
         oModel.read(sPath, {
           filters: [oFilter],
           success: function (odata) {
@@ -1977,7 +1939,7 @@ sap.ui.define(
               const height = parseFloat(odata.results[0].height);
               const length = parseFloat(odata.results[0].length);
               const width = parseFloat(odata.results[0].width);
- 
+
               // Create a new container
               this._createContainer(height, length, width);
             } else {
@@ -1989,7 +1951,7 @@ sap.ui.define(
           }
         });
       },
- 
+
 
 
       onPressAddProductInSimulate: async function () {
@@ -2115,7 +2077,7 @@ sap.ui.define(
           console.error("Canvas container not found");
           return;
         }
-        this.renderer.setSize(800, 600); // Increase canvas size
+        this.renderer.setSize(800, 540); // Increase canvas size
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.shadowMap.enabled = true;
         canvasContainer.appendChild(this.renderer.domElement);
@@ -2321,14 +2283,7 @@ sap.ui.define(
             text: "Cargo Volume Breakdown"
           }
         });
-    },
-    
-
-
-
-
-
-
+      },
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
@@ -2395,7 +2350,13 @@ sap.ui.define(
         // Generate and download the Excel file
         XLSX.writeFile(oWorkbook, "ProductsListTable.xlsx");
       },
+      onPressManuvalSimulate:function () {
+        var oRouter = UIComponent.getRouterFor(this);
+        oRouter.navTo("ManuvalSimulation");
+       
+      },
 
-   
+
+
     });
   });
