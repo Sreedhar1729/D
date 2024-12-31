@@ -5,14 +5,14 @@ using {
     managed
 } from '@sap/cds/common';
 
-
 /**for custom type */
 type string : String(40);
 
+
 /**Defining entity */
 
-// for unique fields
 
+// for unique fields
 define entity Users : cuid {
     userID       : String;
     fName        : String;
@@ -21,16 +21,17 @@ define entity Users : cuid {
     mailID       : String;
     password     : String;
     profileImage : String;
-    expireDate : String;
 }
 
 @assert.unique: {model: [model]
 
 }
 
+
 define entity Materials {
 
     key ID              : UUID;
+        model           : string;
         model           : string;
         EAN             : String;
         length          : String;
@@ -40,9 +41,12 @@ define entity Materials {
         vuom            : String;
         muom            : String;
         stack           : String;
+        stack           : String;
         uom             : String;
         mCategory       : string;
         description     : String;
+        netWeight       : String;
+        grossWeight     : String;
         netWeight       : String;
         grossWeight     : String;
         wuom            : String;
@@ -53,7 +57,9 @@ define entity Materials {
         selectedProduct : Association to SelectedProduct
                               on selectedProduct.Productno = $self
 
+
 }
+
 
 /**Defining Vehicle Entity */
 define entity TruckTypes {
@@ -71,14 +77,22 @@ define entity TruckTypes {
 
 define entity SelectedProduct {
     key ID               : UUID;
+
+define entity SelectedProduct {
+    key ID               : UUID;
         Productno        : Association to Materials;
         SelectedQuantity : String;
 }
+
+
 
 
 define entity History : managed {
     key ID        : UUID;
         productNo : Association to SelectedProduct;
         truckType : Association to TruckTypes;
+
+}
+
 
 }
