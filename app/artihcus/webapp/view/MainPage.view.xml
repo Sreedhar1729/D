@@ -1366,6 +1366,12 @@
                                                         text="{Calculation>/RemainingCapacity}"
                                                     />
                                                 </HBox>
+                                                <Button
+                                                    id="idDownloadSimButton"
+                                                    text="Download Simulation"
+                                                    press="onDownloadSimulation"
+                                                    class="sapUiSmallMarginTop"
+                                                />
                                             </form:SimpleForm>
                                         </VBox>
                                     </HBox>
