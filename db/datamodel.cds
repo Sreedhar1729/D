@@ -8,14 +8,13 @@ type string : String(40);
 /**Defining entity */
 
 // for unique fields
-@assert.unique: {sapProductno: [sapProductno]
+@assert.unique: {model: [model]
 
 }
-
 define entity Materials {
 
     key ID              : UUID;
-        sapProductno    : string;
+        model           : string;
         EAN             : String;
         length          : String;
         width           : String;
@@ -23,6 +22,7 @@ define entity Materials {
         volume          : String;
         vuom            : String;
         muom            : String;
+        stack           : String;
         uom             : String;
         mCategory       : string;
         description     : String;
@@ -42,7 +42,6 @@ define entity Materials {
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
-    key freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
