@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices m:DataServiceVersion="2.0">
+    <Schema Namespace="MyService" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+      <Annotation Term="Core.Links" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Collection>
+          <Record>
+            <PropertyValue Property="rel" String="author"/>
+            <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+          </Record>
+        </Collection>
+      </Annotation>
+      <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Materials" EntityType="MyService.Materials"/>
+        <EntitySet Name="TruckTypes" EntityType="MyService.TruckTypes"/>
+        <EntitySet Name="SelectedProduct" EntityType="MyService.SelectedProduct"/>
+        <EntitySet Name="History" EntityType="MyService.History"/>
+        <AssociationSet Name="SelectedProduct_Productno" Association="MyService.SelectedProduct_Productno">
+          <End Role="SelectedProduct" EntitySet="SelectedProduct"/>
+          <End Role="Materials" EntitySet="Materials"/>
+        </AssociationSet>
+        <AssociationSet Name="History_productNo" Association="MyService.History_productNo">
+          <End Role="History" EntitySet="History"/>
+          <End Role="SelectedProduct" EntitySet="SelectedProduct"/>
+        </AssociationSet>
+        <AssociationSet Name="History_truckType" Association="MyService.History_truckType">
+          <End Role="History" EntitySet="History"/>
+          <End Role="TruckTypes" EntitySet="TruckTypes"/>
+        </AssociationSet>
+      </EntityContainer>
+      <EntityType Name="Materials">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="model" Type="Edm.String" MaxLength="40"/>
+        <Property Name="EAN" Type="Edm.String"/>
+        <Property Name="length" Type="Edm.String"/>
+        <Property Name="width" Type="Edm.String"/>
+        <Property Name="height" Type="Edm.String"/>
+        <Property Name="volume" Type="Edm.String"/>
+        <Property Name="vuom" Type="Edm.String"/>
+        <Property Name="muom" Type="Edm.String"/>
+        <Property Name="stack" Type="Edm.String"/>
+        <Property Name="uom" Type="Edm.String"/>
+        <Property Name="mCategory" Type="Edm.String" MaxLength="40"/>
+        <Property Name="description" Type="Edm.String"/>
+        <Property Name="netWeight" Type="Edm.String"/>
+        <Property Name="grossWeight" Type="Edm.String"/>
+        <Property Name="wuom" Type="Edm.String"/>
+        <Property Name="quantity" Type="Edm.String"/>
+        <Property Name="layers" Type="Edm.String"/>
+        <Property Name="mass" Type="Edm.String"/>
+        <Property Name="layersHeight" Type="Edm.String"/>
+        <Property Name="color" Type="Edm.String"/>
+        <NavigationProperty Name="selectedProduct" Relationship="MyService.SelectedProduct_Productno" FromRole="Materials" ToRole="SelectedProduct"/>
+      </EntityType>
+      <EntityType Name="TruckTypes">
+        <Key>
+          <PropertyRef Name="truckType"/>
+        </Key>
+        <Property Name="truckType" Type="Edm.String" Nullable="false"/>
+        <Property Name="length" Type="Edm.String"/>
+        <Property Name="width" Type="Edm.String"/>
+        <Property Name="height" Type="Edm.String"/>
+        <Property Name="uom" Type="Edm.String"/>
+        <Property Name="volume" Type="Edm.String"/>
+        <Property Name="tvuom" Type="Edm.String"/>
+        <Property Name="truckWeight" Type="Edm.String"/>
+        <Property Name="capacity" Type="Edm.String"/>
+        <Property Name="tuom" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="SelectedProduct">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <NavigationProperty Name="Productno" Relationship="MyService.SelectedProduct_Productno" FromRole="SelectedProduct" ToRole="Materials"/>
+        <Property Name="Productno_ID" Type="Edm.Guid"/>
+        <Property Name="SelectedQuantity" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="History">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <NavigationProperty Name="productNo" Relationship="MyService.History_productNo" FromRole="History" ToRole="SelectedProduct"/>
+        <Property Name="productNo_ID" Type="Edm.Guid"/>
+        <NavigationProperty Name="truckType" Relationship="MyService.History_truckType" FromRole="History" ToRole="TruckTypes"/>
+        <Property Name="truckType_truckType" Type="Edm.String"/>
+      </EntityType>
+      <Association Name="SelectedProduct_Productno">
+        <End Role="SelectedProduct" Type="MyService.SelectedProduct" Multiplicity="0..1"/>
+        <End Role="Materials" Type="MyService.Materials" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="Materials">
+            <PropertyRef Name="ID"/>
+          </Principal>
+          <Dependent Role="SelectedProduct">
+            <PropertyRef Name="Productno_ID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="History_productNo">
+        <End Role="History" Type="MyService.History" Multiplicity="*"/>
+        <End Role="SelectedProduct" Type="MyService.SelectedProduct" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="SelectedProduct">
+            <PropertyRef Name="ID"/>
+          </Principal>
+          <Dependent Role="History">
+            <PropertyRef Name="productNo_ID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="History_truckType">
+        <End Role="History" Type="MyService.History" Multiplicity="*"/>
+        <End Role="TruckTypes" Type="MyService.TruckTypes" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="TruckTypes">
+            <PropertyRef Name="truckType"/>
+          </Principal>
+          <Dependent Role="History">
+            <PropertyRef Name="truckType_truckType"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Annotations Target="MyService.Materials/ID" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MyService.SelectedProduct/ID" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="MyService.History/createdAt" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+      </Annotations>
+      <Annotations Target="MyService.History/createdBy" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+      </Annotations>
+      <Annotations Target="MyService.History/modifiedAt" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+      </Annotations>
+      <Annotations Target="MyService.History/modifiedBy" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+        <Annotation Term="UI.ExcludeFromNavigationContext" Bool="true"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+        <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+      </Annotations>
+      <Annotations Target="MyService.History/ID" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
