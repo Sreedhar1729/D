@@ -113,7 +113,8 @@ sap.ui.define(
             EAN: "",
             netWeight: "",
             grossWeight: "",
-            color: ""
+            color: "",
+            stack:""
           },
           Vehicle: {
             truckType: "",
@@ -998,10 +999,17 @@ sap.ui.define(
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
+
+//           { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex:  /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+//           { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex:  /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
+//           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+//           { Id: "idStackInput_MainPage", value: oPayload.stack, regex: /^\d+$/, message: "Stack should be numeric" }
+
           { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
           { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex: /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
           { Id: "idStackinput_InitialView", value: oPayload.stack, regex: /^\d+$/, message: "Stack should be numeric" }
+
         ]
 
         aUserInputs.forEach(async input => {
