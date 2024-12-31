@@ -736,8 +736,8 @@ sap.ui.define(
           }
           return color;
         })();
-        const oPayloadModel = this.getView().getModel("ProductModel"),
-          oPayload = oPayloadModel.getProperty("/"),
+        const oPayloadModel = this.getView().getModel("CombinedModel"),
+          oPayload = oPayloadModel.getProperty("/Product"),
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
@@ -1018,7 +1018,7 @@ sap.ui.define(
           return;
         }
 
-        const oPayload = {
+        var oPayload = {
           truckType: oData.truckType,
           length: oData.length,
           width: oData.width,
@@ -1027,7 +1027,7 @@ sap.ui.define(
           truckWeight: this.byId("editTruckWeightInput").getValue(),
           capacity: this.byId("editCapacityInput").getValue()
         };
-        const oPayload = updatedData;
+        var oPayload = updatedData;
         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
         const truckType = this.byId("editTruckTypeInput").getValue();
