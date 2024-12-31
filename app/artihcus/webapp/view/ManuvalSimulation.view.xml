@@ -1,0 +1,234 @@
+<mvc:View
+    controllerName="com.app.artihcus.controller.ManuvalSimulation"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+    xmlns="sap.m"
+      xmlns:u="sap.ui.unified"
+>
+    <Page
+        id="_IDGenPage3"
+        title="Manual Simulation 📦"
+        titleAlignment="Center"
+        showNavButton="true"
+        navButtonPress="onBackPress"
+        class="backgroundColour"
+    >
+        <content>
+            <VBox
+                id="_IDGenVBox1"
+                class="backgroundColour"
+            >
+                <Table
+                                    id="idAddProductsTableIn_manuvalsimulate"
+                                    mode="MultiSelect"
+                                    width="100%"
+                                    growing="true"
+                                    noDataText="No products available"
+                                    items="{/SelectedProduct}"
+                                    backgroundDesign="Transparent"
+                                    growingThreshold="100"
+                                    class="backgroundColour"
+                                >
+                                    <!-- Assuming 'products' is the array in your JSON model -->
+                                    <headerToolbar>
+                                        <OverflowToolbar id="idUsersInfoHeade_manuvalsimulate">
+                                           
+                                            <Button
+                                                id="idAddButtonInProduct_manuvalsimulate"
+                                                icon="sap-icon://add"
+                                                text="Add Product"
+                                                press="onPressAddProductIn_ManualSimulate"
+                                            />
+                                            <ToolbarSpacer id="as_manuvalsimulate" />
+
+                                            <u:FileUploader
+                                                id="EditId_manuvalsimulate"
+                                                sameFilenameAllowed="true"
+                                                iconOnly="false"
+                                                buttonOnly="true"
+                                                fileType="XLSX,xlsx"
+                                                icon="sap-icon://edit"
+                                                iconFirst="true"
+                                                buttonText="Edit"
+                                                style="Transparent"
+                                                change="onEdit"
+                                            />
+                                            <Button
+                                                id="idClearBtnIn__manuvalsimulate"
+                                                press="onDeletePressInSimulate"
+                                                tooltip="Delete"
+                                                text="Delete"
+                                                icon="sap-icon://delete"
+                                            />
+                                            <u:FileUploader
+                                                id="FileUploaderId_manuvalsimulate"
+                                                sameFilenameAllowed="true"
+                                                iconOnly="false"
+                                                buttonOnly="true"
+                                                fileType="XLSX,xlsx"
+                                                icon="sap-icon://upload"
+                                                iconFirst="true"
+                                                buttonText="Upload"
+                                                style="Transparent"
+                                                change="onSelectedProductSimulations"
+                                            />
+                                            <Button
+                                                id="idDownloadBtnIn__manuvalsimulate"
+                                                press="onDownloadPressInSimulate"
+                                                tooltip="Print"
+                                                class="line-md--download-outline-loop"
+                                            />
+                                        </OverflowToolbar>
+                                    </headerToolbar>
+
+                                    <columns>
+                                        <Column id="_IDGenColumn1_manuvalsimulate">
+                                            <Text
+                                                id="_IDGensdfText_manuvalsimulate"
+                                                text="Product"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumn2_manuvalsimulate">
+                                            <Text
+                                                id="_IDGensdfText1_manuvalsimulate"
+                                                text="Material Des"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumn4_manuvalsimulate">
+                                            <Text
+                                                id="_IDGsdfenText3_manuvalsimulate"
+                                                text="Quantity (PC)"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumn3_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdfnText2_manuvalsimulate"
+                                                text="Volume (m³)"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumn5_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdfnText3_manuvalsimulate"
+                                                text="Net Weight"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumnGweight_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdfnText3GW_manuvalsimulate"
+                                                text="Gross Weight"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumn47yu_manuvalsimulate">
+                                            <Text
+                                                id="_IDGsdfenTt7_manuvalsimulate"
+                                                text="Length/Diameter"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenColumngh3_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdfnTextty2_manuvalsimulate"
+                                                text="width"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenCbnolumn5_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdhjfnText3_manuvalsimulate"
+                                                text="Height"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenCbnolumn8_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdhjfnText8_manuvalsimulate"
+                                                text="Colour"
+                                            />
+                                        </Column>
+                                        <Column id="_IDGenCbnolumn9_manuvalsimulate">
+                                            <Text
+                                                id="_IDGesdhjfnText9_manuvalsimulate"
+                                                text="Stack"
+                                            />
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem
+                                            id="idcolistes_manuvalsimulate"
+                                            class="backgroundColour"
+                                        >
+                                            <cells>
+                                                <Text
+                                                    id="_IDGenText5_manuvalsimulate"
+                                                    text="{Productno/model}"
+                                                />
+                                                <Text
+                                                    id="_IDGenText6_manuvalsimulate"
+                                                    text="{Productno/description}"
+                                                />
+                                                <Text
+                                                    id="_IDGenText8_manuvalsimulate"
+                                                    text="{SelectedQuantity}"
+                                                />
+                                                <Text
+                                                    id="_IDGenText9_manuvalsimulate"
+                                                    text="{Productno/volume}"
+                                                />
+                                                <Text
+                                                    id="_IDGenText10_manuvalsimulate"
+                                                    text="{Productno/netWeight}"
+                                                />
+                                                 <Text
+                                                    id="id_GrossWeight_cell_manuvalsimulate"
+                                                    text="{Productno/grossWeight}"
+                                                />
+                                                <Text
+                                                    id="_IDGenTe6xt8_manuvalsimulate"
+                                                    text="{Productno/length}"
+                                                />
+                                                <Text
+                                                    id="_IDGenTex45t9_manuvalsimulate"
+                                                    text="{Productno/width}"
+                                                />
+                                                <Text
+                                                    id="_IDGenTextert10_manuvalsimulate"
+                                                    text="{Productno/height}"
+                                                />
+                                                <Text
+                                                    id="_IDGenTextert11_manuvalsimulate"
+                                                    text="{Productno/color}"
+                                                />
+                                                <!-- <Button
+                                                    id="_IDGenTextert12_manuvalsimulate"
+                                                    text=""
+                                                    icon="sap-icon://action-settings"
+                                                    press="onPressStackBtn"
+                                                /> -->
+                                                <Text
+                                                    id="id_stack_MS"
+                                                    text="{Productno/stack}"
+                                                />
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+
+            </VBox>
+            <VBox  id="VboxIdtitle_manuvalsimulate" >
+            <Title id="idtitle" text="Add Container Type"></Title></VBox>
+                <VBox
+                                    id="VboxIdtiles_manuvalsimulate"
+                                    height="150%"
+                                    
+                                >
+                                    <HBox id="idVBoxInSelectVehicleType_manuvalsimulate" />
+                                </VBox>
+                                  <Button
+                                    id="idNext2Btn_changeQueue"
+                                    press="onNextPressInSeconsSrInAddVehicleType"
+                                    text="Next"
+                                />
+
+        </content>
+    </Page>
+</mvc:View>

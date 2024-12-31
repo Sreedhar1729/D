@@ -21,7 +21,8 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [],
-                    "odataVersion": "4.0"
+                    "odataVersion": "4.0",
+                    "useBatch": true
                 }
             },
             "mainServiceV2": {
@@ -29,7 +30,9 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [],
-                    "odataVersion": "2.0"
+                    "odataVersion": "2.0",
+                    "useBatch": true,
+                    "defaultBindingMode": "TwoWay"
                 }
             }
         }
@@ -91,7 +94,8 @@
                 "settings": {
                     "operationMode": "Server",
                     "autoExpandSelect": true,
-                    "earlyRequests": true
+                    "earlyRequests": true,
+                    "defaultBindingMode": "OneWay"
                 }
             }
         },
@@ -128,10 +132,10 @@
                     ]
                 },
                 {
-                    "name": "ReqTruck",
-                    "pattern": "ReqTruck",
+                    "name": "ManuvalSimulation",
+                    "pattern": "ManuvalSimulation",
                     "target": [
-                        "TargetReqTruck"
+                        "TargetManuvalSimulation"
                     ]
                 }
             ],
@@ -147,12 +151,12 @@
                     "viewId": "MainPage",
                     "viewName": "MainPage"
                 },
-                "TargetReqTruck": {
+                "TargetManuvalSimulation": {
                     "viewType": "XML",
                     "transition": "slide",
                     "clearControlAggregation": false,
-                    "viewId": "ReqTruck",
-                    "viewName": "ReqTruck"
+                    "viewId": "ManuvalSimulation",
+                    "viewName": "ManuvalSimulation"
                 }
             }
         },

@@ -8,7 +8,31 @@ sap.ui.define([
 
     return Controller.extend("com.app.artihcus.controller.Home", {
         onInit() {
+           
         },
+        onAfterRendering: function () {
+            // This ensures the elements are rendered before we start the animation
+            var aTextElements = [
+              this.byId("_IDGe33nText").getDomRef(),
+              this.byId("_IDG44enText1").getDomRef(),
+              this.byId("_IDGenTeeext2").getDomRef(),
+              this.byId("_IDGenTeeext3").getDomRef(),
+              this.byId("_IDGenTeeext4").getDomRef()
+            ];
+      
+            // Ensure that each element exists before applying GSAP animation
+            if (aTextElements.every(function (el) { return el !== null; })) {
+              gsap.from(aTextElements, {
+                duration: 1.5,
+                opacity: 0,
+                y: 30,
+                stagger: 0.5,
+               
+               
+                ease: "elastic"
+              });
+            }
+          },
         onLogin: async function () {
             // MessageToast.show("Login button clicked");
             // Navigate to login page or handle login logic
@@ -40,6 +64,19 @@ sap.ui.define([
             var oRouter = UIComponent.getRouterFor(this);
             oRouter.navTo("MainPage");
 
-        }
+        },
+        //  change password fragment loading
+  onChangePasswordBtn: async function () {
+    this.oLoginDialog.close();
+    if (!this.oChangePasswordDialog) {
+      this.oChangePasswordDialog = await this.loadFragment("ChangePassword");
+    }
+    this.oChangePasswordDialog.open();
+  },
+  onPressCancelInChangePassword: function () {
+    this.byId("idChangePasswordDialog").close();
+    this.byId("idconnectsapdialogbox_CS1").open();
+
+  }
     });
 });
