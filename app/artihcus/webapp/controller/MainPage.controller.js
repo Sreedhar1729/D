@@ -165,7 +165,13 @@ sap.ui.define(
             workbook.SheetNames.forEach(function (sheetName) {
               // Here is your object for every sheet in workbook
               excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+              // adding serial numbers
+              excelData.forEach(function (item, index) {
+                item.serialNumber = index + 1; // Serial number starts from 1
+              });
+
             });
+
             // Setting the data to the local model
             that.MaterialModel.setData({
               items: excelData
@@ -180,95 +186,116 @@ sap.ui.define(
       },
       onBatchSave: async function () {
         var that = this;
-        var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
-        var batchChanges = [];
+        var addedProdCodeModel = this.getView().getModel("MaterialModel").getData();
+        // var batchChanges = [];
         var oDataModel = this.getView().getModel("ModelV2");
         var batchGroupId = "batchCreateGroup";
-        let aErrors = []
+
+        const oView = this.getView();
+
+        // test
+        // excel Validations
+
+        let raisedErrors = []
+        addedProdCodeModel.items.forEach(async (item, index) => {
+
+          const aExcelInputs = [
+            { value: item.model, regex: null, message: "Enter SAP product number" },
+            { value: item.description, regex: null, message: "Enter description" },
+            { value: item.mCategory, regex: null, message: "Enter category" },
+            { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
+            { value: item.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
+            { value: item.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
+            { value: item.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
+            { value: item.grossWeight, regex: /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
+            { value: item.netWeight, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+            { value: item.wuom, regex: null, message: "Enter UOM for Weight" },
+            // { value: item.volume, regex: null, message: "Enter Volume" }
+          ]
+          for (let input of aExcelInputs) {
+            let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
+            if (aValidations.length > 0) {
+              raisedErrors.push({ index: index, errorMsg: aValidations[0] }) // pushning error into empty array
+            }
+          }
+        })
+
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(`Check record number ${error.index + 1} ${error.errorMsg}`) // showing error msg 
+            return;
+          }
+        }
+        // test
+        try {
+          addedProdCodeModel.items.forEach(async (item, index) => {
+            delete item.serialNumber
+            item.length = String(item.length).trim();
+            item.width = String(item.width).trim();
+            item.height = String(item.height).trim();
+            item.netWeight = String(item.weight).trim();
+            item.grossWeight = String(item.weight).trim();
+            item.quantity = String(item.quantity).trim();
+            item.volume = String(item.volume).trim();
+
+            // Create individual batch request 
+            await oDataModel.create("/Materials", item, {
+
+//         let aErrors = []
 
 
-        addedProdCodeModel.items.forEach((item, index) => {
-          item.length = String(item.length).trim();
-          item.width = String(item.width).trim();
-          item.height = String(item.height).trim();
-          item.weight = String(item.weight).trim();
-          item.quantity = String(item.quantity).trim();
-          item.volume = String(item.volume).trim();
+//         addedProdCodeModel.items.forEach((item, index) => {
+//           item.length = String(item.length).trim();
+//           item.width = String(item.width).trim();
+//           item.height = String(item.height).trim();
+//           item.weight = String(item.weight).trim();
+//           item.quantity = String(item.quantity).trim();
+//           item.volume = String(item.volume).trim();
 
-          // Create individual batch request
-          batchChanges.push(
-            oDataModel.create("/Materials", item, {
+//           // Create individual batch request
+//           batchChanges.push(
+//             oDataModel.create("/Materials", item, {
+
               method: "POST",
               groupId: batchGroupId, // Specify the batch group ID here
               success: function (data, response) {
-                // Handle success for individual item
-                // MessageBox.success("Materials created successfully");
-                // You can also perform other operations here based on the success response
+                if (addedProdCodeModel.items.length === index + 1) {
+                  MessageBox.success("Materials created successfully");
+                  if (that.oFragment) {
+                    that.oFragment.close();
+                    that.byId("ProductsTable").getBinding("items").refresh();
+                  }
+                }
               },
               error: function (err) {
                 // Handle error for individual item
-                aErrors.push(JSON.parse(err.responseText).error.message.value)
+                if (JSON.parse(err.responseText).error.message.value.toLowerCase() === "entity already exists") {
+                  MessageBox.error("You are trying to upload a material which is already exists");
+                } else {
+                  MessageBox.error("Please check the uploaded file and upload correct data");
+                }
                 console.error("Error creating material:", err);
               }
             })
-          );
-        });
+          });
 
-        // Now send the batch request using batch group
-        oDataModel.submitChanges({
-          batchGroupId: batchGroupId,
-          success: function (oData, response) {
-            MessageBox.success("Materials batch created successfully");
-            console.log("Batch request submitted successfully", oData);
-            // Perform any final operations if needed after all batch operations succeed
-          },
-          error: function (err) {
-            MessageBox.success("Error creating material batch");
-            console.error("Error in batch request:", err);
-            // Handle any failure in the batch submission (e.g., server issues)
-          }
-        });
-
-        // working
-        // var that = this;
-        // var addedProdCodeModel = that.getView().getModel("MaterialModel").getData();
-        // var batchChanges = [];
-        // var oDataModel = this.getView().getModel("ModelV2");
-
-        // var batchGroupId = "batchCreateGroup";
-
-        // // Collect all create operations into the batchChanges array
-        //   addedProdCodeModel.items.forEach(async item => {
-        //   item.length = String(item.length).trim();
-        //   item.width = String(item.width).trim();
-        //   item.height = String(item.height).trim();
-        //   item.weight = String(item.weight).trim();
-        //   item.quantity = String(item.quantity).trim();
-        //   item.volume = String(item.volume).trim();
-
-        //   // Create individual batch request
-        //   await oDataModel.create("/Materials", item, {
-        //     method: "POST",
-        //     groupId: batchGroupId // Specify the batch group ID here
-        //   });
-        // });
-
-
-        // // Submit all changes in the batch
-        // oDataModel.submitChanges({
-        //   groupId: batchGroupId,
-        //   success: function (data, response) {
-        //     MessageBox.show("Batch create operation successful.");
-        //   },
-        //   error: function (e) {
-        //     // Parse the error response and show a meaningful message
-        //     var errorMessage = e.message || "An error occurred";
-        //     MessageBox.show("Error: " + errorMessage);
-        //   }
-        // });
-        if (this.oFragment) {
-          this.oFragment.close();
-          this.byId("ProductsTable").getBinding("items").refresh();
+          // Now send the batch request using batch group
+          await oDataModel.submitChanges({
+            batchGroupId: batchGroupId,
+            success: function (oData, response) {
+              // MessageBox.success("Materials batch created successfully");
+              console.log("Batch request submitted", oData);
+              // Perform any final operations if needed after all batch operations succeed
+            },
+            error: function (err) {
+              MessageBox.success("Error creating material batch");
+              console.error("Error in batch request:", err);
+              // Handle any failure in the batch submission (e.g., server issues)
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          MessageToast.show("Facing technical issue")
         }
       },
       onClosePressXlData: function () {
@@ -977,21 +1004,22 @@ sap.ui.define(
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
-
-        // Validation
-        const validationErrors = [];
-        const validateField = (fieldId, value, regex, errorMessage) => {
-          const oField = oView.byId(fieldId);
-          if (!value || (regex && !regex.test(value))) {
-            oField.setValueState("Error");
-            oField.setValueStateText(errorMessage);
-            validationErrors.push(errorMessage);
-          } else {
-            oField.setValueState("None");
-          }
-        };
+          let raisedErrors = [];
+        // // Validation
+        // const validationErrors = [];
+        // const validateField = (fieldId, value, regex, errorMessage) => {
+        //   const oField = oView.byId(fieldId);
+        //   if (!value || (regex && !regex.test(value))) {
+        //     oField.setValueState("Error");
+        //     oField.setValueStateText(errorMessage);
+        //     validationErrors.push(errorMessage);
+        //   } else {
+        //     oField.setValueState("None");
+        //   }
+        // };
 
         const aUserInputs = [
+          // { Id: "idDesvbncriptionInput_InitialView", value: oPayload.EAN, regex: null, message: "Please enter EAN" },
           { Id: "idDescriptionInput_InitialView", value: oPayload.model, regex: null, message: "Enter SAP product number" },
           { Id: "idInstanceNumberInput_InitialView", value: oPayload.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
           { Id: "idClientInput_InitialView", value: oPayload.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
@@ -1010,13 +1038,19 @@ sap.ui.define(
         ]
 
         aUserInputs.forEach(async input => {
-          validateField(input.Id, input.value, input.regex, input.message)
+          let aValidations = this.validateField(oView, input.Id, input.value, input.regex, input.message)
+          if (aValidations.length > 0) {
+            raisedErrors.push(aValidations[0]) // pushning error into empty array
+          }
         })
 
-        if (validationErrors.length > 0) {
-          MessageBox.information("Please enter correct data");
-          return;
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(error) // showing error msg 
+            return;
+          }
         }
+
 
         // Get the selected item from the event parameters
         var oSelectedItem = this.byId("idselectuom").getSelectedKey();
@@ -1291,6 +1325,24 @@ sap.ui.define(
           sap.m.MessageToast.show("Please select atleast one row to edit.");
           return;
         }
+
+//         const oData = oSelectedItem.getBindingContext().getObject();
+//         await this.oOpenProductEdit();
+//         /**Getting the model and setting data */
+//         var DummyModel = this.getView().getModel("CombinedModel");
+//         DummyModel.setProperty("/Product", oData);
+//       },
+//       /**Updadting the Changed Product Value */
+//       onSaveProduct: async function () {
+//         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
+//         const oPayload = updatedData;
+//         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
+//         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
+//         var oID = updatedData.ID;
+//         /**If key is missing returns error */
+//         if (!oID) {
+//           sap.m.MessageBox.error("ID is not Found/Key Missing");
+
         if (aSelectedItem.length > 1) {
           sap.m.MessageToast.show("Please select only one row to edit.");
 
@@ -1455,6 +1507,10 @@ sap.ui.define(
           }
         });
       },
+
+//       /**Clear Product Editing Dialog */
+//       onClearEditProdDialog: function () {
+//         this.getView().getModel("CombinedModel").setProperty("/Product", {});
 
       onPressCancelBtnEdit_ProductsDetailsTable: function () {
         debugger;
@@ -2347,8 +2403,36 @@ sap.ui.define(
         let totalQuantity = 0;
         let totalVolume = 0;
         let totalWeight = 0;
-    
+
         const containerMaxVolume = containerHeight * containerLength * containerWidth;
+
+//         const containerMaxWeight = 1000; // Example max weight in kg
+
+//         selectedProducts.forEach(product => {
+//           const SelectedQuantity = parseInt(product.SelectedQuantity);
+//           const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+//           const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+//           const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+//           const productColor = product.Productno.color;
+//           const productWeight = parseFloat(product.Productno.weight);
+//           const productName = product.Productno.description;
+
+//           let totalChartVolume = 0;
+//           let totalChartWeight = 0;
+
+//           for (let i = 0; i < SelectedQuantity; i++) {
+//             let isOverlap = true;
+
+//             while (isOverlap) {
+//               // Reset positions when bounds are reached
+//               if (currentX + productLength > containerLength / 2) {
+//                 currentX = -containerLength / 2;
+//                 currentZ += productWidth;
+
+//                 if (currentZ + productWidth > containerWidth / 2) {
+//                   currentZ = -containerWidth / 2;
+//                   currentY += productHeight;
+
         const containerMaxWeight = 1000; // Example container max weight (kg)
     
         selectedProducts.forEach(product => {
@@ -2461,8 +2545,90 @@ sap.ui.define(
                     // Move to the next available position in the X axis for the next product
                     currentX += productLength;
                     console.log(`  Moving to next X position: ${currentX}`);
+
                 }
+              }
+
+              // Check for overlaps
+              isOverlap = positionMap.some(position => (
+                currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+                currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+                currentY < position.yTop
+              ));
+
+              if (isOverlap) {
+                currentX += productLength; // Adjust position to avoid overlap
+              }
             }
+
+//             if (!isOverlap) {
+//               // Create 3D product representation
+//               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+//               const productMaterial = new THREE.MeshStandardMaterial({
+//                 color: new THREE.Color(productColor),
+//                 metalness: 0.5,
+//                 roughness: 0.5
+//               });
+
+//               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+//               productMesh.position.set(
+//                 currentX + productLength / 2,
+//                 currentY + productHeight / 2,
+//                 currentZ + productWidth / 2
+//               );
+//               this.scene.add(productMesh);
+
+//               // Add wireframe for visualization
+//               const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+//               const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+//               const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+//               edges.position.copy(productMesh.position);
+//               this.scene.add(edges);
+
+//               // Update position map
+//               positionMap.push({
+//                 xStart: currentX,
+//                 xEnd: currentX + productLength,
+//                 zStart: currentZ,
+//                 zEnd: currentZ + productWidth,
+//                 yTop: currentY + productHeight
+//               });
+
+//               totalQuantity++;
+//               const productVolume = productLength * productHeight * productWidth;
+//               totalVolume += productVolume;
+//               totalWeight += productWeight;
+//               totalChartVolume += productVolume;
+//               totalChartWeight += productWeight;
+
+//               currentX += productLength; // Move to the next position
+//             }
+//           }
+
+//           // Add product data to chart
+//           chartData.push({
+//             Name: productName,
+//             Packages: SelectedQuantity,
+//             Volume: totalChartVolume.toFixed(1),
+//             Weight: totalChartWeight.toFixed(1),
+//             Color: productColor
+//           });
+//         });
+
+//         // Calculate remaining volume and weight
+//         const remainingVolume = containerMaxVolume - totalVolume;
+//         const remainingWeight = containerMaxWeight - totalWeight;
+
+//         // Add empty space data to chart
+//         chartData.push({
+//           Name: "Empty",
+//           Packages: 0,
+//           Volume: remainingVolume.toFixed(1),
+//           Weight: 0,
+//           Color: "#cccccc" // Gray color for "Empty"
+//         });
+
+//         // Update view models with calculated data
     
             // Collect the product data for chart visualization
             if (totalChartVolume > 0) {
@@ -2492,11 +2658,21 @@ sap.ui.define(
         // Update the view models with total values and chart data
         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
         this.getView().getModel("Calculation").setProperty("/", {
-            TotalQuantity: totalQuantity,
-            TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
-            TotalWeight: `${totalWeight.toFixed(1)} kg`,
-            RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
+          TotalQuantity: totalQuantity,
+          TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+          TotalWeight: `${totalWeight.toFixed(1)} kg`,
+          RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
         });
+
+
+//         // Update pie chart visualization
+//         const oVizFrame = this.getView().byId("idPieChart");
+//         oVizFrame.setVizProperties({
+//           plotArea: {
+//             colorPalette: chartData.map(item => item.Color), // Dynamically set colors
+//             dataLabel: {
+//               visible: true
+
     
         // Update pie chart visualization based on filled/empty spaces
         const oVizFrame = this.getView().byId("idPieChart");
@@ -2509,11 +2685,14 @@ sap.ui.define(
             },
             title: {
                 text: "Cargo Volume Breakdown"
+
             }
+          },
+          title: {
+            text: "Cargo Volume Breakdown"
+          }
         });
       },
-
-
 
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);

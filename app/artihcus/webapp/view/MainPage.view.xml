@@ -734,6 +734,7 @@
                                         text="UUID"
                                     />
                                 </Column>
+
                                 <Column
                                     id="_IDGenn2"
                                     class="backgroundColour"
@@ -1374,6 +1375,7 @@
                                                                         type="Measure"
                                                                         values="Volume"
                                                                     />
+
                                                                     <viz.feeds:FeedItem
                                                                         id="_IDGenFeedItem1"
                                                                         uid="color"

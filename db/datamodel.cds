@@ -1,6 +1,10 @@
 namespace capacitymanagement.db;
 
-using {managed} from '@sap/cds/common';
+using {
+    cuid,
+    managed
+} from '@sap/cds/common';
+
 
 /**for custom type */
 type string : String(40);
@@ -8,9 +12,21 @@ type string : String(40);
 /**Defining entity */
 
 // for unique fields
+
+define entity Users : cuid {
+    userID       : String;
+    fName        : String;
+    lName        : String;
+    phoneNo      : String;
+    mailID       : String;
+    password     : String;
+    profileImage : String;
+}
+
 @assert.unique: {model: [model]
 
 }
+
 define entity Materials {
 
     key ID              : UUID;
@@ -22,6 +38,7 @@ define entity Materials {
         volume          : String;
         vuom            : String;
         muom            : String;
+        stack           : String;
         uom             : String;
         mCategory       : string;
         description     : String;
