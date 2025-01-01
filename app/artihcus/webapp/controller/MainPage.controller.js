@@ -1163,13 +1163,18 @@ sap.ui.define(
         oPayloadModel.setProperty("/Product", {})
       },
 
-      /**Deleting Products */
-      onProductDel: async function () {
+//****************************Deleting single or Multiple Models at a time  **************************/
+
+      onModelDelete: async function () {
         const oTable = this.byId("ProductsTable"),
           aSelectedItems = oTable.getSelectedItems(),
           oModel = this.getView().getModel("ModelV2");
         if (aSelectedItems.length === 0) {
           MessageBox.information("Please select at least one product to delete.");
+          return;
+        }
+        if (aSelectedItems.length > 1) {
+          MessageBox.information("Please select single Model to delete.");
           return;
         }
         try {
@@ -1183,6 +1188,8 @@ sap.ui.define(
           MessageToast.show('Error Occurs');
         }
       },
+
+
 
 
       onliveContainerSearch: function (oEvent) {

@@ -686,7 +686,7 @@
                                     <Button
                                         id="idBtnProductDescription_AHUOBQ"
                                         text="Delete"
-                                        press="onProductDel"
+                                        press="onModelDelete"
                                         tooltip="Delete"
                                         icon="sap-icon://delete"
                                     />
