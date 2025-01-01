@@ -5,12 +5,14 @@ using {
     managed
 } from '@sap/cds/common';
 
+
 /**for custom type */
 type string : String(40);
 
 /**Defining entity */
 
 // for unique fields
+
 define entity Users : cuid {
     userID       : String;
     fName        : String;
@@ -44,7 +46,7 @@ define entity Materials {
         grossWeight     : String;
         wuom            : String;
         quantity        : String;
-        layers          : String;
+        stack           : String;
         mass            : String;
         layersHeight    : String;
         color           : String;

@@ -21,7 +21,8 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [],
-                    "odataVersion": "4.0"
+                    "odataVersion": "4.0",
+                    "useBatch": true
                 }
             },
             "mainServiceV2": {
@@ -29,7 +30,9 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [],
-                    "odataVersion": "2.0"
+                    "odataVersion": "2.0",
+                    "useBatch": true,
+                    "defaultBindingMode": "TwoWay"
                 }
             }
         }

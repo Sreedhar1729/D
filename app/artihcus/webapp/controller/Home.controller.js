@@ -8,6 +8,7 @@ sap.ui.define([
     function (Controller, MessageToast, MessageBox, UIComponent, JSONModel) {
         "use strict";
 
+
         return Controller.extend("com.app.artihcus.controller.Home", {
             onInit() {
                 const oUserModel = new JSONModel({
