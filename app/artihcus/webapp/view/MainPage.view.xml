@@ -444,7 +444,7 @@
                         >
                             <Title
                                 id="Titzxdfglfghe1455896_AHUOBQ"
-                                text="Adding New Container:"
+                                text="Container Table:({/TruckTypes/$count})"
                             />
                             <ToolbarSpacer id="IDGevbnnTfghjoolbar345_AHUOBQ" />
                             <SearchField
@@ -502,7 +502,7 @@
                             noDataText="No Container Types Available"
                             backgroundDesign="Transparent"
                             selectionChange="onRow"
-                            items="{/TruckTypes}"
+                            items="{ path: '/TruckTypes', parameters: { $count : true }}"
                             mode="MultiSelect"
                             class="backgroundColour"
                             width="80%"
@@ -545,7 +545,7 @@
                                 <Column id="_IvbnDGbnmenCcvbnmo">
                                     <Text
                                         id="_IvbnmDwedfGenxcvj"
-                                        text="Capacity (KG)"
+                                        text="Container Capacity (KG)"
                                     />
                                 </Column>
                                 <Column id="_IvbnDbnmvbnGenCo">
@@ -686,13 +686,13 @@
                                     <Button
                                         id="idBtnProductDescription_AHUOBQ"
                                         text="Delete"
-                                        press="onProductDel"
+                                        press="onModelDelete"
                                         tooltip="Delete"
                                         icon="sap-icon://delete"
                                     />
                                     <Button
                                         id="idBtfghnHUContentBtn_AHUOBQ"
-                                        press="onPrintPressInProductsTable"
+                                        press="onPressPrintModelTable"
                                         tooltip="Print"
                                         class="line-md--download-outline-loop"
                                     />
@@ -741,7 +741,7 @@
                                 >
                                     <Text
                                         id="_IDGnText2"
-                                        text="SAP Productno"
+                                        text="Model"
                                     />
                                 </Column>
                                 <Column id="_IDGenCumn3">
@@ -760,7 +760,7 @@
                                 <Column id="_IDGenCcvbnmo">
                                     <Text
                                         id="_IDGenxcvj"
-                                        text="Material Category"
+                                        text="Model Category"
                                     />
                                 </Column>
                                 <Column id="_IDGenCcvbnmo0">
@@ -795,7 +795,7 @@
                                 <Column id="_IDGenC">
                                     <Text
                                         id="_IDGe1"
-                                        text="Volume(M³)"
+                                        text="Volume(m³)"
                                     />
                                 </Column>
 

@@ -23,10 +23,13 @@ sap.ui.define(
     'sap/m/SearchField',
     'sap/m/Column',
     'sap/m/Label',
+    "sap/ui/export/library",
+    "sap/ui/export/Spreadsheet",
   ],
-  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent, Tex, library, TypeString, ColumnListItem, Token, TableColumn, SearchField, MColumn, Label) {
+  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, 
+    ImageContent, Tex, library, TypeString, ColumnListItem, Token, TableColumn, SearchField, MColumn, Label, exportLibrary, Spreadsheet) {
     "use strict";
-
+    var EdmType = exportLibrary.EdmType;
     return Controller.extend("com.app.artihcus.controller.MainPage", {
       onInit: function () {
 
@@ -807,49 +810,93 @@ sap.ui.define(
 
       },
 
-      onPrintPressInProductsTable: function () {
+      // onPressPrintModelTable: function () {
 
-        var oTable = this.byId("ProductsTable");
-        var aItems = oTable.getItems();
-        var aData = [];
-        // Push column headers as the first row
-        var aHeaders = [
-          "SAP Productno",
-          "Description",
-          "EAN",
-          "Material Category",
-          "Length",
-          "Width",
-          "Height",
-          "Volume",
-          "UOM",
-          "Weight",
-          "Quantity",
-          "Layers",
-          "Mass",
-          "Layers_height"
-        ];
-        aData.push(aHeaders);
+      //   var oTable = this.byId("ProductsTable");
+      //   var aItems = oTable.getItems();
+      //   var aData = [];
+      //   // Push column headers as the first row
+      //   var aHeaders = [
+      //     "Model",
+      //     "Description",
+      //     "EAN",
+      //     "Model Category",
+      //     "Quantity",
+      //     "Length",
+      //     "Width",
+      //     "Height",
+      //     "UOM",
+      //     "Volume(M³)",
+      //     "Net Weight",
+      //     "Gross Weight",
+      //     "UOM",
+      //     "Stack"
+      //   ];
+      //   aData.push(aHeaders);
 
-        // Iterate through table items and collect data
-        aItems.forEach(function (oItem) {
-          var oCells = oItem.getCells();
-          var rowData = [];
-          oCells.forEach(function (oCell) {
-            rowData.push(oCell.getText());
-          });
-          aData.push(rowData);
-        });
+      //   // Iterate through table items and collect data
+      //   aItems.forEach(function (oItem) {
+      //     var oCells = oItem.getCells();
+      //     var rowData = [];
+      //     oCells.forEach(function (oCell) {
+      //       rowData.push(oCell.getText());
+      //     });
+      //     aData.push(rowData);
+      //   });
 
-        // Prepare Excel workbook
-        var oSheet = XLSX.utils.aoa_to_sheet(aData);
-        var oWorkbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(oWorkbook, oSheet, "ProductsTable");
+      //   // Prepare Excel workbook
+      //   var oSheet = XLSX.utils.aoa_to_sheet(aData);
+      //   var oWorkbook = XLSX.utils.book_new();
+      //   XLSX.utils.book_append_sheet(oWorkbook, oSheet, "ProductsTable");
 
-        // Generate and download the Excel file
-        XLSX.writeFile(oWorkbook, "ProductsTable.xlsx");
-      },
+      //   // Generate and download the Excel file
+      //   XLSX.writeFile(oWorkbook, "ProductsTable.xlsx");
+      // },
+     
+            
+      onPressPrintModelTable: function () {
+              var aCols, oBinding, oSettings, oSheet, oTable;
 
+              oTable = this.byId('ProductsTable');
+              oBinding = oTable.getBinding('items');
+              aCols = this.createColumnConfig();
+
+              oSettings = {
+                  workbook: { columns: aCols },
+                  dataSource: oBinding,
+                  fileName: 'Models data.xlsx'
+              };
+
+              oSheet = new Spreadsheet(oSettings);
+              oSheet.build()
+                  .then(function () {
+                      MessageToast.show('Spreadsheet export has finished');
+                  })
+                  .finally(function () {
+                      oSheet.destroy();
+                  });
+          },
+
+
+          createColumnConfig: function () {
+              return [
+                  { label: 'Model', property: 'model', type: EdmType.String },
+                  { label: 'Description', property: 'description', type: EdmType.String },
+                  { label: 'Model Category', property: 'mCategory', type: EdmType.String, scale: 0 },
+                  { label: 'Quantity', property: 'quantity', type: EdmType.String },
+                  { label: 'Length', property: 'length', type: EdmType.String },
+                  { label: 'Width', property: 'width', type: EdmType.String },
+                  { label: 'Height', property: 'height', type: EdmType.String },
+                  { label: 'UOM', property: 'uom', type: EdmType.String },
+                  { label: 'Volume(m³)', property: 'volume', type: EdmType.String },
+                  { label: 'Net Weight', property: 'netWeight', type: EdmType.String },
+                  { label: 'Gross Weight', property: 'grossWeight', type: EdmType.String },
+                  { label: 'UOM', property: 'wuom', type: EdmType.String },
+                  { label: 'Stack', property: 'stack', type: EdmType.String },
+              ];
+          },
+    
+    
       //print in add Equipment 
       onPressDownloadInAddContainerTable: function () {
 
@@ -1116,13 +1163,18 @@ sap.ui.define(
         oPayloadModel.setProperty("/Product", {})
       },
 
-      /**Deleting Products */
-      onProductDel: async function () {
+//****************************Deleting single or Multiple Models at a time  **************************/
+
+      onModelDelete: async function () {
         const oTable = this.byId("ProductsTable"),
           aSelectedItems = oTable.getSelectedItems(),
           oModel = this.getView().getModel("ModelV2");
         if (aSelectedItems.length === 0) {
           MessageBox.information("Please select at least one product to delete.");
+          return;
+        }
+        if (aSelectedItems.length > 1) {
+          MessageBox.information("Please select single Model to delete.");
           return;
         }
         try {
@@ -1136,6 +1188,8 @@ sap.ui.define(
           MessageToast.show('Error Occurs');
         }
       },
+
+
 
 
       onliveContainerSearch: function (oEvent) {
