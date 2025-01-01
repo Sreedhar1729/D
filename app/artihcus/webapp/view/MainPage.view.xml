@@ -454,7 +454,7 @@
                                 width="25%"
                             />
 
-                            <Button
+                            <!-- <Button
                                 id="idBtnxcfvgHUCovbnntentBtn_AHUOBQ"
                                 text="Add"
                                 press="onPressInAddEquipment"
@@ -467,7 +467,19 @@
                                 press="onEditContainer"
                                 tooltip="Edit"
                                 icon="sap-icon://edit"
-                            />
+                            /> -->
+                      <!-- SplitButton for Add, Edit, Delete options -->
+        <MenuButton id="idActionsMenu" text="Actions">
+			<menu>
+				<Menu id="idActionsMenugropu" itemSelected="onMenuAction">
+					<MenuItem id="idActionsAdd" text="Add" icon="sap-icon://add" press="onPressInAddEquipment"/>
+					<MenuItem id="idActionsEdit" text="Edit" icon="sap-icon://edit" />
+					<MenuItem id="idActionsDelete" text="Delete" icon="sap-icon://delete" />
+                    <MenuItem id="idActionsExport" text="Export" icon="sap-icon://excel-attachment" />
+				</Menu>
+			</menu>
+		</MenuButton>
+
                             <Button
                                 id="idBtghcvbnjnHUvbnContentSaveBtn_AHUOBQ"
                                 text="Save"
@@ -481,13 +493,13 @@
                                 icon="sap-icon://decline"
                                 visible="false"
                             />
-                            <Button
+                            <!-- <Button
                                 id="idBtncvbProduccvbnmtDescription_AHUOBQ"
                                 text="Delete"
                                 press="onContainerDel"
                                 tooltip="Delete"
                                 icon="sap-icon://delete"
-                            />
+                            /> -->
                             <Button
                                 id="idBtbnmfghnHUCcvbnontentBtn_AHUOBQ"
                                 press="onPressDownloadInAddContainerTable"
@@ -659,14 +671,14 @@
                                         press="onPressAddInProductsTable"
                                         tooltip="Add"
                                         icon="sap-icon://add"
-                                    /> -->
+                                    /> 
                                     <Button
                                         id="idEditBtnIcon4_ProductsTable"
                                         text="Edit"
                                         icon="sap-icon://edit"
                                         press="onPressEditInProductsTable"
                                         tooltip="Edit"
-                                    />
+                                    /> -->
                                     <Button
                                         id="idSaveBtnIcon4_ProductsTable"
                                         text="Save"
@@ -683,19 +695,17 @@
                                         tooltip="Cancel"
                                         visible="false"
                                     />
-                                    <Button
-                                        id="idBtnProductDescription_AHUOBQ"
-                                        text="Delete"
-                                        press="onModelDelete"
-                                        tooltip="Delete"
-                                        icon="sap-icon://delete"
-                                    />
-                                    <Button
-                                        id="idBtfghnHUContentBtn_AHUOBQ"
-                                        press="onPressPrintModelTable"
-                                        tooltip="Print"
-                                        class="line-md--download-outline-loop"
-                                    />
+
+
+                                    <MenuButton id="idModelsActionsMenu" text="Actions">
+			<menu>
+				<Menu id="idModelsActionsMenugropu" itemSelected="onMenuAction">
+					<MenuItem id="idModelsActionsEdit" text="Edit" icon="sap-icon://edit" press="onPressEditInProductsTable" tooltip="Edit"/>
+					<MenuItem id="idBtnProductDescription_AHUOBQ" text="Delete" icon="sap-icon://delete"  press="onModelDelete" tooltip="Delete"/>
+                    <MenuItem id="idBtfghnHUContentBtn_AHUOBQ" text="Export" icon="sap-icon://excel-attachment" press="onPressPrintModelTable" class="line-md--download-outline-loop"/>
+				</Menu>
+			</menu>
+		</MenuButton>
 
                                     <!-- <u:FileUploader
                                         id="FileUploaderIds"

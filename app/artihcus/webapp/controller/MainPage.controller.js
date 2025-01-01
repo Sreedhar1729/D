@@ -1165,31 +1165,94 @@ sap.ui.define(
 
 //****************************Deleting single or Multiple Models at a time  **************************/
 
+      // onModelDelete: async function () {
+      //   const oTable = this.byId("ProductsTable"),
+      //     aSelectedItems = oTable.getSelectedItems(),
+      //     oModel = this.getView().getModel("ModelV2");
+      //   if (aSelectedItems.length === 0) {
+      //     MessageBox.information("Please select at least one product to delete.");
+      //     return;
+      //   }
+      //   if (aSelectedItems.length > 1) {
+      //     MessageBox.information("Please select single Model to delete.");
+      //     return;
+      //   }
+      //   try {
+      //     await Promise.all(aSelectedItems.map(async (oItem) => {
+      //       const oPath = oItem.getBindingContext().getPath();
+      //       await this.deleteData(oModel, oPath);
+      //     }));
+      //     this.getView().byId("ProductsTable").getBinding("items").refresh();
+      //     MessageToast.show('Successfully Deleted')
+      //   } catch (error) {
+      //     MessageToast.show('Error Occurs');
+      //   }
+      // },
+
       onModelDelete: async function () {
         const oTable = this.byId("ProductsTable"),
-          aSelectedItems = oTable.getSelectedItems(),
-          oModel = this.getView().getModel("ModelV2");
+            aSelectedItems = oTable.getSelectedItems(),
+            oModel = this.getView().getModel("ModelV2");
+        
+        // Check if no item is selected
         if (aSelectedItems.length === 0) {
-          MessageBox.information("Please select at least one product to delete.");
-          return;
+            MessageBox.information("Please select at least one product to delete.");
+            return;
         }
+    
+        // Check if more than one item is selected
         if (aSelectedItems.length > 1) {
-          MessageBox.information("Please select single Model to delete.");
-          return;
+            MessageBox.information("Please select a single model to delete.");
+            return;
         }
+    
         try {
-          await Promise.all(aSelectedItems.map(async (oItem) => {
-            const oPath = oItem.getBindingContext().getPath();
+            // If only one item is selected, proceed with the delete operation
+            const oPath = aSelectedItems[0].getBindingContext().getPath();
+    
+            // Perform the delete operation
             await this.deleteData(oModel, oPath);
-          }));
-          this.getView().byId("ProductsTable").getBinding("items").refresh();
-          MessageToast.show('Successfully Deleted')
+    
+            // Refresh the table after deletion
+            this.getView().byId("ProductsTable").getBinding("items").refresh();
+    
+            // Fetch updated count and refresh the title
+            const oDataModel = this.getView().getModel("ModelV2"); // Assuming ModelV2 is the main model
+            const oTitle = this.byId("Titlesd1455896_AHUOBQ");
+            const sPath = "/Materials/$count";  // Path to fetch the count
+    
+            // Fetch the updated count
+            oDataModel.read(sPath, {
+                success: (oData) => {
+                    const updatedCount = oData;  // The updated count value
+                    oTitle.setText(`Models Table: (${updatedCount})`);
+                },
+                error: (oError) => {
+                    MessageToast.show("Error while fetching count.");
+                }
+            });
+    
+            // Show success message
+            MessageToast.show('Successfully Deleted');
+            this.getView().byId("ProductsTable").getBinding("items").refresh();
         } catch (error) {
-          MessageToast.show('Error Occurs');
+            // Show error message in case of failure
+            MessageToast.show('Error Occurred');
         }
-      },
-
-
+    },
+    
+    // Function to delete data (for example, OData remove)
+    async deleteData(oModel, oPath) {
+        try {
+            // Perform OData removal (adjust as necessary for your service)
+            await oModel.remove(oPath);  // Assuming you're using OData remove operation
+            return true;  // Successful deletion
+        } catch (error) {
+            console.error("Deletion failed:", error);
+            return false;  // Failed deletion
+        }
+    },
+    
 
 
       onliveContainerSearch: function (oEvent) {
@@ -1454,7 +1517,7 @@ sap.ui.define(
 
           return;
         }
-        this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
+        // this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
         var oSelectedItem = aSelectedItem[0];
