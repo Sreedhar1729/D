@@ -622,6 +622,7 @@
                             growing="true"
                             growingScrollToLoad="true"
                             class="backgroundColour"
+                            selectionChange="onRowSelectionForEditingRow"
                         >
                             <headerToolbar>
                                 <OverflowToolbar
@@ -850,7 +851,7 @@
                                                 id="idInputdescriptionValue_ProductDetailsUpdate"
                                                 value="{=${description}}"
                                                 visible="false"
-                                                width="6rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <!-- <Text
@@ -871,7 +872,7 @@
                                                 id="idInputQuanrityValue_ProductDetailsUpdate"
                                                 value="{quantity}"
                                                 visible="false"
-                                                width="6rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <HBox>
@@ -883,7 +884,7 @@
                                                 id="idInputlengthValue_ProductDetailsUpdate"
                                                 value="{= ${length} + ' ' + ${uom} }"
                                                 visible="false"
-                                                width="6rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <HBox>
@@ -895,7 +896,7 @@
                                                 id="idInputwidthValue_ProductDetailsUpdate"
                                                 value="{= ${width} + ' ' + ${uom}}"
                                                 visible="false"
-                                                width="6rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <HBox>
@@ -907,20 +908,19 @@
                                                 id="idInputheightValue_ProductDetailsUpdate"
                                                 value="{= ${height} + ' ' + ${uom}}"
                                                 visible="false"
-                                                width="3.5rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <HBox>
                                             <Text
                                                 id="idkjlee"
                                                 text="{=${uom}}"
-                                                width="3rem"
                                             />
                                             <ComboBox
                                                 id="idComboboxForVolume"
                                                 placeholder="UOM..."
                                                 visible="false"
-                                                width="3rem"
+                                                width="5rem"
                                             >
                                                 <core:Item
                                                     key="M"
@@ -950,7 +950,7 @@
                                                 id="idInputNetWeightValue_ProductDetailsUpdate"
                                                 value="{= ${netWeight} +' '+${wuom}}"
                                                 visible="false"
-                                                width="6rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <HBox>
@@ -962,15 +962,15 @@
                                                 id="idInputGrossWeightValue_ProductDetailsUpdate"
                                                 value="{= ${grossWeight} +' '+${wuom}}"
                                                 visible="false"
-                                                width="6rem"
+                                                width="5rem"
                                             />
                                         </HBox>
                                         <HBox>
                                             <Text text="{=${wuom}}" />
                                             <ComboBox
-                                                placeholder="UOM..."
+                                                placeholder="WUOM..."
                                                 visible="false"
-                                                width="3rem"
+                                                width="5rem"
                                             >
                                                 <core:Item
                                                     key="KG"
