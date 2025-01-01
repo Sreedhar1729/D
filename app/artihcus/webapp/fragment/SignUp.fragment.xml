@@ -45,7 +45,7 @@
                         <Label
                             id="_IDGenLaddbel4"
                             class="sapUiTinyMarginTop"
-                            text="User Name"
+                            text="First Name"
                             width="100px"
                         />
                         <Label
@@ -56,14 +56,15 @@
                         />
                         <Input
                             id="_IDGenInputd2"
-                            placeholder="username"
+                            placeholder="First Name"
+                            value="{UserModel>/fName}"
                         />
                     </HBox>
 
                     <HBox id="_IDGenHBoxdd4">
                         <Label
                             id="_IDGenddLabel6"
-                            text="Email"
+                            text="Last Name"
                             class="sapUiTinyMarginTop"
                             width="100px"
                         />
@@ -75,13 +76,14 @@
                         />
                         <Input
                             id="_IDGenInputd3"
-                            placeholder="Email"
+                            placeholder="Last Name"
+                            value="{UserModel>/lName}"
                         />
                     </HBox>
                     <HBox id="_IDGenHBosx5">
                         <Label
                             id="_IDGensLabel8"
-                            text="Phone"
+                            text="Mail ID"
                             class="sapUiTinyMarginTop"
                             width="100px"
                         />
@@ -93,7 +95,36 @@
                         />
                         <Input
                             id="_IDGenInpust4"
-                            placeholder="Phone"
+                            placeholder="Enter E-mail"
+                            value="{UserModel>/mailID}"
+                        />
+                    </HBox>
+                    <HBox id="_IDGeneHBosx5">
+                        <Label
+                            id="_IDGenseLabel8"
+                            text="Phone Number"
+                            class="sapUiTinyMarginTop"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGensLefabel9"
+                            text=":"
+                            class="sapUiTinyMarginTop"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInpuseft4"
+                            placeholder="Enter phone number"
+                            value="{UserModel>/phoneNo}"
+                            liveChange="onAfterNumberEnter"
+                        />
+                        <Button
+                            id="idOTPBtn"
+                            class="sapUiSmallMarginTop"
+                            type="Emphasized"
+                            text="Get OTP"
+                            press="onGetOTPPress"
+                            enabled="false"
                         />
                     </HBox>
                     <HBox id="_IDGenHBoxs6">
@@ -111,13 +142,15 @@
                         />
                         <Input
                             id="_IDGenInputs5"
-                            placeholder="password"
+                            placeholder="Enter password"
+                            value="{UserModel>/password}"
+                            type="Password"
                         />
                     </HBox>
                     <HBox id="_IDGenHBosx7">
                         <Label
                             id="_IDGensLabel12"
-                            text="confirm Pwd"
+                            text="Confirm Password"
                             class="sapUiTinyMarginTop"
                             width="100px"
                         />
@@ -130,6 +163,7 @@
                         <Input
                             id="_IDGenInpust6"
                             placeholder="Confirm Password"
+                            type="Password"
                         />
                     </HBox>
                     <Button
@@ -138,8 +172,8 @@
                         type="Emphasized"
                         width="90%"
                         text="Sign Up"
+                        press="onSignUpPress"
                     />
-
                     <!-- <HBox justifyContent="SpaceBetween">
            
                                     <CheckBox
