@@ -616,9 +616,9 @@
                             id="ProductsTable"
                             mode="MultiSelect"
                             backgroundDesign="Transparent"
-                            items="{/Materials}"
+                            items="{ path: '/Materials', parameters: { $count : true }}"
                             width="80%"
-                            noDataText="No products available"
+                            noDataText="No Models available"
                             growing="true"
                             growingScrollToLoad="true"
                             class="backgroundColour"
@@ -630,7 +630,7 @@
                                 >
                                     <Title
                                         id="Titlesd1455896_AHUOBQ"
-                                        text="Products Table:"
+                                        text="Models Table:({/Materials/$count})"
                                     />
 
                                     <ToolbarSpacer id="_IDGenToolbarSpacer1" />
@@ -648,7 +648,7 @@
 
                                     <SearchField
                                         id="idSearchFieldBinnumberTable_AHUOBQ"
-                                        liveChange="onLiveBinNumberTAble"
+                                        liveChange="onLiveModelSearch"
                                         placeholder="Search by product number"
                                         width="25%"
                                     />

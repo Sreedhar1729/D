@@ -114,6 +114,12 @@
                         text="WUOM"
                     />
                 </Column>
+                <Column id="idcolumnmodelstack">
+                    <Label
+                        id="idlabelmodelstack"
+                        text="Stack"
+                    />
+                </Column>
             </columns>
             <items>
                 <ColumnListItem id="_IDGensfdg_ColumnListItem1">
@@ -170,6 +176,10 @@
                         <Input
                             id="_IDGe_wertydfedfes"
                             value="{MaterialModel>wuom}"
+                        />
+                        <Input
+                            id="_IDStackInput"
+                            value="{MaterialModel>stack}"
                         />
                     </cells>
                 </ColumnListItem>

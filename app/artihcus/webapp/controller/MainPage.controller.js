@@ -18,16 +18,13 @@ sap.ui.define(
     'sap/ui/comp/library',
     'sap/ui/model/type/String',
     'sap/m/ColumnListItem',
-    'sap/m/Label',
-    'sap/m/SearchField',
     'sap/m/Token',
     'sap/ui/table/Column',
+    'sap/m/SearchField',
     'sap/m/Column',
-
-
-
+    'sap/m/Label',
   ],
-  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent, Tex, library, TypeString, ColumnListItem, Label, SearchField, Token, UIColumn, MColumn) {
+  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, ImageContent, Tex, library, TypeString, ColumnListItem, Token, TableColumn, SearchField, MColumn, Label) {
     "use strict";
 
     return Controller.extend("com.app.artihcus.controller.MainPage", {
@@ -203,6 +200,12 @@ sap.ui.define(
             { value: item.model, regex: null, message: "Enter SAP product number" },
             { value: item.description, regex: null, message: "Enter description" },
             { value: item.mCategory, regex: null, message: "Enter category" },
+            { value: item.length, regex: null, message: "Enter Length" },
+            { value: item.width, regex: null, message: "Enter Width" },
+            { value: item.height, regex: null, message: "Enter Height" },
+            { value: item.quantity, regex: null, message: "Enter Quantity" },
+            { value: item.grossWeight, regex: null, message: "Enter Gross Weight" },
+            { value: item.netWeight, regex: null, message: "Enter Net Weight" },
             { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
             { value: item.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
             { value: item.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
@@ -210,7 +213,9 @@ sap.ui.define(
             { value: item.grossWeight, regex: /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
             { value: item.netWeight, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
             { value: item.wuom, regex: null, message: "Enter UOM for Weight" },
-            // { value: item.volume, regex: null, message: "Enter Volume" }
+            { value: item.volume, regex: null, message: "Enter Volume" },
+            { value: item.stack, regex: null, message: "Enter stack" },
+            { value: item.stack, regex: /^\d+$/, message: "Stack should be numeric" }
           ]
           for (let input of aExcelInputs) {
             let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
@@ -233,10 +238,11 @@ sap.ui.define(
             item.length = String(item.length).trim();
             item.width = String(item.width).trim();
             item.height = String(item.height).trim();
-            item.netWeight = String(item.weight).trim();
-            item.grossWeight = String(item.weight).trim();
+            item.netWeight = String(item.netWeight).trim();
+            item.grossWeight = String(item.grossWeight).trim();
             item.quantity = String(item.quantity).trim();
             item.volume = String(item.volume).trim();
+            item.stack = String(item.stack).trim();
 
             // Create individual batch request 
             await oDataModel.create("/Materials", item, {
@@ -1824,19 +1830,46 @@ sap.ui.define(
         oRouter.navTo("ManuvalSimulation");
       },
       /**Filtering Based on Material number */
-      onLiveBinNumberTAble: function (oEvent) {
+      // onLiveModelSearch: function (oEvent) {
+      //   let aFilter = [];
+      //   let sQuery = oEvent.getParameter("newValue");
+      //   sQuery = sQuery.replace(/\s+/g, '');
+      //   sQuery = sQuery.toUpperCase();
+      //   if (sQuery && sQuery.length > 1) {
+      //     // aFilter.push(new Filter("model", FilterOperator.EQ, sQuery));
+      //     aFilter.push(new Filter("mCategory", FilterOperator.EQ, sQuery));
+      //   }
+      //   var oTable = this.byId("ProductsTable");
+      //   var oBinding = oTable.getBinding("items");
+      //   oBinding.filter(aFilter);
+      // },
+      onLiveModelSearch: function(oEvent) {
         let aFilter = [];
         let sQuery = oEvent.getParameter("newValue");
-        sQuery = sQuery.replace(/\s+/g, '');
-        sQuery = sQuery.toUpperCase();
-        if (sQuery && sQuery.length > 1) {
-          aFilter.push(new Filter("model", FilterOperator.EQ, sQuery));
+    
+        // Remove extra spaces and convert the query to uppercase
+        sQuery = sQuery.replace(/\s+/g, '').toUpperCase();
+    
+        // Only apply filters if the query has at least one character
+        if (sQuery && sQuery.length > 0) {
+            // Filter for 'model' field
+            aFilter.push(new Filter("model", FilterOperator.Contains, sQuery));
+            
+            // // Filter for 'mCategory' field
+            // aFilter.push(new Filter("mCategory", FilterOperator.Contains, sQuery));
+            
+            // // Filter for 'description' field
+            aFilter.push(new Filter("description", FilterOperator.Contains, sQuery));
         }
+    
+        // Get the table and its binding
         var oTable = this.byId("ProductsTable");
         var oBinding = oTable.getBinding("items");
-        oBinding.filter(aFilter);
-      },
-
+    
+        // Apply the filters to the table binding
+        oBinding.filter(aFilter, "Application");
+    },
+    
 
       /**For creating n number of products at a time */
       onUploadMaterialCreation: function (e) {
@@ -2389,310 +2422,489 @@ sap.ui.define(
 
      
       
-      _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-        let currentX = -containerLength / 2;
-        let currentZ = -containerWidth / 2;
-        let currentY = 0;
+//       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+//         let currentX = -containerLength / 2;
+//         let currentZ = -containerWidth / 2;
+//         let currentY = 0;
     
-        const positionMap = []; // Keeps track of occupied positions
-        const chartData = [];
+//         const positionMap = []; // Keeps track of occupied positions
+//         const chartData = [];
     
-        let maxHeight = 0; // Max height for the current level (Y-axis tracking)
-        let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
+//         let maxHeight = 0; // Max height for the current level (Y-axis tracking)
+//         let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
     
-        let totalQuantity = 0;
-        let totalVolume = 0;
-        let totalWeight = 0;
+//         let totalQuantity = 0;
+//         let totalVolume = 0;
+//         let totalWeight = 0;
 
-        const containerMaxVolume = containerHeight * containerLength * containerWidth;
+//         const containerMaxVolume = containerHeight * containerLength * containerWidth;
 
-//         const containerMaxWeight = 1000; // Example max weight in kg
+// //         const containerMaxWeight = 1000; // Example max weight in kg
 
+// //         selectedProducts.forEach(product => {
+// //           const SelectedQuantity = parseInt(product.SelectedQuantity);
+// //           const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+// //           const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+// //           const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+// //           const productColor = product.Productno.color;
+// //           const productWeight = parseFloat(product.Productno.weight);
+// //           const productName = product.Productno.description;
+
+// //           let totalChartVolume = 0;
+// //           let totalChartWeight = 0;
+
+// //           for (let i = 0; i < SelectedQuantity; i++) {
+// //             let isOverlap = true;
+
+// //             while (isOverlap) {
+// //               // Reset positions when bounds are reached
+// //               if (currentX + productLength > containerLength / 2) {
+// //                 currentX = -containerLength / 2;
+// //                 currentZ += productWidth;
+
+// //                 if (currentZ + productWidth > containerWidth / 2) {
+// //                   currentZ = -containerWidth / 2;
+// //                   currentY += productHeight;
+
+//         const containerMaxWeight = 1000; // Example container max weight (kg)
+    
 //         selectedProducts.forEach(product => {
-//           const SelectedQuantity = parseInt(product.SelectedQuantity);
-//           const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-//           const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-//           const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-//           const productColor = product.Productno.color;
-//           const productWeight = parseFloat(product.Productno.weight);
-//           const productName = product.Productno.description;
-
-//           let totalChartVolume = 0;
-//           let totalChartWeight = 0;
-
-//           for (let i = 0; i < SelectedQuantity; i++) {
-//             let isOverlap = true;
-
-//             while (isOverlap) {
-//               // Reset positions when bounds are reached
-//               if (currentX + productLength > containerLength / 2) {
-//                 currentX = -containerLength / 2;
-//                 currentZ += productWidth;
-
-//                 if (currentZ + productWidth > containerWidth / 2) {
-//                   currentZ = -containerWidth / 2;
-//                   currentY += productHeight;
-
-        const containerMaxWeight = 1000; // Example container max weight (kg)
+//             const SelectedQuantity = parseInt(product.SelectedQuantity);
+//             const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+//             const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+//             const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+//             const productColor = product.Productno.color;
+//             const productWeight = parseFloat(product.Productno.weight);
+//             const productName = product.Productno.description;
     
-        selectedProducts.forEach(product => {
-            const SelectedQuantity = parseInt(product.SelectedQuantity);
-            const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-            const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-            const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-            const productColor = product.Productno.color;
-            const productWeight = parseFloat(product.Productno.weight);
-            const productName = product.Productno.description;
+//             let totalChartVolume = 0;
+//             let totalChartWeight = 0;
     
-            let totalChartVolume = 0;
-            let totalChartWeight = 0;
+//             for (let i = 0; i < SelectedQuantity; i++) {
+//                 let isPlaced = false;
     
-            for (let i = 0; i < SelectedQuantity; i++) {
-                let isPlaced = false;
-    
-                while (!isPlaced) {
-                    console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+//                 while (!isPlaced) {
+//                     console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
                     
-                    // Check if product fits within the container along the X axis (length)
-                    if (currentX + productLength > containerLength / 2) {
-                        currentX = -containerLength / 2;
-                        currentZ += maxWidth; // Move to the next row (Z axis)
-                        console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
+//                     // Check if product fits within the container along the X axis (length)
+//                     if (currentX + productLength > containerLength / 2) {
+//                         currentX = -containerLength / 2;
+//                         currentZ += maxWidth; // Move to the next row (Z axis)
+//                         console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
     
-                        maxWidth = 0; // Reset maxWidth for new row
+//                         maxWidth = 0; // Reset maxWidth for new row
     
-                        // Check if product fits within the container along the Z axis (width)
-                        if (currentZ + productWidth > containerWidth / 2) {
-                            currentZ = -containerWidth / 2;
-                            currentY += maxHeight; // Move to the next height level (Y axis)
-                            console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
+//                         // Check if product fits within the container along the Z axis (width)
+//                         if (currentZ + productWidth > containerWidth / 2) {
+//                             currentZ = -containerWidth / 2;
+//                             currentY += maxHeight; // Move to the next height level (Y axis)
+//                             console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
     
-                            maxHeight = 0; // Reset maxHeight for new level
+//                             maxHeight = 0; // Reset maxHeight for new level
     
-                            // Check if product fits within the height
-                            if (currentY + productHeight > containerHeight) {
-                                console.log(`  Product "${productName}" cannot fit in the container.`);
-                                alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
-                                return; // Skip product if it cannot fit
-                            }
-                        }
-                    }
+//                             // Check if product fits within the height
+//                             if (currentY + productHeight > containerHeight) {
+//                                 console.log(`  Product "${productName}" cannot fit in the container.`);
+//                                 alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
+//                                 return; // Skip product if it cannot fit
+//                             }
+//                         }
+//                     }
     
-                    // Check for overlap with previously placed products
-                    const isOverlap = positionMap.some(position => (
-                        currentX < position.xEnd &&
-                        (currentX + productLength) > position.xStart &&
-                        currentZ < position.zEnd &&
-                        (currentZ + productWidth) > position.zStart &&
-                        currentY < position.yTop
-                    ));
+//                     // Check for overlap with previously placed products
+//                     const isOverlap = positionMap.some(position => (
+//                         currentX < position.xEnd &&
+//                         (currentX + productLength) > position.xStart &&
+//                         currentZ < position.zEnd &&
+//                         (currentZ + productWidth) > position.zStart &&
+//                         currentY < position.yTop
+//                     ));
     
-                    // If there's overlap, move currentX to the next available space in X direction
-                    if (isOverlap) {
-                        currentX += productLength;
-                        console.log(`  Overlap detected, moving X to: ${currentX}`);
-                    } else {
-                        isPlaced = true; // Place product if there's no overlap
-                        console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
-                    }
-                }
+//                     // If there's overlap, move currentX to the next available space in X direction
+//                     if (isOverlap) {
+//                         currentX += productLength;
+//                         console.log(`  Overlap detected, moving X to: ${currentX}`);
+//                     } else {
+//                         isPlaced = true; // Place product if there's no overlap
+//                         console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+//                     }
+//                 }
     
-                if (isPlaced) {
-                    // Create the product's 3D representation
-                    const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-                    const productMaterial = new THREE.MeshStandardMaterial({
-                        color: new THREE.Color(productColor),
-                        metalness: 0.5,
-                        roughness: 0.5
-                    });
+//                 if (isPlaced) {
+//                     // Create the product's 3D representation
+//                     const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+//                     const productMaterial = new THREE.MeshStandardMaterial({
+//                         color: new THREE.Color(productColor),
+//                         metalness: 0.5,
+//                         roughness: 0.5
+//                     });
     
-                    const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-                    productMesh.position.set(
-                        currentX + productLength / 2,
-                        currentY + productHeight / 2,
-                        currentZ + productWidth / 2
-                    );
-                    this.scene.add(productMesh);
+//                     const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+//                     productMesh.position.set(
+//                         currentX + productLength / 2,
+//                         currentY + productHeight / 2,
+//                         currentZ + productWidth / 2
+//                     );
+//                     this.scene.add(productMesh);
     
-                    // Add wireframe for visualization
-                    const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-                    const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-                    const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-                    edges.position.copy(productMesh.position);
-                    this.scene.add(edges);
+//                     // Add wireframe for visualization
+//                     const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+//                     const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+//                     const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+//                     edges.position.copy(productMesh.position);
+//                     this.scene.add(edges);
     
-                    // Update the occupied positions in the positionMap
-                    positionMap.push({
-                        xStart: currentX,
-                        xEnd: currentX + productLength,
-                        zStart: currentZ,
-                        zEnd: currentZ + productWidth,
-                        yTop: currentY + productHeight
-                    });
+//                     // Update the occupied positions in the positionMap
+//                     positionMap.push({
+//                         xStart: currentX,
+//                         xEnd: currentX + productLength,
+//                         zStart: currentZ,
+//                         zEnd: currentZ + productWidth,
+//                         yTop: currentY + productHeight
+//                     });
     
-                    // Update maximum height and width for the row/level
-                    maxHeight = Math.max(maxHeight, productHeight);
-                    maxWidth = Math.max(maxWidth, productWidth);
+//                     // Update maximum height and width for the row/level
+//                     maxHeight = Math.max(maxHeight, productHeight);
+//                     maxWidth = Math.max(maxWidth, productWidth);
     
-                    // Update totals
-                    totalQuantity++;
-                    const productVolume = productLength * productHeight * productWidth;
-                    totalVolume += productVolume;
-                    totalWeight += productWeight;
-                    totalChartVolume += productVolume;
-                    totalChartWeight += productWeight;
+//                     // Update totals
+//                     totalQuantity++;
+//                     const productVolume = productLength * productHeight * productWidth;
+//                     totalVolume += productVolume;
+//                     totalWeight += productWeight;
+//                     totalChartVolume += productVolume;
+//                     totalChartWeight += productWeight;
     
-                    // Move to the next available position in the X axis for the next product
-                    currentX += productLength;
-                    console.log(`  Moving to next X position: ${currentX}`);
+//                     // Move to the next available position in the X axis for the next product
+//                     currentX += productLength;
+//                     console.log(`  Moving to next X position: ${currentX}`);
 
-                }
-              }
+//                 }
+//               }
 
-              // Check for overlaps
-              isOverlap = positionMap.some(position => (
-                currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-                currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-                currentY < position.yTop
-              ));
+//               // Check for overlaps
+//               isOverlap = positionMap.some(position => (
+//                 currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+//                 currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+//                 currentY < position.yTop
+//               ));
 
-              if (isOverlap) {
-                currentX += productLength; // Adjust position to avoid overlap
-              }
-            }
-
-//             if (!isOverlap) {
-//               // Create 3D product representation
-//               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-//               const productMaterial = new THREE.MeshStandardMaterial({
-//                 color: new THREE.Color(productColor),
-//                 metalness: 0.5,
-//                 roughness: 0.5
-//               });
-
-//               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-//               productMesh.position.set(
-//                 currentX + productLength / 2,
-//                 currentY + productHeight / 2,
-//                 currentZ + productWidth / 2
-//               );
-//               this.scene.add(productMesh);
-
-//               // Add wireframe for visualization
-//               const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-//               const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-//               const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-//               edges.position.copy(productMesh.position);
-//               this.scene.add(edges);
-
-//               // Update position map
-//               positionMap.push({
-//                 xStart: currentX,
-//                 xEnd: currentX + productLength,
-//                 zStart: currentZ,
-//                 zEnd: currentZ + productWidth,
-//                 yTop: currentY + productHeight
-//               });
-
-//               totalQuantity++;
-//               const productVolume = productLength * productHeight * productWidth;
-//               totalVolume += productVolume;
-//               totalWeight += productWeight;
-//               totalChartVolume += productVolume;
-//               totalChartWeight += productWeight;
-
-//               currentX += productLength; // Move to the next position
+//               if (isOverlap) {
+//                 currentX += productLength; // Adjust position to avoid overlap
+//               }
 //             }
-//           }
 
-//           // Add product data to chart
-//           chartData.push({
-//             Name: productName,
-//             Packages: SelectedQuantity,
-//             Volume: totalChartVolume.toFixed(1),
-//             Weight: totalChartWeight.toFixed(1),
-//             Color: productColor
-//           });
+// //             if (!isOverlap) {
+// //               // Create 3D product representation
+// //               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+// //               const productMaterial = new THREE.MeshStandardMaterial({
+// //                 color: new THREE.Color(productColor),
+// //                 metalness: 0.5,
+// //                 roughness: 0.5
+// //               });
+
+// //               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+// //               productMesh.position.set(
+// //                 currentX + productLength / 2,
+// //                 currentY + productHeight / 2,
+// //                 currentZ + productWidth / 2
+// //               );
+// //               this.scene.add(productMesh);
+
+// //               // Add wireframe for visualization
+// //               const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+// //               const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+// //               const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+// //               edges.position.copy(productMesh.position);
+// //               this.scene.add(edges);
+
+// //               // Update position map
+// //               positionMap.push({
+// //                 xStart: currentX,
+// //                 xEnd: currentX + productLength,
+// //                 zStart: currentZ,
+// //                 zEnd: currentZ + productWidth,
+// //                 yTop: currentY + productHeight
+// //               });
+
+// //               totalQuantity++;
+// //               const productVolume = productLength * productHeight * productWidth;
+// //               totalVolume += productVolume;
+// //               totalWeight += productWeight;
+// //               totalChartVolume += productVolume;
+// //               totalChartWeight += productWeight;
+
+// //               currentX += productLength; // Move to the next position
+// //             }
+// //           }
+
+// //           // Add product data to chart
+// //           chartData.push({
+// //             Name: productName,
+// //             Packages: SelectedQuantity,
+// //             Volume: totalChartVolume.toFixed(1),
+// //             Weight: totalChartWeight.toFixed(1),
+// //             Color: productColor
+// //           });
+// //         });
+
+// //         // Calculate remaining volume and weight
+// //         const remainingVolume = containerMaxVolume - totalVolume;
+// //         const remainingWeight = containerMaxWeight - totalWeight;
+
+// //         // Add empty space data to chart
+// //         chartData.push({
+// //           Name: "Empty",
+// //           Packages: 0,
+// //           Volume: remainingVolume.toFixed(1),
+// //           Weight: 0,
+// //           Color: "#cccccc" // Gray color for "Empty"
+// //         });
+
+// //         // Update view models with calculated data
+    
+//             // Collect the product data for chart visualization
+//             if (totalChartVolume > 0) {
+//                 chartData.push({
+//                     Name: productName,
+//                     Packages: SelectedQuantity,
+//                     Volume: totalChartVolume.toFixed(1),
+//                     Weight: totalChartWeight.toFixed(1),
+//                     Color: productColor
+//                 });
+//             }
 //         });
-
-//         // Calculate remaining volume and weight
+    
+//         // Calculate remaining available volume and weight in the container
 //         const remainingVolume = containerMaxVolume - totalVolume;
 //         const remainingWeight = containerMaxWeight - totalWeight;
-
-//         // Add empty space data to chart
+    
+//         // Add empty space (unused space) in the chart data
 //         chartData.push({
-//           Name: "Empty",
-//           Packages: 0,
-//           Volume: remainingVolume.toFixed(1),
-//           Weight: 0,
-//           Color: "#cccccc" // Gray color for "Empty"
+//             Name: "Empty",
+//             Packages: 0,
+//             Volume: remainingVolume.toFixed(1),
+//             Weight: 0,
+//             Color: "#cccccc" // Gray color for empty space
+//         });
+    
+//         // Update the view models with total values and chart data
+//         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
+//         this.getView().getModel("Calculation").setProperty("/", {
+//           TotalQuantity: totalQuantity,
+//           TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+//           TotalWeight: `${totalWeight.toFixed(1)} kg`,
+//           RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
 //         });
 
-//         // Update view models with calculated data
-    
-            // Collect the product data for chart visualization
-            if (totalChartVolume > 0) {
-                chartData.push({
-                    Name: productName,
-                    Packages: SelectedQuantity,
-                    Volume: totalChartVolume.toFixed(1),
-                    Weight: totalChartWeight.toFixed(1),
-                    Color: productColor
-                });
-            }
-        });
-    
-        // Calculate remaining available volume and weight in the container
-        const remainingVolume = containerMaxVolume - totalVolume;
-        const remainingWeight = containerMaxWeight - totalWeight;
-    
-        // Add empty space (unused space) in the chart data
-        chartData.push({
-            Name: "Empty",
-            Packages: 0,
-            Volume: remainingVolume.toFixed(1),
-            Weight: 0,
-            Color: "#cccccc" // Gray color for empty space
-        });
-    
-        // Update the view models with total values and chart data
-        this.getView().getModel("ChartData").setProperty("/chartData", chartData);
-        this.getView().getModel("Calculation").setProperty("/", {
-          TotalQuantity: totalQuantity,
-          TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
-          TotalWeight: `${totalWeight.toFixed(1)} kg`,
-          RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
-        });
 
+// //         // Update pie chart visualization
+// //         const oVizFrame = this.getView().byId("idPieChart");
+// //         oVizFrame.setVizProperties({
+// //           plotArea: {
+// //             colorPalette: chartData.map(item => item.Color), // Dynamically set colors
+// //             dataLabel: {
+// //               visible: true
 
-//         // Update pie chart visualization
+    
+//         // Update pie chart visualization based on filled/empty spaces
 //         const oVizFrame = this.getView().byId("idPieChart");
 //         oVizFrame.setVizProperties({
-//           plotArea: {
-//             colorPalette: chartData.map(item => item.Color), // Dynamically set colors
-//             dataLabel: {
-//               visible: true
+//             plotArea: {
+//                 colorPalette: chartData.map(item => item.Color), // Use dynamic colors
+//                 dataLabel: {
+//                     visible: true
+//                 }
+//             },
+//             title: {
+//                 text: "Cargo Volume Breakdown"
 
-    
-        // Update pie chart visualization based on filled/empty spaces
-        const oVizFrame = this.getView().byId("idPieChart");
-        oVizFrame.setVizProperties({
-            plotArea: {
-                colorPalette: chartData.map(item => item.Color), // Use dynamic colors
-                dataLabel: {
-                    visible: true
-                }
-            },
-            title: {
-                text: "Cargo Volume Breakdown"
+//             }
+//           },
+//           title: {
+//             text: "Cargo Volume Breakdown"
+//           }
+//         });
+//       },
+_createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+  let currentX = -containerLength / 2;
+  let currentZ = -containerWidth / 2;
+  let currentY = 0;
 
-            }
-          },
-          title: {
-            text: "Cargo Volume Breakdown"
+  const positionMap = []; // Keeps track of occupied positions
+  const chartData = [];
+
+  let maxHeight = 0; // Max height for the current level (Y-axis tracking)
+  let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
+
+  let totalQuantity = 0;
+  let totalVolume = 0;
+  let totalWeight = 0;
+
+  const containerMaxVolume = containerHeight * containerLength * containerWidth;
+  const containerMaxWeight = 1000; // Example container max weight (kg)
+
+  selectedProducts.forEach(product => {
+      const SelectedQuantity = parseInt(product.SelectedQuantity);
+      const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+      const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+      const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+      const productColor = product.Productno.color;
+      const productWeight = parseFloat(product.Productno.weight);
+      const productName = product.Productno.description;
+
+      let totalChartVolume = 0;
+      let totalChartWeight = 0;
+
+      for (let i = 0; i < SelectedQuantity; i++) {
+          let isPlaced = false;
+
+          while (!isPlaced) {
+              console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+              
+              // Check if product fits within the container along the X axis (length)
+              if (currentX + productLength > containerLength / 2) {
+                  currentX = -containerLength / 2;
+                  currentZ += maxWidth; // Move to the next row (Z axis)
+                  console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
+
+                  maxWidth = 0; // Reset maxWidth for new row
+
+                  // Check if product fits within the container along the Z axis (width)
+                  if (currentZ + productWidth > containerWidth / 2) {
+                      currentZ = -containerWidth / 2;
+                      currentY += maxHeight; // Move to the next height level (Y axis)
+                      console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
+
+                      maxHeight = 0; // Reset maxHeight for new level
+
+                      // Check if product fits within the height
+                      if (currentY + productHeight > containerHeight) {
+                          console.log(`  Product "${productName}" cannot fit in the container.`);
+                          alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
+                          return; // Skip product if it cannot fit
+                      }
+                  }
+              }
+
+              // Check for overlap with previously placed products
+              const isOverlap = positionMap.some(position => (
+                  currentX < position.xEnd &&
+                  (currentX + productLength) > position.xStart &&
+                  currentZ < position.zEnd &&
+                  (currentZ + productWidth) > position.zStart &&
+                  currentY < position.yTop
+              ));
+
+              // If there's overlap, move currentX to the next available space in X direction
+              if (isOverlap) {
+                  currentX += productLength;
+                  console.log(`  Overlap detected, moving X to: ${currentX}`);
+              } else {
+                  isPlaced = true; // Place product if there's no overlap
+                  console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+              }
           }
-        });
+
+          if (isPlaced) {
+              // Create the product's 3D representation
+              const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+              const productMaterial = new THREE.MeshStandardMaterial({
+                  color: new THREE.Color(productColor),
+                  metalness: 0.5,
+                  roughness: 0.5
+              });
+
+              const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+              productMesh.position.set(
+                  currentX + productLength / 2,
+                  currentY + productHeight / 2,
+                  currentZ + productWidth / 2
+              );
+              this.scene.add(productMesh);
+
+              // Add wireframe for visualization
+              const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+              const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+              const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+              edges.position.copy(productMesh.position);
+              this.scene.add(edges);
+
+              // Update the occupied positions in the positionMap
+              positionMap.push({
+                  xStart: currentX,
+                  xEnd: currentX + productLength,
+                  zStart: currentZ,
+                  zEnd: currentZ + productWidth,
+                  yTop: currentY + productHeight
+              });
+
+              // Update maximum height and width for the row/level
+              maxHeight = Math.max(maxHeight, productHeight);
+              maxWidth = Math.max(maxWidth, productWidth);
+
+              // Update totals
+              totalQuantity++;
+              const productVolume = productLength * productHeight * productWidth;
+              totalVolume += productVolume;
+              totalWeight += productWeight;
+              totalChartVolume += productVolume;
+              totalChartWeight += productWeight;
+
+              // Move to the next available position in the X axis for the next product
+              currentX += productLength;
+              console.log(`  Moving to next X position: ${currentX}`);
+          }
+      }
+
+      // Collect the product data for chart visualization
+      if (totalChartVolume > 0) {
+          chartData.push({
+              Name: productName,
+              Packages: SelectedQuantity,
+              Volume: totalChartVolume.toFixed(1),
+              Weight: totalChartWeight.toFixed(1),
+              Color: productColor
+          });
+      }
+  });
+
+  // Calculate remaining available volume and weight in the container
+  const remainingVolume = containerMaxVolume - totalVolume;
+  const remainingWeight = containerMaxWeight - totalWeight;
+
+  // Add empty space (unused space) in the chart data
+  chartData.push({
+      Name: "Empty",
+      Packages: 0,
+      Volume: remainingVolume.toFixed(1),
+      Weight: 0,
+      Color: "#cccccc" // Gray color for empty space
+  });
+
+  // Update the view models with total values and chart data
+  this.getView().getModel("ChartData").setProperty("/chartData", chartData);
+  this.getView().getModel("Calculation").setProperty("/", {
+      TotalQuantity: totalQuantity,
+      TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+      TotalWeight: `${totalWeight.toFixed(1)} kg`,
+      RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
+  });
+
+  // Update pie chart visualization based on filled/empty spaces
+  const oVizFrame = this.getView().byId("idPieChart");
+  oVizFrame.setVizProperties({
+      plotArea: {
+          colorPalette: chartData.map(item => item.Color), // Use dynamic colors
+          dataLabel: {
+              visible: true
+          }
       },
+      title: {
+          text: "Cargo Volume Breakdown"
+      }
+  });
+},
 
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);

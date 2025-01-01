@@ -38,7 +38,6 @@ define entity Materials {
         volume          : String;
         vuom            : String;
         muom            : String;
-        stack           : String;
         uom             : String;
         mCategory       : string;
         description     : String;
