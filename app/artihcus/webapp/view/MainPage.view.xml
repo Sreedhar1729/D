@@ -40,7 +40,7 @@
                 id="idArtihcusIn_Mainpage"
                 height="1.5rem"
                 class="sapUiTinyMarginBegin"
-                src="https://artihcus.com/assets/img/AG-logo.png"
+                src="https://www.daikin.com/-/media/Project/Daikin/daikin_com/dg_common/images/logo_daikin-png.png"
             />
             <Title
                 level="H1"
@@ -426,7 +426,7 @@
                     >
                         <Toolbar
                             id="TB4ertdf_AHUOBQ"
-                            class="HeaderToolBar backgroundColour"
+                            class="backgroundColour"
                             width="80%"
                         >
                             <Title
