@@ -21,6 +21,7 @@ define entity Users : cuid {
     mailID       : String;
     password     : String;
     profileImage : String;
+    expireDate : String;
 }
 
 @assert.unique: {model: [model]
