@@ -146,6 +146,9 @@ sap.ui.define(
         const chartDataModel = new sap.ui.model.json.JSONModel({ chartData: [] });
         const calculationModel = new sap.ui.model.json.JSONModel();
         this.getView().setModel(chartDataModel, "ChartData");
+
+        //For the Product details editing this flag is required...
+        this.isEditingRowRecord = false;
       },
 
       onbatchUpload: async function (e) {
@@ -1171,6 +1174,30 @@ sap.ui.define(
 
       //****************************Deleting single or Multiple Models at a time  **************************/
 
+      // onModelDelete: async function () {
+      //   const oTable = this.byId("ProductsTable"),
+      //     aSelectedItems = oTable.getSelectedItems(),
+      //     oModel = this.getView().getModel("ModelV2");
+      //   if (aSelectedItems.length === 0) {
+      //     MessageBox.information("Please select at least one product to delete.");
+      //     return;
+      //   }
+      //   if (aSelectedItems.length > 1) {
+      //     MessageBox.information("Please select single Model to delete.");
+      //     return;
+      //   }
+      //   try {
+      //     await Promise.all(aSelectedItems.map(async (oItem) => {
+      //       const oPath = oItem.getBindingContext().getPath();
+      //       await this.deleteData(oModel, oPath);
+      //     }));
+      //     this.getView().byId("ProductsTable").getBinding("items").refresh();
+      //     MessageToast.show('Successfully Deleted')
+      //   } catch (error) {
+      //     MessageToast.show('Error Occurs');
+      //   }
+      // },
+
       onModelDelete: async function () {
         const oTable = this.byId("ProductsTable"),
           aSelectedItems = oTable.getSelectedItems(),
@@ -1423,30 +1450,17 @@ sap.ui.define(
         this.getView().getModel("CombinedModel").setProperty("/Vehicle", {})
       },
 
-
-      /**Editing Product Details  for fragment*/
-      // onPressEditInProductsTable: async function () {
-      //   var oSelectedItem = this.byId("ProductsTable").getSelectedItem();
-      //   if (!oSelectedItem) {
-      //     MessageBox.information("Please select at least one Row for edit!");
-      //     return;
-      //   }
-      //   const oData = oSelectedItem.getBindingContext().getObject();
-      //   await this.oOpenProductEdit();
-      //   this.byId("editProductNoInput").setValue(oData.sapProductno); // SAP Product Number
-      //   this.byId("editDescriptionInput").setValue(oData.description); // Description
-      //   this.byId("editEANInput").setValue(oData.EAN); // EAN/UPC Code
-      //   this.byId("editCategoryInput").setValue(oData.mCategory); // Material Category
-      //   this.byId("editproLengthInput").setValue(oData.length); // Length
-      //   this.byId("editprodWidthInput").setValue(oData.width); // Width
-      //   this.byId("editprodHeightInput").setValue(oData.height); // Height
-      //   // this.byId("editVolumeInput").setValue(oData.volume); // Volume
-      //   this.byId("editUOMInput").setValue(oData.uom); // Unit of Measure (UOM)
-      //   this.byId("editWeightInput").setValue(oData.weight); // Weight
-      //   this.byId("editQuantityInput").setValue(oData.quantity);
-      // },
-
       /**Editing Product Details for editable table */
+      onRowSelectionForEditingRow: function (oEvent) {
+        if (this.isEditingRowRecord) {
+          var oTable = this.byId("ProductsTable");
+          var oSelectedItem = oEvent.getParameter("listItem");
+          oSelectedItem.setSelected(false); // Deselect the newly selected row
+          sap.m.MessageToast.show("Please cancel the current editing before selecting another row.");
+          return;
+        }
+        //sap.m.MessageToast.show("Row selected. Proceed with editing if required.");
+      },
       onPressEditInProductsTable: function () {
         debugger
         var oTable = this.byId("ProductsTable");
@@ -1455,78 +1469,17 @@ sap.ui.define(
           sap.m.MessageToast.show("Please select atleast one row to edit.");
           return;
         }
-
-        //         const oData = oSelectedItem.getBindingContext().getObject();
-        //         await this.oOpenProductEdit();
-        //         /**Getting the model and setting data */
-        //         var DummyModel = this.getView().getModel("CombinedModel");
-        //         DummyModel.setProperty("/Product", oData);
-        //       },
-        //       /**Updadting the Changed Product Value */
-        //       onSaveProduct: async function () {
-        //         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
-        //         const oPayload = updatedData;
-        //         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-        //         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-        //         var oID = updatedData.ID;
-        //         /**If key is missing returns error */
-        //         if (!oID) {
-        //           sap.m.MessageBox.error("ID is not Found/Key Missing");
-
         if (aSelectedItem.length > 1) {
           sap.m.MessageToast.show("Please select only one row to edit.");
-
-          //           return;
-          //         }
-          //         this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
-          //         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
-          //         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
-
-          //         var oSelectedItem = aSelectedItem[0];
-          //         var aCells = oSelectedItem.getCells();
-
-          //         this.pastDescription = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
-          //         this.pastMCategory = aCells[3].getItems()[0].getText();
-          //         this.pastQuantity = aCells[4].getItems()[0].getText();
-          //         this.pastLength = aCells[5].getItems()[0].getText();
-          //         this.pastWidth = aCells[6].getItems()[0].getText();
-          //         this.pastHeight = aCells[7].getItems()[0].getText();
-          //         this.pastUOM = aCells[9].getItems()[0].getText();
-          //         this.pastWeight = aCells[10].getItems()[0].getText();
-          //         // Loop through selected items
-          //         aSelectedItem.forEach(function (oItem) {
-          //           var aCells = oItem.getCells();
-
-          //           // Loop through the cells to find HBox elements
-          //           aCells.forEach(function (oCell) {
-          //             if (oCell.isA("sap.m.HBox")) {
-          //               var aChildren = oCell.getItems();
-
-          //               if (aChildren.length === 2) {
-          //                 aChildren[0].setVisible(false);
-          //                 aChildren[1].setVisible(true);
-          //               }
-          //             }
-          //           });
-          //         });
-          //       },
-
-          //       /**Updadting the Changed Product Value */
-          //       onSaveProduct: async function () {
-          //         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
-          //         const oPayload = updatedData;
-          //         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-          //         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-          //         var oID = updatedData.ID;
-          //         /**If key is missing returns error */
-          //         if (!oID) {
-          //           sap.m.MessageBox.error("ID is not Found/Key Missing");
-
           return;
         }
+        this.isEditingRowRecord = true;
+
         // this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
+        this.byId("idBtnProductDescription_AHUOBQ").setEnabled(false);
+        this.byId("FileUploader").setEnabled(false);
         var oSelectedItem = aSelectedItem[0];
         var aCells = oSelectedItem.getCells();
         this.pastDescription = aCells[2].getItems()[0].getText(); // Adjust index as per your table structure
@@ -1558,6 +1511,7 @@ sap.ui.define(
         debugger;
         var oTable = this.byId("ProductsTable");
         var aSelectedItem = oTable.getSelectedItems();
+
         var oSelectedItem = aSelectedItem[0];
         var aCells = oSelectedItem.getCells();
 
@@ -1573,17 +1527,48 @@ sap.ui.define(
           var match = value.match(/^\d+(\.\d+)?/); // Matches only the numeric part at the start of the string
           return match ? parseFloat(match[0]) : 0; // Return numeric value as a number, or 0 if no match
         };
+        // Validate numbers only
+        var testNumericValue = (value) => /^\d+(\.\d+)?$/.test(value); // Float or Integer validation
+        var testIntegerValue = (value) => /^\d+$/.test(value);
 
+        var description = aCells[2].getItems()[1].getValue().trim();
+        var quantity = aCells[4].getItems()[1].getValue().trim();
         var lengthValue = getTrimmedValue(aCells[5].getItems()[1].getValue());
         var widthValue = getTrimmedValue(aCells[6].getItems()[1].getValue());
         var heightValue = getTrimmedValue(aCells[7].getItems()[1].getValue());
         var netWeightValue = getTrimmedValue(aCells[10].getItems()[1].getValue());
         var grossWeightValue = getTrimmedValue(aCells[11].getItems()[1].getValue());
 
+        // Validation checks
+        if (description.length < 4) {
+          sap.m.MessageToast.show("Description must have at least 4 characters.");
+          return;
+        }
+        if (!testIntegerValue(quantity) || isNaN(quantity)) {
+          sap.m.MessageToast.show("Please enter a valid numeric quantity.");
+          return;
+        }
+        if (!testNumericValue(lengthValue) || !testNumericValue(widthValue) || !testNumericValue(heightValue)) {
+          sap.m.MessageToast.show("Please provide numeric values only(Length, Width, Height).");
+          return;
+        }
+        if (!testIntegerValue(netWeightValue) || !testIntegerValue(grossWeightValue)) {
+          sap.m.MessageToast.show("Please provide numeric values for weights (Net Weight, Gross Weight).");
+          return;
+        }
+        if (!sUOMSelectedKey) {
+          sap.m.MessageToast.show("Please select a Unit of Measurement (UOM).");
+          return;
+        }
+        if (!sWUOMSelectedKey) {
+          sap.m.MessageToast.show("Please select a Weight Unit of Measurement (WUOM).");
+          return;
+        }
+
         // Construct the payload
         var oPayload = {
-          description: aCells[2].getItems()[1].getValue(),
-          quantity: aCells[4].getItems()[1].getValue(),
+          description: description,
+          quantity: quantity,
           length: lengthValue.toString(),
           width: widthValue.toString(),
           height: heightValue.toString(),
@@ -1592,12 +1577,6 @@ sap.ui.define(
           grossWeight: grossWeightValue.toString(),
           wuom: sWUOMSelectedKey,
         };
-
-        // Validate the fields
-        // if (!oPayload.description || !oPayload.quantity || !lengthValue || !widthValue || !heightValue || !netWeightValue || !grossWeightValue) {
-        //   sap.m.MessageToast.show("Please fill all fields correctly.");
-        //   return;
-        // }
 
         // Calculate volume based on UOM
         if (sUOMSelectedKey === "CM") {
@@ -1631,7 +1610,7 @@ sap.ui.define(
           if (oCell.isA("sap.m.HBox")) {
             var aChildren = oCell.getItems();
             if (aChildren.length === 2) {
-              aChildren[0].setVisible(true);  // Show text
+              aChildren[0].setVisible(true); // Show text
               aChildren[1].setVisible(false); // Hide input
             }
           }
@@ -1669,50 +1648,16 @@ sap.ui.define(
             }
           }
         });
+        this.isEditingRowRecord = false;
         this.byId("ProductsTable").getBinding("items").refresh();
         // Toggle button visibility
         // this.byId("idEditBtnIcon4_ProductsTable").setVisible(true);
         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(false);
         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(false);
+        this.byId("idBtnProductDescription_AHUOBQ").setEnabled(true);
+        this.byId("FileUploader").setEnabled(true);
         sap.m.MessageToast.show("Canceled editing of a record!");
-
-        //       /**Clear Product Editing Dialog */
-        //       onClearEditProdDialog: function () {
-        //         this.getView().getModel("CombinedModel").setProperty("/Product", {});
-
       },
-
-      /**Updadting the Changed Product Value */
-      // onSaveProduct: async function () {
-      //   const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
-      //   const oPayload = updatedData;
-      //   var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-      //   oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-      //   var oID = updatedData.ID;
-      //   /**If key is missing returns error */
-      //   if (!oID) {
-      //     sap.m.MessageBox.error("ID is not Found/Key Missing");
-      //     return;
-      //   }
-      //   const oModel = this.getView().getModel("ModelV2");
-      //   const oPath = `/Materials('${oID}')`;
-      //   try {
-      //     await this.updateData(oModel, oPayload, oPath);
-      //     this.getView().byId("ProductsTable").getBinding("items").refresh();
-      //     this.onCancelInEditProductDialog();
-      //     this.onClearEditProdDialog();
-      //     MessageToast.show('Successfully Updated');
-      //   } catch (error) {
-      //     this.onCancelInEditProductDialog();
-      //     this.onClearEditProdDialog();
-      //     MessageToast.show('Error');
-      //   }
-      // },
-      // /**Clear Product Editing Dialog */
-      // onClearEditProdDialog: function () {
-      //   this.getView().getModel("CombinedModel").setProperty("/Product", {});
-      // },
-
       /**Product Simulation */
       onTruckDetails: function () {
         const oVehType = this.byId("idcdsse").getValue(),
