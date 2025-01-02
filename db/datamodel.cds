@@ -1,6 +1,10 @@
 namespace capacitymanagement.db;
 
-using {managed} from '@sap/cds/common';
+using {
+    cuid,
+    managed
+} from '@sap/cds/common';
+
 
 /**for custom type */
 type string : String(40);
@@ -8,14 +12,26 @@ type string : String(40);
 /**Defining entity */
 
 // for unique fields
-@assert.unique: {sapProductno: [sapProductno]
+
+define entity Users : cuid {
+    userID       : String;
+    fName        : String;
+    lName        : String;
+    phoneNo      : String;
+    mailID       : String;
+    password     : String;
+    profileImage : String;
+    expireDate : String;
+}
+
+@assert.unique: {model: [model]
 
 }
 
 define entity Materials {
 
     key ID              : UUID;
-        sapProductno    : string;
+        model           : string;
         EAN             : String;
         length          : String;
         width           : String;
@@ -30,7 +46,7 @@ define entity Materials {
         grossWeight     : String;
         wuom            : String;
         quantity        : String;
-        layers          : String;
+        stack           : String;
         mass            : String;
         layersHeight    : String;
         color           : String;
@@ -42,7 +58,6 @@ define entity Materials {
 /**Defining Vehicle Entity */
 define entity TruckTypes {
     key truckType   : String;
-    key freezed     : Boolean;
         length      : String;
         width       : String;
         height      : String;
@@ -50,7 +65,7 @@ define entity TruckTypes {
         volume      : String;
         tvuom       : String;
         truckWeight : String;
-        capacity    : String;
+        c    : String;
         tuom        : String;
 }
 

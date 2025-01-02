@@ -75,17 +75,25 @@ sap.ui.define([
         },
 
         validateField: function (oView, fieldId, value, regex, errorMessage) {
-            // Validation
             const validationErrors = [];
-            const oField = oView.byId(fieldId);
-            if (!value || (regex && !regex.test(value))) {
-                oField.setValueState("Error");
-                oField.setValueStateText(errorMessage);
-                validationErrors.push(errorMessage);
+            if (!fieldId) {
+                if (!value || (regex && !regex.test(value))) {
+                    validationErrors.push(errorMessage);
+                }
+                return validationErrors
             } else {
-                oField.setValueState("None");
+                // Validation
+                const oField = oView.byId(fieldId);
+                if (!value || (regex && !regex.test(value))) {
+                    oField.setValueState("Error");
+                    oField.setValueStateText(errorMessage);
+                    validationErrors.push(errorMessage);
+                } else {
+                    oField.setValueState("None");
+                }
+                return validationErrors
             }
-            return validationErrors
+
         },
 
         //Base function for opening the Profile PopOver..

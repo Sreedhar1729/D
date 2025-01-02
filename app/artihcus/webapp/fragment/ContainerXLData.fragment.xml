@@ -1,0 +1,195 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns="sap.m"
+>
+    <Dialog
+        id="idContaineruploadDialog"
+        title="Upload Data"
+        class="dialogSlideIn"
+        resizable="true"
+        draggable="true"
+        contentWidth="85%"
+        contentHeight="85%"
+    >
+        <Table
+            id="_IDContainerTable"
+            items="{ContainerModel>/items}"
+            mode="MultiSelect"
+        >
+            <headerToolbar>
+                <OverflowToolbar id="idOverflowToolbar_CXLD">
+                    <ToolbarSpacer id="idToolbarSpacer_CXLD" />
+                    <Button
+                        id="idAccept_CXLD"
+                        type="Accept"
+                        text="Submit"
+                        press="onContainerBatchSave"
+                    />
+                    <Button
+                        id="idClose_CXLD"
+                        text="Close"
+                        icon="sap-icon://close"
+                        type="Neutral"
+                        press="onCloseUploadExcel"
+                    />
+                </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+            <Column id="_IDGenColuasmn0_CXLD">
+                    <Label
+                        id="_IDGenLabel0_CXLD"
+                        text="S.No"
+                    />
+                </Column>
+                <Column id="_IDGenColuasmn1_CXLD">
+                    <Label
+                        id="_IDGenLabel1_CXLD"
+                        text="Container Type"
+                    />
+                </Column>
+                <Column id="_IDGenColumn1_CXLD">
+                    <Label
+                        id="_IDGenLabel2_CXLD"
+                        text="Length"
+                    />
+                </Column>
+                <Column id="_IDGenCosaf_CXLD">
+                    <Label
+                        id="_IDGenLabel3_CXLD"
+                        text="Width"
+                    />
+                </Column>
+                <Column id="_IDGenColu_CXLD">
+                    <Label
+                        id="_IDGenLabel4_CXLD"
+                        text="Height"
+                    />
+                </Column>
+                <Column id="_IDGenlu_CXLD">
+                    <Label
+                        id="_IDGenLabel5_CXLD"
+                        text="UOM"
+                    />
+                </Column>
+                <Column id="_IDGenCoulu__CXLD">
+                    <Label
+                        id="_IDGenLabel6_CXLD"
+                        text="Volume (m³)"
+                    />
+                </Column>
+                <Column id="idkanidfn_CXLD">
+                    <Label
+                        id="idGenLabel7_CXLD"
+                        text="UOM"
+                    />
+                </Column>
+                <Column id="idkadsdfgnidfn_CXLD">
+                    <Label
+                        id="idGenLabel8_CXLD"
+                        text="Container Capacity"
+                    />
+                </Column>
+                <Column id="idkaesdfgnidfn_CXLD">
+                    <Label
+                        id="idGenLabel9_CXLD"
+                        text="Container Weight"
+                    />
+                </Column>
+                <Column id="idkasdfgnidfn_CXLD">
+                    <Label
+                        id="idGenLabel10_CXLD"
+                        text="UOM"
+                    />
+                </Column>
+                <!-- <Column id="idkqwaesdfgnidfn_CXLD">
+                    <Label
+                        id="idGenLabel11_CXLD"
+                        text="Gross Weight"
+                    />
+                </Column> -->
+                <!-- <Column id="idkqwaesdfgnidsfgdfn">
+                    <Label
+                        id="iddfgwwwerqw"
+                        text="Net Weight"
+                    />
+                </Column>
+                <Column id="idkqwsdvaesdfgnidsfgdfn">
+                    <Label
+                        id="iddfgwsefwwerqw"
+                        text="WUOM"
+                    />
+                </Column>
+                <Column id="idcolumnmodelstack">
+                    <Label
+                        id="idlabelmodelstack"
+                        text="Stack"
+                    />
+                </Column> -->
+            </columns>
+            <items>
+                <ColumnListItem id="_IDGensfdg_ColumnListItem1_CXLD">
+                    <cells>
+                        <Text
+                            id="_IDGeddnText1WE1_CXLD"
+                            text="{ContainerModel>serialNumber}"
+                        />
+                        <Input
+                            id="_IDGenText1WE1_CXLD"
+                            value="{ContainerModel>truckType}"
+                        />
+                        <Input
+                            id="_IDGe_wdefs_CXLD"
+                            value="{ContainerModel>length}"
+                        />
+                        <Input
+                            id="_IDGe_wwwdfs_CXLD"
+                            value="{ContainerModel>width}"
+                        />
+                        <Input
+                            id="_IDGenText3_SWfe_CXLD"
+                            value="{ContainerModel>height}"
+                        />
+                        <Input
+                            id="_IDGe_wdfs_CXLD"
+                            value="{ContainerModel>uom}"
+                        />
+                        <Input
+                            id="_IDGwwee_wdfs_CXLD"
+                            value="{ContainerModel>volume}"
+                        />
+                        <Input
+                            id="_IDGe3_wdfs_CXLD"
+                            value="{ContainerModel>tvuom}"
+                        />
+                        <Input
+                            id="_IDGe_weeddfefs_CXLD"
+                            value="{ContainerModel>truckWeight}"
+                        />
+                        <Input
+                            id="_IDGe_weedefs_CXLD"
+                            value="{ContainerModel>capacity}"
+                        />
+
+                        <Input
+                            id="_IDGe_weedfedfes_CXLD"
+                            value="{ContainerModel>tuom}"
+                        />
+                       <!-- <Input
+                            id="_IDGe_wedfedfes_CXLD"
+                            value="{MaterialModel>netWeight}"
+                        />
+                         <Input
+                            id="_IDGe_wertydfedfes_CXLD"
+                            value="{MaterialModel>wuom}"
+                        />
+                        <Input
+                            id="_IDStackInput_CXLD"
+                            value="{MaterialModel>stack}"
+                        /> -->
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </Dialog>
+</core:FragmentDefinition>

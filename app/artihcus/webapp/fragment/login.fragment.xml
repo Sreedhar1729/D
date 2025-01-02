@@ -46,7 +46,7 @@
                         />
                         <Input
                             id="_IDGenInput11"
-                            placeholder="username"
+                            placeholder="User ID"
                         />
                     </HBox>
                     <HBox id="_IDGenHBox122">
@@ -64,7 +64,8 @@
                         />
                         <Input
                             id="_IDGenInput221"
-                            placeholder="password"
+                            type="Password"
+                            placeholder="Password"
                         />
                     </HBox>
 
