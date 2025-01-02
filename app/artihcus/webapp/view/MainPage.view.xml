@@ -468,17 +468,30 @@
                                 tooltip="Edit"
                                 icon="sap-icon://edit"
                             /> -->
+                            <u:FileUploader
+                                        id="idContainerFileUploader"
+                                        sameFilenameAllowed="true"
+                                        iconOnly="false"
+                                        buttonOnly="false"
+                                        fileType="XLSX,xlsx"
+                                        icon="sap-icon://upload"
+                                        iconFirst="true"
+                                        style="Emphasized"
+                                        change="onbatchUploadContainers"
+                                        buttonText="Upload File"
+                                    />
                       <!-- SplitButton for Add, Edit, Delete options -->
         <MenuButton id="idActionsMenu" text="Actions">
 			<menu>
 				<Menu id="idActionsMenugropu" itemSelected="onMenuAction">
 					<MenuItem id="idActionsAdd" text="Add" icon="sap-icon://add" press="onPressInAddEquipment"/>
-					<MenuItem id="idActionsEdit" text="Edit" icon="sap-icon://edit" />
-					<MenuItem id="idActionsDelete" text="Delete" icon="sap-icon://delete" />
-                    <MenuItem id="idActionsExport" text="Export" icon="sap-icon://excel-attachment" />
+					<MenuItem id="idActionsEdit" text="Edit" icon="sap-icon://edit" press="onEditContainer"/>
+					<MenuItem id="idActionsDelete" text="Delete" icon="sap-icon://delete" press="onContainerDel"/>
+                    <MenuItem id="idActionsExport" text="Export" icon="sap-icon://excel-attachment" press="onPressDownloadContainerTable"/>
 				</Menu>
 			</menu>
 		</MenuButton>
+        
 
                             <Button
                                 id="idBtghcvbnjnHUvbnContentSaveBtn_AHUOBQ"
@@ -500,12 +513,7 @@
                                 tooltip="Delete"
                                 icon="sap-icon://delete"
                             /> -->
-                            <Button
-                                id="idBtbnmfghnHUCcvbnontentBtn_AHUOBQ"
-                                press="onPressDownloadInAddContainerTable"
-                                tooltip="Print"
-                                class="line-md--download-outline-loop"
-                            />
+
                         </Toolbar>
                         <!-- Containertypes table -->
                         <Table
@@ -533,19 +541,25 @@
                                 <Column id="_IcfgvbgbnmhnDGenC">
                                     <Text
                                         id="_IvbhcfvghDcvbvbnnGe1"
-                                        text="Length (M)"
+                                        text="Length"
                                     />
                                 </Column>
                                 <Column id="_IcvbgbnmhnDGenC">
                                     <Text
                                         id="_IvbhDcvbvbnnGe1"
-                                        text="Width (M)"
+                                        text="Width"
                                     />
                                 </Column>
                                 <Column id="_IDvbnvgbnmGenCo">
                                     <Text
                                         id="_IDvghjbnmGen"
-                                        text="Height (M)"
+                                        text="Height"
+                                    />
+                                </Column>
+                                <Column id="id_IDvbnmvbnmGenCrtyuo">
+                                    <Text
+                                        id="id_IDvbnmvbnGecvn"
+                                        text="UOM"
                                     />
                                 </Column>
                                 <Column id="_IDvbnmvbnmGenCrtyuo">
@@ -554,16 +568,23 @@
                                         text="Volume (m³)"
                                     />
                                 </Column>
+                                 
                                 <Column id="_IvbnDGbnmenCcvbnmo">
                                     <Text
                                         id="_IvbnmDwedfGenxcvj"
-                                        text="Container Capacity (KG)"
+                                        text="Container Capacity"
                                     />
                                 </Column>
                                 <Column id="_IvbnDbnmvbnGenCo">
                                     <Text
                                         id="_IcvbnmDbvbnmnGen"
                                         text="Container Weight"
+                                    />
+                                </Column>
+                                <Column id="id_IvbnDbnmvbnGenCo">
+                                    <Text
+                                        id="id_IcvbnmDbvbnmnGen"
+                                        text="UOM"
                                     />
                                 </Column>
                             </columns>
@@ -591,9 +612,13 @@
                                             id="_IsdxcffDGt9"
                                             text="{height}"
                                         />
-
                                         <Text
                                             id="_ID2vghsdfv3Gt9"
+                                            text="{uom}"
+                                        />
+
+                                        <Text
+                                            id="id_ID2vghsdfv3Gt9"
                                             text="{volume}"
                                         />
 
@@ -604,6 +629,10 @@
                                         <Text
                                             id="_IDsvbdfvG10"
                                             text="{truckWeight}"
+                                        />
+                                         <Text
+                                            id="id_IDsvbdfvG10"
+                                            text="{tuom}"
                                         />
                                     </cells>
                                 </ColumnListItem>
@@ -696,13 +725,25 @@
                                         visible="false"
                                     />
 
-
+                                    <u:FileUploader
+                                        id="FileUploader"
+                                        sameFilenameAllowed="true"
+                                        iconOnly="false"
+                                        buttonOnly="false"
+                                        fileType="XLSX,xlsx"
+                                        icon="sap-icon://upload"
+                                        iconFirst="true"
+                                        style="Emphasized"
+                                        change="onbatchUpload"
+                                        buttonText="Upload File"
+                                    />
                                     <MenuButton id="idModelsActionsMenu" text="Actions">
 			<menu>
 				<Menu id="idModelsActionsMenugropu" itemSelected="onMenuAction">
 					<MenuItem id="idModelsActionsEdit" text="Edit" icon="sap-icon://edit" press="onPressEditInProductsTable" tooltip="Edit"/>
 					<MenuItem id="idBtnProductDescription_AHUOBQ" text="Delete" icon="sap-icon://delete"  press="onModelDelete" tooltip="Delete"/>
                     <MenuItem id="idBtfghnHUContentBtn_AHUOBQ" text="Export" icon="sap-icon://excel-attachment" press="onPressPrintModelTable" class="line-md--download-outline-loop"/>
+                    <!-- <MenuItem id="idFileUploader" text="Upload File" icon="sap-icon://upload" press="onbatchUpload" tooltip="Upload File"/> -->
 				</Menu>
 			</menu>
 		</MenuButton>
@@ -719,18 +760,7 @@
                                         buttonText="Upload"
                                         change="onUploadMaterialCreation"
                                     /> -->
-                                    <u:FileUploader
-                                        id="FileUploader"
-                                        sameFilenameAllowed="true"
-                                        iconOnly="false"
-                                        buttonOnly="false"
-                                        fileType="XLSX,xlsx"
-                                        icon="sap-icon://upload"
-                                        iconFirst="true"
-                                        style="Emphasized"
-                                        change="onbatchUpload"
-                                        buttonText="Upload File"
-                                    />
+                                    
                                 </OverflowToolbar>
                             </headerToolbar>
                             <columns>

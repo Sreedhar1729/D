@@ -64,7 +64,7 @@ define entity TruckTypes {
         volume      : String;
         tvuom       : String;
         truckWeight : String;
-        capacity    : String;
+        c    : String;
         tuom        : String;
 }
 

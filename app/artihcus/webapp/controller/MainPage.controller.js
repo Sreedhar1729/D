@@ -26,7 +26,7 @@ sap.ui.define(
     "sap/ui/export/library",
     "sap/ui/export/Spreadsheet",
   ],
-  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent, 
+  function (Controller, Fragment, Filter, FilterOperator, IconTabBar, IconTabFilter, JSONModel, MessageToast, ODataModel, MessageBox, UIComponent, GenericTile, TileContent,
     ImageContent, Tex, library, TypeString, ColumnListItem, Token, TableColumn, SearchField, MColumn, Label, exportLibrary, Spreadsheet) {
     "use strict";
     var EdmType = exportLibrary.EdmType;
@@ -36,6 +36,10 @@ sap.ui.define(
         // Material upload
         this.MaterialModel = new JSONModel();
         this.getView().setModel(this.MaterialModel, "MaterialModel");
+
+        // Container upload
+        this.ContainerModel = new JSONModel();
+        this.getView().setModel(this.ContainerModel, "ContainerModel");
 
         this.ogenerictitesIdarray = []
         this.oObject = {
@@ -113,7 +117,7 @@ sap.ui.define(
             netWeight: "",
             grossWeight: "",
             color: "",
-            stack:""
+            stack: ""
           },
           Vehicle: {
             truckType: "",
@@ -207,6 +211,7 @@ sap.ui.define(
             { value: item.width, regex: null, message: "Enter Width" },
             { value: item.height, regex: null, message: "Enter Height" },
             { value: item.quantity, regex: null, message: "Enter Quantity" },
+            { value: item.uom, regex: null, message: "Enter UOM" },
             { value: item.grossWeight, regex: null, message: "Enter Gross Weight" },
             { value: item.netWeight, regex: null, message: "Enter Net Weight" },
             { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
@@ -218,7 +223,8 @@ sap.ui.define(
             { value: item.wuom, regex: null, message: "Enter UOM for Weight" },
             { value: item.volume, regex: null, message: "Enter Volume" },
             { value: item.stack, regex: null, message: "Enter stack" },
-            { value: item.stack, regex: /^\d+$/, message: "Stack should be numeric" }
+            { value: item.stack, regex: /^\d+$/, message: "Stack should be numeric" },
+            { value: item.uom, regex: /^[A-Za-z]{1,2}$/, message: "UOM should be a string with a maximum length of 2 characters" }
           ]
           for (let input of aExcelInputs) {
             let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
@@ -250,20 +256,20 @@ sap.ui.define(
             // Create individual batch request 
             await oDataModel.create("/Materials", item, {
 
-//         let aErrors = []
+              //         let aErrors = []
 
 
-//         addedProdCodeModel.items.forEach((item, index) => {
-//           item.length = String(item.length).trim();
-//           item.width = String(item.width).trim();
-//           item.height = String(item.height).trim();
-//           item.weight = String(item.weight).trim();
-//           item.quantity = String(item.quantity).trim();
-//           item.volume = String(item.volume).trim();
+              //         addedProdCodeModel.items.forEach((item, index) => {
+              //           item.length = String(item.length).trim();
+              //           item.width = String(item.width).trim();
+              //           item.height = String(item.height).trim();
+              //           item.weight = String(item.weight).trim();
+              //           item.quantity = String(item.quantity).trim();
+              //           item.volume = String(item.volume).trim();
 
-//           // Create individual batch request
-//           batchChanges.push(
-//             oDataModel.create("/Materials", item, {
+              //           // Create individual batch request
+              //           batchChanges.push(
+              //             oDataModel.create("/Materials", item, {
 
               method: "POST",
               groupId: batchGroupId, // Specify the batch group ID here
@@ -852,53 +858,53 @@ sap.ui.define(
       //   // Generate and download the Excel file
       //   XLSX.writeFile(oWorkbook, "ProductsTable.xlsx");
       // },
-     
-            
+
+
       onPressPrintModelTable: function () {
-              var aCols, oBinding, oSettings, oSheet, oTable;
+        var aCols, oBinding, oSettings, oSheet, oTable;
 
-              oTable = this.byId('ProductsTable');
-              oBinding = oTable.getBinding('items');
-              aCols = this.createColumnConfig();
+        oTable = this.byId('ProductsTable');
+        oBinding = oTable.getBinding('items');
+        aCols = this.createColumnConfig();
 
-              oSettings = {
-                  workbook: { columns: aCols },
-                  dataSource: oBinding,
-                  fileName: 'Models data.xlsx'
-              };
+        oSettings = {
+          workbook: { columns: aCols },
+          dataSource: oBinding,
+          fileName: 'Models data.xlsx'
+        };
 
-              oSheet = new Spreadsheet(oSettings);
-              oSheet.build()
-                  .then(function () {
-                      MessageToast.show('Spreadsheet export has finished');
-                  })
-                  .finally(function () {
-                      oSheet.destroy();
-                  });
-          },
+        oSheet = new Spreadsheet(oSettings);
+        oSheet.build()
+          .then(function () {
+            MessageToast.show('Spreadsheet export has finished');
+          })
+          .finally(function () {
+            oSheet.destroy();
+          });
+      },
 
 
-          createColumnConfig: function () {
-              return [
-                  { label: 'Model', property: 'model', type: EdmType.String },
-                  { label: 'Description', property: 'description', type: EdmType.String },
-                  { label: 'Model Category', property: 'mCategory', type: EdmType.String, scale: 0 },
-                  { label: 'Quantity', property: 'quantity', type: EdmType.String },
-                  { label: 'Length', property: 'length', type: EdmType.String },
-                  { label: 'Width', property: 'width', type: EdmType.String },
-                  { label: 'Height', property: 'height', type: EdmType.String },
-                  { label: 'UOM', property: 'uom', type: EdmType.String },
-                  { label: 'Volume(m³)', property: 'volume', type: EdmType.String },
-                  { label: 'Net Weight', property: 'netWeight', type: EdmType.String },
-                  { label: 'Gross Weight', property: 'grossWeight', type: EdmType.String },
-                  { label: 'UOM', property: 'wuom', type: EdmType.String },
-                  { label: 'Stack', property: 'stack', type: EdmType.String },
-              ];
-          },
-    
-    
+      createColumnConfig: function () {
+        return [
+          { label: 'Model', property: 'model', type: EdmType.String },
+          { label: 'Description', property: 'description', type: EdmType.String },
+          { label: 'Model Category', property: 'mCategory', type: EdmType.String, scale: 0 },
+          { label: 'Quantity', property: 'quantity', type: EdmType.String },
+          { label: 'Length', property: 'length', type: EdmType.String },
+          { label: 'Width', property: 'width', type: EdmType.String },
+          { label: 'Height', property: 'height', type: EdmType.String },
+          { label: 'UOM', property: 'uom', type: EdmType.String },
+          { label: 'Volume(m³)', property: 'volume', type: EdmType.String },
+          { label: 'Net Weight', property: 'netWeight', type: EdmType.String },
+          { label: 'Gross Weight', property: 'grossWeight', type: EdmType.String },
+          { label: 'UOM', property: 'wuom', type: EdmType.String },
+          { label: 'Stack', property: 'stack', type: EdmType.String },
+        ];
+      },
+
+
       //print in add Equipment 
-      onPressDownloadInAddContainerTable: function () {
+      onPressDownloadContainerTable: function () {
 
         var oTable = this.byId("idContainerTypeTable");
         var aItems = oTable.getItems();
@@ -982,7 +988,7 @@ sap.ui.define(
       onPressInAddEquipment: async function () {
         var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItems();
 
-        if(oSelectedItem.length>0){
+        if (oSelectedItem.length > 0) {
 
           return MessageBox.error("Please unselect selected Items");
 
@@ -1057,7 +1063,7 @@ sap.ui.define(
           oModel = this.getView().getModel("ModelV2"),
           oView = this.getView(),
           oPath = '/Materials';
-          let raisedErrors = [];
+        let raisedErrors = [];
         // // Validation
         // const validationErrors = [];
         // const validateField = (fieldId, value, regex, errorMessage) => {
@@ -1079,8 +1085,8 @@ sap.ui.define(
           { Id: "idApplicationServerInput_InitialView", value: oPayload.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
           { Id: "idSystemIdInput_InitialView", value: oPayload.mCategory, regex: null, message: "Enter category" },
           { Id: "idInputDes_InitialView", value: oPayload.description, regex: null, message: "Enter description" },
-          { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex:  /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
-          { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex:  /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
+          { Id: "idWeightinput_InitialView", value: oPayload.netWeight, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+          { Id: "idGWeightinput_InitialView", value: oPayload.grossWeight, regex: /^\d+(\.\d+)?$/, message: "Gross Weight should be numeric" },
           { Id: "idApplicationServerInput_MainPage", value: oPayload.quantity, regex: /^\d+$/, message: "Quantity should be numeric" },
           { Id: "idStackInput_MainPage", value: oPayload.stack, regex: /^\d+$/, message: "Stack should be numeric" }
 
@@ -1163,96 +1169,97 @@ sap.ui.define(
         oPayloadModel.setProperty("/Product", {})
       },
 
-//****************************Deleting single or Multiple Models at a time  **************************/
-
-      // onModelDelete: async function () {
-      //   const oTable = this.byId("ProductsTable"),
-      //     aSelectedItems = oTable.getSelectedItems(),
-      //     oModel = this.getView().getModel("ModelV2");
-      //   if (aSelectedItems.length === 0) {
-      //     MessageBox.information("Please select at least one product to delete.");
-      //     return;
-      //   }
-      //   if (aSelectedItems.length > 1) {
-      //     MessageBox.information("Please select single Model to delete.");
-      //     return;
-      //   }
-      //   try {
-      //     await Promise.all(aSelectedItems.map(async (oItem) => {
-      //       const oPath = oItem.getBindingContext().getPath();
-      //       await this.deleteData(oModel, oPath);
-      //     }));
-      //     this.getView().byId("ProductsTable").getBinding("items").refresh();
-      //     MessageToast.show('Successfully Deleted')
-      //   } catch (error) {
-      //     MessageToast.show('Error Occurs');
-      //   }
-      // },
+      //****************************Deleting single or Multiple Models at a time  **************************/
 
       onModelDelete: async function () {
         const oTable = this.byId("ProductsTable"),
-            aSelectedItems = oTable.getSelectedItems(),
-            oModel = this.getView().getModel("ModelV2");
-        
-        // Check if no item is selected
+          aSelectedItems = oTable.getSelectedItems(),
+          oModel = this.getView().getModel("ModelV2");
         if (aSelectedItems.length === 0) {
-            MessageBox.information("Please select at least one product to delete.");
-            return;
+          MessageBox.information("Please select at least one product to delete.");
+          return;
         }
-    
-        // Check if more than one item is selected
         if (aSelectedItems.length > 1) {
-            MessageBox.information("Please select a single model to delete.");
-            return;
+          MessageBox.information("Please select single Model to delete.");
+          return;
         }
-    
         try {
-            // If only one item is selected, proceed with the delete operation
-            const oPath = aSelectedItems[0].getBindingContext().getPath();
-    
-            // Perform the delete operation
+          await Promise.all(aSelectedItems.map(async (oItem) => {
+            const oPath = oItem.getBindingContext().getPath();
             await this.deleteData(oModel, oPath);
-    
-            // Refresh the table after deletion
-            this.getView().byId("ProductsTable").getBinding("items").refresh();
-    
-            // Fetch updated count and refresh the title
-            const oDataModel = this.getView().getModel("ModelV2"); // Assuming ModelV2 is the main model
-            const oTitle = this.byId("Titlesd1455896_AHUOBQ");
-            const sPath = "/Materials/$count";  // Path to fetch the count
-    
-            // Fetch the updated count
-            oDataModel.read(sPath, {
-                success: (oData) => {
-                    const updatedCount = oData;  // The updated count value
-                    oTitle.setText(`Models Table: (${updatedCount})`);
-                },
-                error: (oError) => {
-                    MessageToast.show("Error while fetching count.");
-                }
-            });
-    
-            // Show success message
-            MessageToast.show('Successfully Deleted');
-            this.getView().byId("ProductsTable").getBinding("items").refresh();
+          }));
+          this.getView().byId("ProductsTable").getBinding("items").refresh();
+          MessageToast.show('Successfully Deleted')
         } catch (error) {
-            // Show error message in case of failure
-            MessageToast.show('Error Occurred');
+          MessageToast.show('Error Occurs');
         }
-    },
-    
-    // Function to delete data (for example, OData remove)
-    async deleteData(oModel, oPath) {
-        try {
-            // Perform OData removal (adjust as necessary for your service)
-            await oModel.remove(oPath);  // Assuming you're using OData remove operation
-            return true;  // Successful deletion
-        } catch (error) {
-            console.error("Deletion failed:", error);
-            return false;  // Failed deletion
-        }
-    },
-    
+      },
+
+      //****************************Deleting single or Multiple Models at a time with table auto count logic **************************/
+      //   onModelDelete: async function () {
+      //     const oTable = this.byId("ProductsTable"),
+      //         aSelectedItems = oTable.getSelectedItems(),
+      //         oModel = this.getView().getModel("ModelV2");
+
+      //     // Check if no item is selected
+      //     if (aSelectedItems.length === 0) {
+      //         MessageBox.information("Please select at least one product to delete.");
+      //         return;
+      //     }
+
+      //     // Check if more than one item is selected
+      //     if (aSelectedItems.length > 1) {
+      //         MessageBox.information("Please select a single model to delete.");
+      //         return;
+      //     }
+
+      //     try {
+      //         // If only one item is selected, proceed with the delete operation
+      //         const oPath = aSelectedItems[0].getBindingContext().getPath();
+
+      //         // Perform the delete operation
+      //         await this.deleteData(oModel, oPath);
+
+      //         // Refresh the table after deletion
+      //         this.getView().byId("ProductsTable").getBinding("items").refresh();
+
+      //         // Fetch updated count and refresh the title
+      //         const oDataModel = this.getView().getModel("ModelV2"); // Assuming ModelV2 is the main model
+      //         const oTitle = this.byId("Titlesd1455896_AHUOBQ");
+      //         const sPath = "/Materials/$count";  // Path to fetch the count
+
+      //         // Fetch the updated count
+      //         oDataModel.read(sPath, {
+      //             success: (oData) => {
+      //                 const updatedCount = oData;  // The updated count value
+      //                 oTitle.setText(`Models Table: (${updatedCount})`);
+      //             },
+      //             error: (oError) => {
+      //                 MessageToast.show("Error while fetching count.");
+      //             }
+      //         });
+
+      //         // Show success message
+      //         MessageToast.show('Successfully Deleted');
+      //         this.getView().byId("ProductsTable").getBinding("items").refresh();
+      //     } catch (error) {
+      //         // Show error message in case of failure
+      //         MessageToast.show('Error Occurred');
+      //     }
+      // },
+
+      // // Function to delete data (for example, OData remove)
+      // async deleteData(oModel, oPath) {
+      //     try {
+      //         // Perform OData removal (adjust as necessary for your service)
+      //         await oModel.remove(oPath);  // Assuming you're using OData remove operation
+      //         return true;  // Successful deletion
+      //     } catch (error) {
+      //         console.error("Deletion failed:", error);
+      //         return false;  // Failed deletion
+      //     }
+      // },
+
 
 
       onliveContainerSearch: function (oEvent) {
@@ -1274,7 +1281,7 @@ sap.ui.define(
 
       /** Creating New Containers */
       onCreateContainer: async function () {
-      
+
         const oPayloadModel = this.getView().getModel("CombinedModel"),
           oPayload = oPayloadModel.getProperty("/Vehicle"),
           oModel = this.getView().getModel("ModelV2"),
@@ -1347,11 +1354,11 @@ sap.ui.define(
       /**Editing Container types */
       onEditContainer: async function () {
         var oSelectedItem = this.byId("idContainerTypeTable").getSelectedItems();
-        if (oSelectedItem.length<=0) {
+        if (oSelectedItem.length <= 0) {
           MessageBox.information("Please select at least one Row for edit!");
           return;
         }
-        if (oSelectedItem.length>1) {
+        if (oSelectedItem.length > 1) {
           MessageBox.information("Please select only  one Row for edit!");
           return;
         }
@@ -1449,71 +1456,71 @@ sap.ui.define(
           return;
         }
 
-//         const oData = oSelectedItem.getBindingContext().getObject();
-//         await this.oOpenProductEdit();
-//         /**Getting the model and setting data */
-//         var DummyModel = this.getView().getModel("CombinedModel");
-//         DummyModel.setProperty("/Product", oData);
-//       },
-//       /**Updadting the Changed Product Value */
-//       onSaveProduct: async function () {
-//         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
-//         const oPayload = updatedData;
-//         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-//         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-//         var oID = updatedData.ID;
-//         /**If key is missing returns error */
-//         if (!oID) {
-//           sap.m.MessageBox.error("ID is not Found/Key Missing");
+        //         const oData = oSelectedItem.getBindingContext().getObject();
+        //         await this.oOpenProductEdit();
+        //         /**Getting the model and setting data */
+        //         var DummyModel = this.getView().getModel("CombinedModel");
+        //         DummyModel.setProperty("/Product", oData);
+        //       },
+        //       /**Updadting the Changed Product Value */
+        //       onSaveProduct: async function () {
+        //         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
+        //         const oPayload = updatedData;
+        //         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
+        //         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
+        //         var oID = updatedData.ID;
+        //         /**If key is missing returns error */
+        //         if (!oID) {
+        //           sap.m.MessageBox.error("ID is not Found/Key Missing");
 
         if (aSelectedItem.length > 1) {
           sap.m.MessageToast.show("Please select only one row to edit.");
 
-//           return;
-//         }
-//         this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
-//         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
-//         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
+          //           return;
+          //         }
+          //         this.byId("idEditBtnIcon4_ProductsTable").setVisible(false);
+          //         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(true);
+          //         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(true);
 
-//         var oSelectedItem = aSelectedItem[0];
-//         var aCells = oSelectedItem.getCells();
+          //         var oSelectedItem = aSelectedItem[0];
+          //         var aCells = oSelectedItem.getCells();
 
-//         this.pastDescription = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
-//         this.pastMCategory = aCells[3].getItems()[0].getText();
-//         this.pastQuantity = aCells[4].getItems()[0].getText();
-//         this.pastLength = aCells[5].getItems()[0].getText();
-//         this.pastWidth = aCells[6].getItems()[0].getText();
-//         this.pastHeight = aCells[7].getItems()[0].getText();
-//         this.pastUOM = aCells[9].getItems()[0].getText();
-//         this.pastWeight = aCells[10].getItems()[0].getText();
-//         // Loop through selected items
-//         aSelectedItem.forEach(function (oItem) {
-//           var aCells = oItem.getCells();
+          //         this.pastDescription = aCells[1].getItems()[0].getText(); // Adjust index as per your table structure
+          //         this.pastMCategory = aCells[3].getItems()[0].getText();
+          //         this.pastQuantity = aCells[4].getItems()[0].getText();
+          //         this.pastLength = aCells[5].getItems()[0].getText();
+          //         this.pastWidth = aCells[6].getItems()[0].getText();
+          //         this.pastHeight = aCells[7].getItems()[0].getText();
+          //         this.pastUOM = aCells[9].getItems()[0].getText();
+          //         this.pastWeight = aCells[10].getItems()[0].getText();
+          //         // Loop through selected items
+          //         aSelectedItem.forEach(function (oItem) {
+          //           var aCells = oItem.getCells();
 
-//           // Loop through the cells to find HBox elements
-//           aCells.forEach(function (oCell) {
-//             if (oCell.isA("sap.m.HBox")) {
-//               var aChildren = oCell.getItems();
+          //           // Loop through the cells to find HBox elements
+          //           aCells.forEach(function (oCell) {
+          //             if (oCell.isA("sap.m.HBox")) {
+          //               var aChildren = oCell.getItems();
 
-//               if (aChildren.length === 2) {
-//                 aChildren[0].setVisible(false);
-//                 aChildren[1].setVisible(true);
-//               }
-//             }
-//           });
-//         });
-//       },
+          //               if (aChildren.length === 2) {
+          //                 aChildren[0].setVisible(false);
+          //                 aChildren[1].setVisible(true);
+          //               }
+          //             }
+          //           });
+          //         });
+          //       },
 
-//       /**Updadting the Changed Product Value */
-//       onSaveProduct: async function () {
-//         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
-//         const oPayload = updatedData;
-//         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
-//         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
-//         var oID = updatedData.ID;
-//         /**If key is missing returns error */
-//         if (!oID) {
-//           sap.m.MessageBox.error("ID is not Found/Key Missing");
+          //       /**Updadting the Changed Product Value */
+          //       onSaveProduct: async function () {
+          //         const updatedData = this.getView().getModel("CombinedModel").getProperty("/Product");
+          //         const oPayload = updatedData;
+          //         var oVolume = String(oPayload.length) * String(oPayload.width) * String(oPayload.height);
+          //         oPayload.volume = (parseFloat(oVolume)).toFixed(2);
+          //         var oID = updatedData.ID;
+          //         /**If key is missing returns error */
+          //         if (!oID) {
+          //           sap.m.MessageBox.error("ID is not Found/Key Missing");
 
           return;
         }
@@ -1615,7 +1622,7 @@ sap.ui.define(
         }
 
         // Reset visibility
-        this.byId("idEditBtnIcon4_ProductsTable").setVisible(true);
+        // this.byId("idEditBtnIcon4_ProductsTable").setVisible(true);
         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(false);
         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(false);
 
@@ -1631,9 +1638,9 @@ sap.ui.define(
         });
       },
 
-//       /**Clear Product Editing Dialog */
-//       onClearEditProdDialog: function () {
-//         this.getView().getModel("CombinedModel").setProperty("/Product", {});
+      //       /**Clear Product Editing Dialog */
+      //       onClearEditProdDialog: function () {
+      //         this.getView().getModel("CombinedModel").setProperty("/Product", {});
 
       onPressCancelBtnEdit_ProductsDetailsTable: function () {
         debugger;
@@ -1664,14 +1671,14 @@ sap.ui.define(
         });
         this.byId("ProductsTable").getBinding("items").refresh();
         // Toggle button visibility
-        this.byId("idEditBtnIcon4_ProductsTable").setVisible(true);
+        // this.byId("idEditBtnIcon4_ProductsTable").setVisible(true);
         this.byId("idSaveBtnIcon4_ProductsTable").setVisible(false);
         this.byId("idCancelBtnIcon4_ProductsTable").setVisible(false);
         sap.m.MessageToast.show("Canceled editing of a record!");
 
-//       /**Clear Product Editing Dialog */
-//       onClearEditProdDialog: function () {
-//         this.getView().getModel("CombinedModel").setProperty("/Product", {});
+        //       /**Clear Product Editing Dialog */
+        //       onClearEditProdDialog: function () {
+        //         this.getView().getModel("CombinedModel").setProperty("/Product", {});
 
       },
 
@@ -1960,33 +1967,33 @@ sap.ui.define(
       //   var oBinding = oTable.getBinding("items");
       //   oBinding.filter(aFilter);
       // },
-      onLiveModelSearch: function(oEvent) {
+      onLiveModelSearch: function (oEvent) {
         let aFilter = [];
         let sQuery = oEvent.getParameter("newValue");
-    
+
         // Remove extra spaces and convert the query to uppercase
         sQuery = sQuery.replace(/\s+/g, '').toUpperCase();
-    
+
         // Only apply filters if the query has at least one character
         if (sQuery && sQuery.length > 0) {
-            // Filter for 'model' field
-            aFilter.push(new Filter("model", FilterOperator.Contains, sQuery));
-            
-            // // Filter for 'mCategory' field
-            // aFilter.push(new Filter("mCategory", FilterOperator.Contains, sQuery));
-            
-            // // Filter for 'description' field
-            aFilter.push(new Filter("description", FilterOperator.Contains, sQuery));
+          // Filter for 'model' field
+          aFilter.push(new Filter("model", FilterOperator.Contains, sQuery));
+
+          // // Filter for 'mCategory' field
+          // aFilter.push(new Filter("mCategory", FilterOperator.Contains, sQuery));
+
+          // // Filter for 'description' field
+          aFilter.push(new Filter("description", FilterOperator.Contains, sQuery));
         }
-    
+
         // Get the table and its binding
         var oTable = this.byId("ProductsTable");
         var oBinding = oTable.getBinding("items");
-    
+
         // Apply the filters to the table binding
         oBinding.filter(aFilter, "Application");
-    },
-    
+      },
+
 
       /**For creating n number of products at a time */
       onUploadMaterialCreation: function (e) {
@@ -2535,408 +2542,408 @@ sap.ui.define(
         this._createProducts(aSelectedData, height, length, width);
       },
 
-      
-
-     
-      
-//       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-//         let currentX = -containerLength / 2;
-//         let currentZ = -containerWidth / 2;
-//         let currentY = 0;
-    
-//         const positionMap = []; // Keeps track of occupied positions
-//         const chartData = [];
-    
-//         let maxHeight = 0; // Max height for the current level (Y-axis tracking)
-//         let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
-    
-//         let totalQuantity = 0;
-//         let totalVolume = 0;
-//         let totalWeight = 0;
-
-//         const containerMaxVolume = containerHeight * containerLength * containerWidth;
-
-// //         const containerMaxWeight = 1000; // Example max weight in kg
-
-// //         selectedProducts.forEach(product => {
-// //           const SelectedQuantity = parseInt(product.SelectedQuantity);
-// //           const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-// //           const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-// //           const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-// //           const productColor = product.Productno.color;
-// //           const productWeight = parseFloat(product.Productno.weight);
-// //           const productName = product.Productno.description;
-
-// //           let totalChartVolume = 0;
-// //           let totalChartWeight = 0;
-
-// //           for (let i = 0; i < SelectedQuantity; i++) {
-// //             let isOverlap = true;
-
-// //             while (isOverlap) {
-// //               // Reset positions when bounds are reached
-// //               if (currentX + productLength > containerLength / 2) {
-// //                 currentX = -containerLength / 2;
-// //                 currentZ += productWidth;
-
-// //                 if (currentZ + productWidth > containerWidth / 2) {
-// //                   currentZ = -containerWidth / 2;
-// //                   currentY += productHeight;
-
-//         const containerMaxWeight = 1000; // Example container max weight (kg)
-    
-//         selectedProducts.forEach(product => {
-//             const SelectedQuantity = parseInt(product.SelectedQuantity);
-//             const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-//             const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-//             const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-//             const productColor = product.Productno.color;
-//             const productWeight = parseFloat(product.Productno.weight);
-//             const productName = product.Productno.description;
-    
-//             let totalChartVolume = 0;
-//             let totalChartWeight = 0;
-    
-//             for (let i = 0; i < SelectedQuantity; i++) {
-//                 let isPlaced = false;
-    
-//                 while (!isPlaced) {
-//                     console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
-                    
-//                     // Check if product fits within the container along the X axis (length)
-//                     if (currentX + productLength > containerLength / 2) {
-//                         currentX = -containerLength / 2;
-//                         currentZ += maxWidth; // Move to the next row (Z axis)
-//                         console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
-    
-//                         maxWidth = 0; // Reset maxWidth for new row
-    
-//                         // Check if product fits within the container along the Z axis (width)
-//                         if (currentZ + productWidth > containerWidth / 2) {
-//                             currentZ = -containerWidth / 2;
-//                             currentY += maxHeight; // Move to the next height level (Y axis)
-//                             console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
-    
-//                             maxHeight = 0; // Reset maxHeight for new level
-    
-//                             // Check if product fits within the height
-//                             if (currentY + productHeight > containerHeight) {
-//                                 console.log(`  Product "${productName}" cannot fit in the container.`);
-//                                 alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
-//                                 return; // Skip product if it cannot fit
-//                             }
-//                         }
-//                     }
-    
-//                     // Check for overlap with previously placed products
-//                     const isOverlap = positionMap.some(position => (
-//                         currentX < position.xEnd &&
-//                         (currentX + productLength) > position.xStart &&
-//                         currentZ < position.zEnd &&
-//                         (currentZ + productWidth) > position.zStart &&
-//                         currentY < position.yTop
-//                     ));
-    
-//                     // If there's overlap, move currentX to the next available space in X direction
-//                     if (isOverlap) {
-//                         currentX += productLength;
-//                         console.log(`  Overlap detected, moving X to: ${currentX}`);
-//                     } else {
-//                         isPlaced = true; // Place product if there's no overlap
-//                         console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
-//                     }
-//                 }
-    
-//                 if (isPlaced) {
-//                     // Create the product's 3D representation
-//                     const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-//                     const productMaterial = new THREE.MeshStandardMaterial({
-//                         color: new THREE.Color(productColor),
-//                         metalness: 0.5,
-//                         roughness: 0.5
-//                     });
-    
-//                     const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-//                     productMesh.position.set(
-//                         currentX + productLength / 2,
-//                         currentY + productHeight / 2,
-//                         currentZ + productWidth / 2
-//                     );
-//                     this.scene.add(productMesh);
-    
-//                     // Add wireframe for visualization
-//                     const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-//                     const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-//                     const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-//                     edges.position.copy(productMesh.position);
-//                     this.scene.add(edges);
-    
-//                     // Update the occupied positions in the positionMap
-//                     positionMap.push({
-//                         xStart: currentX,
-//                         xEnd: currentX + productLength,
-//                         zStart: currentZ,
-//                         zEnd: currentZ + productWidth,
-//                         yTop: currentY + productHeight
-//                     });
-    
-//                     // Update maximum height and width for the row/level
-//                     maxHeight = Math.max(maxHeight, productHeight);
-//                     maxWidth = Math.max(maxWidth, productWidth);
-    
-//                     // Update totals
-//                     totalQuantity++;
-//                     const productVolume = productLength * productHeight * productWidth;
-//                     totalVolume += productVolume;
-//                     totalWeight += productWeight;
-//                     totalChartVolume += productVolume;
-//                     totalChartWeight += productWeight;
-    
-//                     // Move to the next available position in the X axis for the next product
-//                     currentX += productLength;
-//                     console.log(`  Moving to next X position: ${currentX}`);
-
-//                 }
-//               }
-
-//               // Check for overlaps
-//               isOverlap = positionMap.some(position => (
-//                 currentX < position.xEnd && (currentX + productLength) > position.xStart &&
-//                 currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
-//                 currentY < position.yTop
-//               ));
-
-//               if (isOverlap) {
-//                 currentX += productLength; // Adjust position to avoid overlap
-//               }
-//             }
-
-// //             if (!isOverlap) {
-// //               // Create 3D product representation
-// //               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
-// //               const productMaterial = new THREE.MeshStandardMaterial({
-// //                 color: new THREE.Color(productColor),
-// //                 metalness: 0.5,
-// //                 roughness: 0.5
-// //               });
-
-// //               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
-// //               productMesh.position.set(
-// //                 currentX + productLength / 2,
-// //                 currentY + productHeight / 2,
-// //                 currentZ + productWidth / 2
-// //               );
-// //               this.scene.add(productMesh);
-
-// //               // Add wireframe for visualization
-// //               const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
-// //               const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-// //               const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
-// //               edges.position.copy(productMesh.position);
-// //               this.scene.add(edges);
-
-// //               // Update position map
-// //               positionMap.push({
-// //                 xStart: currentX,
-// //                 xEnd: currentX + productLength,
-// //                 zStart: currentZ,
-// //                 zEnd: currentZ + productWidth,
-// //                 yTop: currentY + productHeight
-// //               });
-
-// //               totalQuantity++;
-// //               const productVolume = productLength * productHeight * productWidth;
-// //               totalVolume += productVolume;
-// //               totalWeight += productWeight;
-// //               totalChartVolume += productVolume;
-// //               totalChartWeight += productWeight;
-
-// //               currentX += productLength; // Move to the next position
-// //             }
-// //           }
-
-// //           // Add product data to chart
-// //           chartData.push({
-// //             Name: productName,
-// //             Packages: SelectedQuantity,
-// //             Volume: totalChartVolume.toFixed(1),
-// //             Weight: totalChartWeight.toFixed(1),
-// //             Color: productColor
-// //           });
-// //         });
-
-// //         // Calculate remaining volume and weight
-// //         const remainingVolume = containerMaxVolume - totalVolume;
-// //         const remainingWeight = containerMaxWeight - totalWeight;
-
-// //         // Add empty space data to chart
-// //         chartData.push({
-// //           Name: "Empty",
-// //           Packages: 0,
-// //           Volume: remainingVolume.toFixed(1),
-// //           Weight: 0,
-// //           Color: "#cccccc" // Gray color for "Empty"
-// //         });
-
-// //         // Update view models with calculated data
-    
-//             // Collect the product data for chart visualization
-//             if (totalChartVolume > 0) {
-//                 chartData.push({
-//                     Name: productName,
-//                     Packages: SelectedQuantity,
-//                     Volume: totalChartVolume.toFixed(1),
-//                     Weight: totalChartWeight.toFixed(1),
-//                     Color: productColor
-//                 });
-//             }
-//         });
-    
-//         // Calculate remaining available volume and weight in the container
-//         const remainingVolume = containerMaxVolume - totalVolume;
-//         const remainingWeight = containerMaxWeight - totalWeight;
-    
-//         // Add empty space (unused space) in the chart data
-//         chartData.push({
-//             Name: "Empty",
-//             Packages: 0,
-//             Volume: remainingVolume.toFixed(1),
-//             Weight: 0,
-//             Color: "#cccccc" // Gray color for empty space
-//         });
-    
-//         // Update the view models with total values and chart data
-//         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
-//         this.getView().getModel("Calculation").setProperty("/", {
-//           TotalQuantity: totalQuantity,
-//           TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
-//           TotalWeight: `${totalWeight.toFixed(1)} kg`,
-//           RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
-//         });
 
 
-// //         // Update pie chart visualization
-// //         const oVizFrame = this.getView().byId("idPieChart");
-// //         oVizFrame.setVizProperties({
-// //           plotArea: {
-// //             colorPalette: chartData.map(item => item.Color), // Dynamically set colors
-// //             dataLabel: {
-// //               visible: true
 
-    
-//         // Update pie chart visualization based on filled/empty spaces
-//         const oVizFrame = this.getView().byId("idPieChart");
-//         oVizFrame.setVizProperties({
-//             plotArea: {
-//                 colorPalette: chartData.map(item => item.Color), // Use dynamic colors
-//                 dataLabel: {
-//                     visible: true
-//                 }
-//             },
-//             title: {
-//                 text: "Cargo Volume Breakdown"
 
-//             }
-//           },
-//           title: {
-//             text: "Cargo Volume Breakdown"
-//           }
-//         });
-//       },
-_createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
-  let currentX = -containerLength / 2;
-  let currentZ = -containerWidth / 2;
-  let currentY = 0;
+      //       _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+      //         let currentX = -containerLength / 2;
+      //         let currentZ = -containerWidth / 2;
+      //         let currentY = 0;
 
-  const positionMap = []; // Keeps track of occupied positions
-  const chartData = [];
+      //         const positionMap = []; // Keeps track of occupied positions
+      //         const chartData = [];
 
-  let maxHeight = 0; // Max height for the current level (Y-axis tracking)
-  let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
+      //         let maxHeight = 0; // Max height for the current level (Y-axis tracking)
+      //         let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
 
-  let totalQuantity = 0;
-  let totalVolume = 0;
-  let totalWeight = 0;
+      //         let totalQuantity = 0;
+      //         let totalVolume = 0;
+      //         let totalWeight = 0;
 
-  const containerMaxVolume = containerHeight * containerLength * containerWidth;
-  const containerMaxWeight = 1000; // Example container max weight (kg)
+      //         const containerMaxVolume = containerHeight * containerLength * containerWidth;
 
-  selectedProducts.forEach(product => {
-      const SelectedQuantity = parseInt(product.SelectedQuantity);
-      const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
-      const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
-      const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
-      const productColor = product.Productno.color;
-      const productWeight = parseFloat(product.Productno.weight);
-      const productName = product.Productno.description;
+      // //         const containerMaxWeight = 1000; // Example max weight in kg
 
-      let totalChartVolume = 0;
-      let totalChartWeight = 0;
+      // //         selectedProducts.forEach(product => {
+      // //           const SelectedQuantity = parseInt(product.SelectedQuantity);
+      // //           const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+      // //           const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+      // //           const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+      // //           const productColor = product.Productno.color;
+      // //           const productWeight = parseFloat(product.Productno.weight);
+      // //           const productName = product.Productno.description;
 
-      for (let i = 0; i < SelectedQuantity; i++) {
-          let isPlaced = false;
+      // //           let totalChartVolume = 0;
+      // //           let totalChartWeight = 0;
 
-          while (!isPlaced) {
+      // //           for (let i = 0; i < SelectedQuantity; i++) {
+      // //             let isOverlap = true;
+
+      // //             while (isOverlap) {
+      // //               // Reset positions when bounds are reached
+      // //               if (currentX + productLength > containerLength / 2) {
+      // //                 currentX = -containerLength / 2;
+      // //                 currentZ += productWidth;
+
+      // //                 if (currentZ + productWidth > containerWidth / 2) {
+      // //                   currentZ = -containerWidth / 2;
+      // //                   currentY += productHeight;
+
+      //         const containerMaxWeight = 1000; // Example container max weight (kg)
+
+      //         selectedProducts.forEach(product => {
+      //             const SelectedQuantity = parseInt(product.SelectedQuantity);
+      //             const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+      //             const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+      //             const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+      //             const productColor = product.Productno.color;
+      //             const productWeight = parseFloat(product.Productno.weight);
+      //             const productName = product.Productno.description;
+
+      //             let totalChartVolume = 0;
+      //             let totalChartWeight = 0;
+
+      //             for (let i = 0; i < SelectedQuantity; i++) {
+      //                 let isPlaced = false;
+
+      //                 while (!isPlaced) {
+      //                     console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+
+      //                     // Check if product fits within the container along the X axis (length)
+      //                     if (currentX + productLength > containerLength / 2) {
+      //                         currentX = -containerLength / 2;
+      //                         currentZ += maxWidth; // Move to the next row (Z axis)
+      //                         console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
+
+      //                         maxWidth = 0; // Reset maxWidth for new row
+
+      //                         // Check if product fits within the container along the Z axis (width)
+      //                         if (currentZ + productWidth > containerWidth / 2) {
+      //                             currentZ = -containerWidth / 2;
+      //                             currentY += maxHeight; // Move to the next height level (Y axis)
+      //                             console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
+
+      //                             maxHeight = 0; // Reset maxHeight for new level
+
+      //                             // Check if product fits within the height
+      //                             if (currentY + productHeight > containerHeight) {
+      //                                 console.log(`  Product "${productName}" cannot fit in the container.`);
+      //                                 alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
+      //                                 return; // Skip product if it cannot fit
+      //                             }
+      //                         }
+      //                     }
+
+      //                     // Check for overlap with previously placed products
+      //                     const isOverlap = positionMap.some(position => (
+      //                         currentX < position.xEnd &&
+      //                         (currentX + productLength) > position.xStart &&
+      //                         currentZ < position.zEnd &&
+      //                         (currentZ + productWidth) > position.zStart &&
+      //                         currentY < position.yTop
+      //                     ));
+
+      //                     // If there's overlap, move currentX to the next available space in X direction
+      //                     if (isOverlap) {
+      //                         currentX += productLength;
+      //                         console.log(`  Overlap detected, moving X to: ${currentX}`);
+      //                     } else {
+      //                         isPlaced = true; // Place product if there's no overlap
+      //                         console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+      //                     }
+      //                 }
+
+      //                 if (isPlaced) {
+      //                     // Create the product's 3D representation
+      //                     const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+      //                     const productMaterial = new THREE.MeshStandardMaterial({
+      //                         color: new THREE.Color(productColor),
+      //                         metalness: 0.5,
+      //                         roughness: 0.5
+      //                     });
+
+      //                     const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+      //                     productMesh.position.set(
+      //                         currentX + productLength / 2,
+      //                         currentY + productHeight / 2,
+      //                         currentZ + productWidth / 2
+      //                     );
+      //                     this.scene.add(productMesh);
+
+      //                     // Add wireframe for visualization
+      //                     const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+      //                     const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+      //                     const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+      //                     edges.position.copy(productMesh.position);
+      //                     this.scene.add(edges);
+
+      //                     // Update the occupied positions in the positionMap
+      //                     positionMap.push({
+      //                         xStart: currentX,
+      //                         xEnd: currentX + productLength,
+      //                         zStart: currentZ,
+      //                         zEnd: currentZ + productWidth,
+      //                         yTop: currentY + productHeight
+      //                     });
+
+      //                     // Update maximum height and width for the row/level
+      //                     maxHeight = Math.max(maxHeight, productHeight);
+      //                     maxWidth = Math.max(maxWidth, productWidth);
+
+      //                     // Update totals
+      //                     totalQuantity++;
+      //                     const productVolume = productLength * productHeight * productWidth;
+      //                     totalVolume += productVolume;
+      //                     totalWeight += productWeight;
+      //                     totalChartVolume += productVolume;
+      //                     totalChartWeight += productWeight;
+
+      //                     // Move to the next available position in the X axis for the next product
+      //                     currentX += productLength;
+      //                     console.log(`  Moving to next X position: ${currentX}`);
+
+      //                 }
+      //               }
+
+      //               // Check for overlaps
+      //               isOverlap = positionMap.some(position => (
+      //                 currentX < position.xEnd && (currentX + productLength) > position.xStart &&
+      //                 currentZ < position.zEnd && (currentZ + productWidth) > position.zStart &&
+      //                 currentY < position.yTop
+      //               ));
+
+      //               if (isOverlap) {
+      //                 currentX += productLength; // Adjust position to avoid overlap
+      //               }
+      //             }
+
+      // //             if (!isOverlap) {
+      // //               // Create 3D product representation
+      // //               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
+      // //               const productMaterial = new THREE.MeshStandardMaterial({
+      // //                 color: new THREE.Color(productColor),
+      // //                 metalness: 0.5,
+      // //                 roughness: 0.5
+      // //               });
+
+      // //               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
+      // //               productMesh.position.set(
+      // //                 currentX + productLength / 2,
+      // //                 currentY + productHeight / 2,
+      // //                 currentZ + productWidth / 2
+      // //               );
+      // //               this.scene.add(productMesh);
+
+      // //               // Add wireframe for visualization
+      // //               const edgesGeometry = new THREE.EdgesGeometry(productGeometry);
+      // //               const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+      // //               const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+      // //               edges.position.copy(productMesh.position);
+      // //               this.scene.add(edges);
+
+      // //               // Update position map
+      // //               positionMap.push({
+      // //                 xStart: currentX,
+      // //                 xEnd: currentX + productLength,
+      // //                 zStart: currentZ,
+      // //                 zEnd: currentZ + productWidth,
+      // //                 yTop: currentY + productHeight
+      // //               });
+
+      // //               totalQuantity++;
+      // //               const productVolume = productLength * productHeight * productWidth;
+      // //               totalVolume += productVolume;
+      // //               totalWeight += productWeight;
+      // //               totalChartVolume += productVolume;
+      // //               totalChartWeight += productWeight;
+
+      // //               currentX += productLength; // Move to the next position
+      // //             }
+      // //           }
+
+      // //           // Add product data to chart
+      // //           chartData.push({
+      // //             Name: productName,
+      // //             Packages: SelectedQuantity,
+      // //             Volume: totalChartVolume.toFixed(1),
+      // //             Weight: totalChartWeight.toFixed(1),
+      // //             Color: productColor
+      // //           });
+      // //         });
+
+      // //         // Calculate remaining volume and weight
+      // //         const remainingVolume = containerMaxVolume - totalVolume;
+      // //         const remainingWeight = containerMaxWeight - totalWeight;
+
+      // //         // Add empty space data to chart
+      // //         chartData.push({
+      // //           Name: "Empty",
+      // //           Packages: 0,
+      // //           Volume: remainingVolume.toFixed(1),
+      // //           Weight: 0,
+      // //           Color: "#cccccc" // Gray color for "Empty"
+      // //         });
+
+      // //         // Update view models with calculated data
+
+      //             // Collect the product data for chart visualization
+      //             if (totalChartVolume > 0) {
+      //                 chartData.push({
+      //                     Name: productName,
+      //                     Packages: SelectedQuantity,
+      //                     Volume: totalChartVolume.toFixed(1),
+      //                     Weight: totalChartWeight.toFixed(1),
+      //                     Color: productColor
+      //                 });
+      //             }
+      //         });
+
+      //         // Calculate remaining available volume and weight in the container
+      //         const remainingVolume = containerMaxVolume - totalVolume;
+      //         const remainingWeight = containerMaxWeight - totalWeight;
+
+      //         // Add empty space (unused space) in the chart data
+      //         chartData.push({
+      //             Name: "Empty",
+      //             Packages: 0,
+      //             Volume: remainingVolume.toFixed(1),
+      //             Weight: 0,
+      //             Color: "#cccccc" // Gray color for empty space
+      //         });
+
+      //         // Update the view models with total values and chart data
+      //         this.getView().getModel("ChartData").setProperty("/chartData", chartData);
+      //         this.getView().getModel("Calculation").setProperty("/", {
+      //           TotalQuantity: totalQuantity,
+      //           TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+      //           TotalWeight: `${totalWeight.toFixed(1)} kg`,
+      //           RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
+      //         });
+
+
+      // //         // Update pie chart visualization
+      // //         const oVizFrame = this.getView().byId("idPieChart");
+      // //         oVizFrame.setVizProperties({
+      // //           plotArea: {
+      // //             colorPalette: chartData.map(item => item.Color), // Dynamically set colors
+      // //             dataLabel: {
+      // //               visible: true
+
+
+      //         // Update pie chart visualization based on filled/empty spaces
+      //         const oVizFrame = this.getView().byId("idPieChart");
+      //         oVizFrame.setVizProperties({
+      //             plotArea: {
+      //                 colorPalette: chartData.map(item => item.Color), // Use dynamic colors
+      //                 dataLabel: {
+      //                     visible: true
+      //                 }
+      //             },
+      //             title: {
+      //                 text: "Cargo Volume Breakdown"
+
+      //             }
+      //           },
+      //           title: {
+      //             text: "Cargo Volume Breakdown"
+      //           }
+      //         });
+      //       },
+      _createProducts: function (selectedProducts, containerHeight, containerLength, containerWidth) {
+        let currentX = -containerLength / 2;
+        let currentZ = -containerWidth / 2;
+        let currentY = 0;
+
+        const positionMap = []; // Keeps track of occupied positions
+        const chartData = [];
+
+        let maxHeight = 0; // Max height for the current level (Y-axis tracking)
+        let maxWidth = 0;  // Max width for the current row (Z-axis tracking)
+
+        let totalQuantity = 0;
+        let totalVolume = 0;
+        let totalWeight = 0;
+
+        const containerMaxVolume = containerHeight * containerLength * containerWidth;
+        const containerMaxWeight = 1000; // Example container max weight (kg)
+
+        selectedProducts.forEach(product => {
+          const SelectedQuantity = parseInt(product.SelectedQuantity);
+          const productLength = Math.max(parseFloat(product.Productno.length), 0.01);
+          const productHeight = Math.max(parseFloat(product.Productno.height), 0.01);
+          const productWidth = Math.max(parseFloat(product.Productno.width), 0.01);
+          const productColor = product.Productno.color;
+          const productWeight = parseFloat(product.Productno.weight);
+          const productName = product.Productno.description;
+
+          let totalChartVolume = 0;
+          let totalChartWeight = 0;
+
+          for (let i = 0; i < SelectedQuantity; i++) {
+            let isPlaced = false;
+
+            while (!isPlaced) {
               console.log(`Attempting to place product: "${productName}" (Qty: ${SelectedQuantity}) at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
-              
+
               // Check if product fits within the container along the X axis (length)
               if (currentX + productLength > containerLength / 2) {
-                  currentX = -containerLength / 2;
-                  currentZ += maxWidth; // Move to the next row (Z axis)
-                  console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
+                currentX = -containerLength / 2;
+                currentZ += maxWidth; // Move to the next row (Z axis)
+                console.log(`  X overflow detected, shifting to next row. New X: ${currentX}, Z: ${currentZ}`);
 
-                  maxWidth = 0; // Reset maxWidth for new row
+                maxWidth = 0; // Reset maxWidth for new row
 
-                  // Check if product fits within the container along the Z axis (width)
-                  if (currentZ + productWidth > containerWidth / 2) {
-                      currentZ = -containerWidth / 2;
-                      currentY += maxHeight; // Move to the next height level (Y axis)
-                      console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
+                // Check if product fits within the container along the Z axis (width)
+                if (currentZ + productWidth > containerWidth / 2) {
+                  currentZ = -containerWidth / 2;
+                  currentY += maxHeight; // Move to the next height level (Y axis)
+                  console.log(`  Z overflow detected, shifting to next level. New Y: ${currentY}, Z: ${currentZ}`);
 
-                      maxHeight = 0; // Reset maxHeight for new level
+                  maxHeight = 0; // Reset maxHeight for new level
 
-                      // Check if product fits within the height
-                      if (currentY + productHeight > containerHeight) {
-                          console.log(`  Product "${productName}" cannot fit in the container.`);
-                          alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
-                          return; // Skip product if it cannot fit
-                      }
+                  // Check if product fits within the height
+                  if (currentY + productHeight > containerHeight) {
+                    console.log(`  Product "${productName}" cannot fit in the container.`);
+                    alert(`Product "${productName}" cannot fit in the container and will not be placed.`);
+                    return; // Skip product if it cannot fit
                   }
+                }
               }
 
               // Check for overlap with previously placed products
               const isOverlap = positionMap.some(position => (
-                  currentX < position.xEnd &&
-                  (currentX + productLength) > position.xStart &&
-                  currentZ < position.zEnd &&
-                  (currentZ + productWidth) > position.zStart &&
-                  currentY < position.yTop
+                currentX < position.xEnd &&
+                (currentX + productLength) > position.xStart &&
+                currentZ < position.zEnd &&
+                (currentZ + productWidth) > position.zStart &&
+                currentY < position.yTop
               ));
 
               // If there's overlap, move currentX to the next available space in X direction
               if (isOverlap) {
-                  currentX += productLength;
-                  console.log(`  Overlap detected, moving X to: ${currentX}`);
+                currentX += productLength;
+                console.log(`  Overlap detected, moving X to: ${currentX}`);
               } else {
-                  isPlaced = true; // Place product if there's no overlap
-                  console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
+                isPlaced = true; // Place product if there's no overlap
+                console.log(`  Product placed at X: ${currentX}, Y: ${currentY}, Z: ${currentZ}`);
               }
-          }
+            }
 
-          if (isPlaced) {
+            if (isPlaced) {
               // Create the product's 3D representation
               const productGeometry = new THREE.BoxGeometry(productLength, productHeight, productWidth);
               const productMaterial = new THREE.MeshStandardMaterial({
-                  color: new THREE.Color(productColor),
-                  metalness: 0.5,
-                  roughness: 0.5
+                color: new THREE.Color(productColor),
+                metalness: 0.5,
+                roughness: 0.5
               });
 
               const productMesh = new THREE.Mesh(productGeometry, productMaterial);
               productMesh.position.set(
-                  currentX + productLength / 2,
-                  currentY + productHeight / 2,
-                  currentZ + productWidth / 2
+                currentX + productLength / 2,
+                currentY + productHeight / 2,
+                currentZ + productWidth / 2
               );
               this.scene.add(productMesh);
 
@@ -2949,11 +2956,11 @@ _createProducts: function (selectedProducts, containerHeight, containerLength, c
 
               // Update the occupied positions in the positionMap
               positionMap.push({
-                  xStart: currentX,
-                  xEnd: currentX + productLength,
-                  zStart: currentZ,
-                  zEnd: currentZ + productWidth,
-                  yTop: currentY + productHeight
+                xStart: currentX,
+                xEnd: currentX + productLength,
+                zStart: currentZ,
+                zEnd: currentZ + productWidth,
+                yTop: currentY + productHeight
               });
 
               // Update maximum height and width for the row/level
@@ -2971,57 +2978,57 @@ _createProducts: function (selectedProducts, containerHeight, containerLength, c
               // Move to the next available position in the X axis for the next product
               currentX += productLength;
               console.log(`  Moving to next X position: ${currentX}`);
+            }
           }
-      }
 
-      // Collect the product data for chart visualization
-      if (totalChartVolume > 0) {
-          chartData.push({
+          // Collect the product data for chart visualization
+          if (totalChartVolume > 0) {
+            chartData.push({
               Name: productName,
               Packages: SelectedQuantity,
               Volume: totalChartVolume.toFixed(1),
               Weight: totalChartWeight.toFixed(1),
               Color: productColor
-          });
-      }
-  });
-
-  // Calculate remaining available volume and weight in the container
-  const remainingVolume = containerMaxVolume - totalVolume;
-  const remainingWeight = containerMaxWeight - totalWeight;
-
-  // Add empty space (unused space) in the chart data
-  chartData.push({
-      Name: "Empty",
-      Packages: 0,
-      Volume: remainingVolume.toFixed(1),
-      Weight: 0,
-      Color: "#cccccc" // Gray color for empty space
-  });
-
-  // Update the view models with total values and chart data
-  this.getView().getModel("ChartData").setProperty("/chartData", chartData);
-  this.getView().getModel("Calculation").setProperty("/", {
-      TotalQuantity: totalQuantity,
-      TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
-      TotalWeight: `${totalWeight.toFixed(1)} kg`,
-      RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
-  });
-
-  // Update pie chart visualization based on filled/empty spaces
-  const oVizFrame = this.getView().byId("idPieChart");
-  oVizFrame.setVizProperties({
-      plotArea: {
-          colorPalette: chartData.map(item => item.Color), // Use dynamic colors
-          dataLabel: {
-              visible: true
+            });
           }
+        });
+
+        // Calculate remaining available volume and weight in the container
+        const remainingVolume = containerMaxVolume - totalVolume;
+        const remainingWeight = containerMaxWeight - totalWeight;
+
+        // Add empty space (unused space) in the chart data
+        chartData.push({
+          Name: "Empty",
+          Packages: 0,
+          Volume: remainingVolume.toFixed(1),
+          Weight: 0,
+          Color: "#cccccc" // Gray color for empty space
+        });
+
+        // Update the view models with total values and chart data
+        this.getView().getModel("ChartData").setProperty("/chartData", chartData);
+        this.getView().getModel("Calculation").setProperty("/", {
+          TotalQuantity: totalQuantity,
+          TotalVolume: `${totalVolume.toFixed(1)} m³ (${((totalVolume / containerMaxVolume) * 100).toFixed(1)}% filled)`,
+          TotalWeight: `${totalWeight.toFixed(1)} kg`,
+          RemainingCapacity: `${remainingVolume.toFixed(1)} m³ (${((remainingVolume / containerMaxVolume) * 100).toFixed(1)}% empty)`
+        });
+
+        // Update pie chart visualization based on filled/empty spaces
+        const oVizFrame = this.getView().byId("idPieChart");
+        oVizFrame.setVizProperties({
+          plotArea: {
+            colorPalette: chartData.map(item => item.Color), // Use dynamic colors
+            dataLabel: {
+              visible: true
+            }
+          },
+          title: {
+            text: "Cargo Volume Breakdown"
+          }
+        });
       },
-      title: {
-          text: "Cargo Volume Breakdown"
-      }
-  });
-},
 
       _addLighting: function () {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -3091,7 +3098,7 @@ _createProducts: function (selectedProducts, containerHeight, containerLength, c
       },
 
 
-         /****************************************************Download Simulation Logic**************************************************************************************************/
+      /****************************************************Download Simulation Logic**************************************************************************************************/
 
       onDownloadSimulation: function () {
         // Define the predefined views with zoomed-in camera positions
@@ -3103,18 +3110,18 @@ _createProducts: function (selectedProducts, containerHeight, containerLength, c
           { name: 'Left', position: new THREE.Vector3(-20, 10, 0), lookAt: new THREE.Vector3(0, 0, 0) },
           { name: 'Right', position: new THREE.Vector3(20, 10, 0), lookAt: new THREE.Vector3(0, 0, 0) }
         ];
- 
+
         // Initialize a new jsPDF instance
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF();
- 
+
         // Capture each view and add it to the PDF
         const images = [];
- 
+
         views.forEach(view => {
           this._captureView(view.name, view.position, view.lookAt, (imageData) => {
             images.push({ name: view.name, data: imageData });
- 
+
             // If all images are captured, create the PDF
             if (images.length === views.length) {
               // Add images to PDF with titles
@@ -3125,42 +3132,352 @@ _createProducts: function (selectedProducts, containerHeight, containerLength, c
                 pdf.text(img.name, 10, 10); // Add the heading (view name)
                 pdf.addImage(img.data, 'PNG', 10, 20, 180, 160); // Add the image to the PDF
               });
- 
+
               // Save the PDF file
               pdf.save('simulation_views.pdf');
             }
           });
         });
       },
- 
+
       _captureView: function (viewName, cameraPosition, cameraLookAt, callback) {
         // Move the camera to the desired position and look at the center of the scene
         this.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         this.camera.lookAt(cameraLookAt);
- 
+
         // Increase camera zoom (adjust FOV) for better product visibility
         this.camera.fov = 10; // You can adjust this value for more zoomed-in effect
         this.camera.updateProjectionMatrix();
- 
+
         // Update the controls for smooth transition (if you're using orbit controls)
         this.controls.update();
- 
+
         // Render the scene
         this.renderer.render(this.scene, this.camera);
- 
+
         // Capture the current canvas content as a base64 image (higher resolution)
         const imageData = this.renderer.domElement.toDataURL('image/png');
- 
+
         // Pass the captured image to the callback function
         callback(imageData);
       },
-  
 
-      onPressManuvalSimulate:function () {
+
+      onPressManuvalSimulate: function () {
         var oRouter = UIComponent.getRouterFor(this);
         oRouter.navTo("ManuvalSimulation");
-       
+
       },
 
+      //***********************************Container Batch Upload ***********************************/
+
+      //******Close container upload fragment******/
+      onCloseUploadExcel: function () {
+        if (this.oFragment.isOpen()) {
+          this.oFragment.close();
+        }
+      },
+
+      //******Upload file into fragment******/
+      onbatchUploadContainers: async function (e) {
+        if (!this.oFragment) {
+          this.oFragment = await this.loadFragment("ContainerXLData");
+        }
+        this.oFragment.open();
+        await this._importData(e.getParameter("files") && e.getParameter("files")[0]);
+      },
+
+      // _importData: function (file) {
+      //   var that = this;
+      //   var excelData = {};
+      //   if (file && window.FileReader) {
+      //     var reader = new FileReader();
+      //     reader.onload = function (e) {
+      //       var data = new Uint8Array(e.target.result);
+      //       var workbook = XLSX.read(data, {
+      //         type: 'array'
+      //       });
+      //       workbook.SheetNames.forEach(function (sheetName) {
+      //         // Here is your object for every sheet in workbook
+      //         excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      //         // adding serial numbers
+      //         excelData.forEach(function (item, index) {
+      //           item.serialNumber = index + 1; // Serial number starts from 1
+      //         });
+
+      //       });
+
+      //       // Setting the data to the local model
+      //       that.ContainerModel.setData({
+      //         items: excelData
+      //       });
+      //       that.ContainerModel.refresh(true);
+      //     };
+      //     reader.onerror = function (ex) {
+      //       console.log(ex);
+      //     };
+      //     reader.readAsArrayBuffer(file);
+      //   }
+      // },
+      // onContainerBatchSave: async function () {
+      //   var that = this;
+      //   var addContainerModel = this.getView().getModel("ContainerModel").getData();
+      //   // var batchChanges = [];
+      //   var oDataModel = this.getView().getModel("ModelV2");
+      //   var batchGroupId = "batchCreateContainerGroup";
+
+      //   const oView = this.getView();
+
+      //   // test
+      //   // excel Validations
+
+      //   let raisedErrors = []
+      //   addContainerModel.items.forEach(async (item, index) => {
+
+      //     const aExcelInputs = [
+      //       { value: item.truckType, regex: null, message: "Enter Container type" },
+      //       { value: item.length, regex: null, message: "Enter Container Length" },
+      //       { value: item.width, regex: null, message: "Enter Container Width" },
+      //       { value: item.height, regex: null, message: "Enter ContainerHeight" },
+      //       { value: item.uom, regex: null, message: "Enter Container UOM" },
+      //       { value: item.volume, regex: null, message: "Enter Volume" },
+      //       { value: item.tvuom, regex: null, message: "Enter Volume UOM" },
+      //       { value: item.truckWeight, regex: null, message: "Enter Container Weight" },
+      //       { value: item.capacity, regex: null, message: "Enter Container Capacity" },
+      //       { value: item.tuom, regex: null, message: "Enter Container Capacity UOM" },
+
+      //       { value: item.truckType, regex: /^\d{2}[A-Za-z]{2}$/, message: "The container format should be in the following format: 12FT." },
+      //       { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
+      //       { value: item.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
+      //       { value: item.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
+      //       { value: item.uom, regex: /^[A-Za-z]{1,2}$/, message: "UOM should be a string with a maximum length of 2 characters" },
+      //       { value: item.volume, regex: /^\d+(\.\d+)?$/, message: "Volume should be numeric" },
+      //       // { value: item.tvuom, regex: /^\d+(\.\d+)?$/, message: "Net Weight should be numeric" },
+      //       { value: item.truckWeight, regex: /^\d+(\.\d+)?$/, message: "Container Weight should be numeric" },
+      //       { value: item.capacity, regex: /^\d+(\.\d+)?$/, message: "Container Capacity should be numeric" },
+      //       { value: item.tuom, regex: /^[A-Za-z]{1,2}$/, message: "UOM should be a string with a maximum length of 2 characters" },
+      //     ]
+      //     for (let input of aExcelInputs) {
+      //       let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
+      //       if (aValidations.length > 0) {
+      //         raisedErrors.push({ index: index, errorMsg: aValidations[0] }) // pushning error into empty array
+      //       }
+      //     }
+      //   })
+
+      //   if (raisedErrors.length > 0) {
+      //     for (let error of raisedErrors) {
+      //       MessageBox.information(`Check record number ${error.index + 1} ${error.errorMsg}`) // showing error msg 
+      //       return;
+      //     }
+      //   }
+      //   // test
+      //   try {
+      //     addContainerModel.items.forEach(async (item, index) => {
+      //       delete item.serialNumber
+
+      //       item.truckType = String(item.truckType).trim();
+      //       item.length = String(item.length).trim();
+      //       item.width = String(item.width).trim();
+      //       item.height = String(item.height).trim();
+
+      //       // Create individual batch request 
+      //       await oDataModel.create("/TruckTypes", item, {
+
+      //         //         let aErrors = []
+
+
+      //         //         addContainerModel.items.forEach((item, index) => {
+      //         //           item.length = String(item.length).trim();
+      //         //           item.width = String(item.width).trim();
+      //         //           item.height = String(item.height).trim();
+      //         //           item.weight = String(item.weight).trim();
+      //         //           item.quantity = String(item.quantity).trim();
+      //         //           item.volume = String(item.volume).trim();
+
+      //         //           // Create individual batch request
+      //         //           batchChanges.push(
+      //         //             oDataModel.create("/Materials", item, {
+
+      //         method: "POST",
+      //         groupId: batchGroupId, // Specify the batch group ID here
+      //         success: function (data, response) {
+      //           if (addContainerModel.items.length === index + 1) {
+      //             MessageBox.success("Materials created successfully");
+      //             if (that.oFragment) {
+      //               that.oFragment.close();
+      //               that.byId("idContainerTypeTable").getBinding("items").refresh();
+      //             }
+      //           }
+      //         },
+      //         error: function (err) {
+      //           // Handle error for individual item
+      //           if (JSON.parse(err.responseText).error.message.value.toLowerCase() === "entity already exists") {
+      //             MessageBox.error("You are trying to upload a material which is already exists");
+      //           } else {
+      //             MessageBox.error("Please check the uploaded file and upload correct data");
+      //           }
+      //           console.error("Error creating material:", err);
+      //         }
+      //       })
+      //     });
+
+      //     // Now send the batch request using batch group
+      //     await oDataModel.submitChanges({
+      //       batchGroupId: batchGroupId,
+      //       success: function (oData, response) {
+      //         // MessageBox.success("Materials batch created successfully");
+      //         console.log("Batch request submitted", oData);
+      //         // Perform any final operations if needed after all batch operations succeed
+      //       },
+      //       error: function (err) {
+      //         MessageBox.success("Error creating material batch");
+      //         console.error("Error in batch request:", err);
+      //         // Handle any failure in the batch submission (e.g., server issues)
+      //       }
+      //     });
+      //   } catch (error) {
+      //     console.log(error);
+      //     MessageToast.show("Facing technical issue")
+      //   }
+      // },
+
+      _importData: function (file) {
+        var that = this;
+        var excelData = {};
+        if (file && window.FileReader) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {
+              type: 'array'
+            });
+            workbook.SheetNames.forEach(function (sheetName) {
+              excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+              
+              // Adding serial numbers and converting numeric values to strings
+              excelData.forEach(function (item, index) {
+                item.serialNumber = index + 1; // Serial number starts from 1
+                // Convert numeric values to strings
+                item.volume = String(item.volume);
+                item.truckWeight = String(item.truckWeight);
+                item.capacity = String(item.capacity);
+              });
+            });
+      
+            // Setting the data to the local model
+            that.ContainerModel.setData({
+              items: excelData
+            });
+            that.ContainerModel.refresh(true);
+          };
+          reader.onerror = function (ex) {
+            console.log(ex);
+          };
+          reader.readAsArrayBuffer(file);
+        }
+      },
+      onContainerBatchSave: async function () {
+        var that = this;
+        var addContainerModel = this.getView().getModel("ContainerModel").getData();
+        var oDataModel = this.getView().getModel("ModelV2");
+        var batchGroupId = "batchCreateContainerGroup";
+        const oView = this.getView();
+      
+        let raisedErrors = []
+        addContainerModel.items.forEach(async (item, index) => {
+          const aExcelInputs = [
+            { value: item.truckType, regex: null, message: "Enter Container type" },
+            { value: item.length, regex: null, message: "Enter Container Length" },
+            { value: item.width, regex: null, message: "Enter Container Width" },
+            { value: item.height, regex: null, message: "Enter Container Height" },
+            { value: item.uom, regex: null, message: "Enter Container UOM" },
+            { value: item.volume, regex: null, message: "Enter Volume" },
+            { value: item.tvuom, regex: null, message: "Enter Volume UOM" },
+            { value: item.truckWeight, regex: null, message: "Enter Container Weight" },
+            { value: item.capacity, regex: null, message: "Enter Container Capacity" },
+            { value: item.tuom, regex: null, message: "Enter Container Capacity UOM" },
+            { value: item.truckType, regex: /^\d{2}[A-Za-z]{2}$/, message: "The container format should be in the following format: 12FT." },
+            { value: item.length, regex: /^\d+(\.\d+)?$/, message: "Length should be numeric" },
+            { value: item.width, regex: /^\d+(\.\d+)?$/, message: "Width should be numeric" },
+            { value: item.height, regex: /^\d+(\.\d+)?$/, message: "Height should be numeric" },
+            { value: item.uom, regex: /^[A-Za-z]{1,2}$/, message: "UOM should be a string with a maximum length of 2 characters" },
+            { value: item.volume, regex: /^\d+(\.\d+)?$/, message: "Volume should be numeric" },
+            { value: item.truckWeight, regex: /^\d+(\.\d+)?$/, message: "Container Weight should be numeric" },
+            { value: item.capacity, regex: /^\d+(\.\d+)?$/, message: "Container Capacity should be numeric" },
+            { value: item.tuom, regex: /^[A-Za-z]{1,2}$/, message: "UOM should be a string with a maximum length of 2 characters" },
+          ];
+      
+          for (let input of aExcelInputs) {
+            let aValidations = this.validateField(oView, null, input.value, input.regex, input.message)
+            if (aValidations.length > 0) {
+              raisedErrors.push({ index: index, errorMsg: aValidations[0] });
+            }
+          }
+        });
+      
+        if (raisedErrors.length > 0) {
+          for (let error of raisedErrors) {
+            MessageBox.information(`Check record number ${error.index + 1} ${error.errorMsg}`);
+            return;
+          }
+        }
+      
+        // Proceed with batch saving the data
+        try {
+          addContainerModel.items.forEach(async (item, index) => {
+            // Ensure numeric fields are converted to strings
+            item.truckType = String(item.truckType).trim();
+            item.length = String(item.length).trim();
+            item.width = String(item.width).trim();
+            item.height = String(item.height).trim();
+            item.volume = String(item.volume).trim();
+            item.truckWeight = String(item.truckWeight).trim();
+            item.capacity = String(item.capacity).trim();
+            item.tuom = String(item.tuom).trim();
+      
+            // Create individual batch request 
+            await oDataModel.create("/TruckTypes", item, {
+              method: "POST",
+              groupId: batchGroupId,
+              success: function (data, response) {
+                if (addContainerModel.items.length === index + 1) {
+                  MessageBox.success("Materials created successfully");
+                  if (that.oFragment) {
+                    that.oFragment.close();
+                    that.byId("idContainerTypeTable").getBinding("items").refresh();
+                  }
+                }
+              },
+              error: function (err) {
+                // Handle error for individual item
+                if (JSON.parse(err.responseText).error.message.value.toLowerCase() === "entity already exists") {
+                  MessageBox.error("You are trying to upload a material which already exists");
+                } else {
+                  MessageBox.error("Please check the uploaded file and upload correct data");
+                }
+                console.error("Error creating material:", err);
+              }
+            });
+          });
+      
+          // Now send the batch request using batch group
+          await oDataModel.submitChanges({
+            batchGroupId: batchGroupId,
+            success: function (oData, response) {
+              console.log("Batch request submitted", oData);
+            },
+            error: function (err) {
+              MessageBox.success("Error creating material batch");
+              console.error("Error in batch request:", err);
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          MessageToast.show("Facing technical issue");
+        }
+      }
+      
+      
     });
   });
