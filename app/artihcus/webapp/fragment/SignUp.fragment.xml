@@ -127,6 +127,32 @@
                             enabled="false"
                         />
                     </HBox>
+                    <HBox id="_IDGenregeHBosx5" visible="false">
+                        <Label
+                            id="_IDGensfgeLabel8"
+                            text=""
+                            class="sapUiTinyMarginTop"
+                            width="100px"
+                        />
+                        <Label
+                            id="_IDGensrgLefabel9"
+                            text=" "
+                            class="sapUiTinyMarginTop"
+                            width="20px"
+                        />
+                        <Input
+                            id="_IDGenInrfgpuseft4"
+                            placeholder="Enter OTP"
+                            value=""
+                        />
+                        <Button
+                            id="idOTPBfdtn"
+                            class="sapUiSmallMarginTop"
+                            type="Emphasized"
+                            text="Validate"
+                            press="onValidateOTP"
+                        />
+                    </HBox>
                     <HBox id="_IDGenHBoxs6">
                         <Label
                             id="_IDGenLsabel10"
@@ -172,6 +198,7 @@
                         type="Emphasized"
                         width="90%"
                         text="Sign Up"
+                        enabled="true"
                         press="onSignUpPress"
                     />
                     <!-- <HBox justifyContent="SpaceBetween">
