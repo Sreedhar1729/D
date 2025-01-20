@@ -47,7 +47,6 @@ define entity Materials {
         grossWeight     : String;
         wuom            : String;
         quantity        : String;
-        stack           : String;
         mass            : String;
         layersHeight    : String;
         color           : String;

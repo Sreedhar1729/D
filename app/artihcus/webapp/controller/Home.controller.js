@@ -10,7 +10,7 @@ sap.ui.define([
 
 
         return Controller.extend("com.app.artihcus.controller.Home", {
-            async onInit () {
+            async onInit() {
                 const oUserModel = new JSONModel({
                     userID: "",
                     fName: "",
@@ -291,10 +291,9 @@ sap.ui.define([
                         sap.m.MessageToast.show('Failed to send OTP')
                     }
                 });
-
             },
-            onValidateOTP: function () {
 
+            onValidateOTP: function () {
                 const that = this;
                 // Create a Busy Dialog instance
                 if (!this._oValidatingBusyDialog) {
@@ -313,7 +312,7 @@ sap.ui.define([
                 if (!sEnteredOtp) {
                     oOtpInput.setValueState(sap.ui.core.ValueState.Error);
                     oOtpInput.setValueStateText("Please enter OTP");
-                    sap.m.MessageToast.show("Please enter OTP")
+                    sap.m.MessageToast.show("Please enter OTP");
                     this._oValidatingBusyDialog.close();
                     return;
                 }
